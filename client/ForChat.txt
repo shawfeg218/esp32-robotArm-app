@@ -1,0 +1,391 @@
+// file: App.js
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import Quiz from './components/Quiz';
+import ArmControl from './components/ArmControl';
+
+function App() {
+	return (
+		<Router>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/quiz" element={<Quiz />} />
+				<Route path="/arm-control" element={<ArmControl />} />
+			</Routes>
+		</Router>
+	);
+}
+
+export default App;
+
+
+
+
+// file: Home.js
+
+import { useNavigate } from 'react-router-dom';
+
+function Home() {
+	const navigate = useNavigate();
+
+	return (
+		<div>
+			<h1>Welcome to my web app!</h1>
+			<button
+				onClick={() => {
+					navigate('/quiz');
+				}}
+			>
+				Quiz
+			</button>
+			<button
+				onClick={() => {
+					navigate('/arm-control');
+				}}
+			>
+				操作手臂
+			</button>
+		</div>
+	);
+}
+
+export default Home;
+
+
+
+
+// file: ArmControl.js
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function ArmControl() {
+	const [targetAngles, setTargetAngles] = useState({
+		A: 0,
+		B: 0,
+		C: 0,
+		D: 0,
+		E: 0,
+		F: 0,
+	});
+	const [currentAngles, setCurrentAngles] = useState({
+		A: 0,
+		B: 0,
+		C: 0,
+		D: 0,
+		E: 0,
+		F: 0,
+	});
+
+	const handleChange = (axis, angle) => {
+		const newAngles = { ...targetAngles };
+		newAngles[axis] = angle;
+		setTargetAngles(newAngles);
+		axios.post('/set-axis-angle', { axis, angle });
+	};
+
+	const handleReset = () => {
+		setTargetAngles({
+			A: 0,
+			B: 0,
+			C: 0,
+			D: 0,
+			E: 0,
+			F: 0,
+		});
+		axios.post('/reset-arm');
+	};
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			axios.get('/get-angles').then((res) => {
+				setCurrentAngles(res.data);
+			});
+		}, 1000);
+		return () => clearInterval(interval);
+	}, []);
+
+	return (
+		<div>
+			<div>A軸角度：{targetAngles.A}°</div>
+			<input
+				type="range"
+				min="0"
+				max="180"
+				value={targetAngles.A}
+				onChange={(e) => handleChange('A', e.target.value)}
+			/>
+			<div>B軸角度：{targetAngles.B}°</div>
+			<input
+				type="range"
+				min="0"
+				max="180"
+				value={targetAngles.B}
+				onChange={(e) => handleChange('B', e.target.value)}
+			/>
+			<div>C軸角度：{targetAngles.C}°</div>
+			<input
+				type="range"
+				min="0"
+				max="180"
+				value={targetAngles.C}
+				onChange={(e) => handleChange('C', e.target.value)}
+			/>
+			<div>D軸角度：{targetAngles.D}°</div>
+			<input
+				type="range"
+				min="0"
+				max="180"
+				value={targetAngles.D}
+				onChange={(e) => handleChange('D', e.target.value)}
+			/>
+			<div>E軸角度：{targetAngles.E}°</div>
+			<input
+				type="range"
+				min="0"
+				max="180"
+				value={targetAngles.E}
+				onChange={(e) => handleChange('E', e.target.value)}
+			/>
+			<div>F軸角度：{targetAngles.F}°</div>
+			<input
+				type="range"
+				min="0"
+				max="180"
+				value={targetAngles.F}
+				onChange={(e) => handleChange('F', e.target.value)}
+			/>
+			<button onClick={handleReset}>返回初始狀態</button>
+			<div>當前狀態:</div>
+			<div>
+				A軸-當前位置：{currentAngles.A}°；目標位置：{targetAngles.A}°
+			</div>
+			<div>
+				B軸-當前位置：{currentAngles.B}°；目標位置：{targetAngles.B}°
+			</div>
+			<div>
+				C軸-當前位置：{currentAngles.C}°；目標位置：{targetAngles.C}°
+			</div>
+			<div>
+				D軸-當前位置：{currentAngles.D}°；目標位置：{targetAngles.D}°
+			</div>
+			<div>
+				E軸-當前位置：{currentAngles.E}°；目標位置：{targetAngles.E}°
+			</div>
+			<div>
+				F軸-當前位置：{currentAngles.F}°；目標位置：{targetAngles.F}°
+			</div>
+		</div>
+	);
+}
+
+export default ArmControl;
+
+
+
+// file: Quiz.js
+
+import React, { useState } from 'react';
+import Question from './Question';
+
+function Quiz() {
+	const [selectedSubject, setSelectedSubject] = useState('');
+
+	const handleSelectSubject = (subject) => {
+		setSelectedSubject(subject);
+	};
+
+	return (
+		<div>
+			<h2>Quiz</h2>
+			<div>
+				{selectedSubject ? null : (
+					<>
+						<button onClick={() => handleSelectSubject('Math')}>Math</button>
+						<button onClick={() => handleSelectSubject('English')}>
+							English
+						</button>
+					</>
+				)}
+			</div>
+			{selectedSubject ? <Question subject={selectedSubject} /> : null}
+		</div>
+	);
+}
+
+export default Quiz;
+
+
+
+// file: Question.js
+
+import React, { useState, useEffect } from 'react';
+import questions from '../data/questions';
+import './Question.css';
+
+function Question({ subject }) {
+	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+	const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
+	const [isAnswered, setIsAnswered] = useState(false);
+	const selectedQuestions = questions[subject];
+	const currentQuestion = selectedQuestions[currentQuestionIndex];
+
+	const handleOptionClick = (optionIndex) => {
+		setSelectedOptionIndex(optionIndex);
+		setIsAnswered(true);
+	};
+
+	const handleNextClick = () => {
+		if (currentQuestionIndex < selectedQuestions.length - 1) {
+			setCurrentQuestionIndex(currentQuestionIndex + 1);
+			setIsAnswered(false);
+			setSelectedOptionIndex(-1);
+		}
+	};
+
+	useEffect(() => {
+		setSelectedOptionIndex(-1);
+	}, [currentQuestion]);
+
+	return (
+		<div className="question-container">
+			<div className="question-text">{currentQuestion.text}</div>
+			<div className="options-container">
+				{currentQuestion.options.map((option, index) => (
+					<div
+						key={option.id}
+						className={`option ${
+							isAnswered && index === selectedOptionIndex
+								? option.id === currentQuestion.correctOptionId
+									? 'correct'
+									: 'incorrect'
+								: ''
+						}`}
+						onClick={() => handleOptionClick(index)}
+					>
+						{option.text}
+					</div>
+				))}
+			</div>
+			{isAnswered && (
+				<button className="next-button" onClick={handleNextClick}>
+					{currentQuestionIndex === selectedQuestions.length - 1
+						? 'Finish'
+						: 'Next'}
+				</button>
+			)}
+		</div>
+	);
+}
+
+export default Question;
+
+
+
+
+// file: Question.css
+
+.question-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.question-text {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.options-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 20px;
+	width: 100%;
+}
+
+.option {
+	background-color: #f0f0f0;
+	border: none;
+	border-radius: 10px;
+	padding: 10px 20px;
+	margin-bottom: 10px;
+	font-size: 16px;
+	font-weight: bold;
+	width: 80%;
+	text-align: center;
+	cursor: pointer;
+}
+
+.option:hover {
+	background-color: #e0e0e0;
+}
+
+.correct {
+	background-color: #d8e8c2;
+}
+
+.incorrect {
+	background-color: #f8c2c2;
+}
+
+
+
+
+// file: questions.js
+
+const questions = {
+	Math: [
+		{
+			id: 1,
+			text: 'What is 2 + 2?',
+			options: [
+				{ id: 1, text: '1' },
+				{ id: 2, text: '2' },
+				{ id: 3, text: '3' },
+				{ id: 4, text: '4' },
+			],
+			correctOptionId: 4,
+		},
+		{
+			id: 2,
+			text: 'What is 3 x 3?',
+			options: [
+				{ id: 1, text: '6' },
+				{ id: 2, text: '7' },
+				{ id: 3, text: '8' },
+				{ id: 4, text: '9' },
+			],
+			correctOptionId: 4,
+		},
+	],
+	English: [
+		{
+			id: 1,
+			text: 'What is the opposite of "hot"?',
+			options: [
+				{ id: 1, text: 'cold' },
+				{ id: 2, text: 'warm' },
+				{ id: 3, text: 'cool' },
+				{ id: 4, text: 'chilly' },
+			],
+			correctOptionId: 1,
+		},
+		{
+			id: 2,
+			text: 'What is the past tense of "go"?',
+			options: [
+				{ id: 1, text: 'gone' },
+				{ id: 2, text: 'went' },
+				{ id: 3, text: 'goed' },
+				{ id: 4, text: 'goed' },
+			],
+			correctOptionId: 2,
+		},
+	],
+};
+
+export default questions;
