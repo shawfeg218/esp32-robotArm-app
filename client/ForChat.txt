@@ -283,8 +283,6 @@ export default Question;
 
 // file: Question.css
 
-/* file: Question.css */
-
 .question-container {
   display: flex;
   flex-direction: column;

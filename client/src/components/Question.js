@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import questions from '../data/questions';
-import './Question.css';
+import '../CSS/Question.css';
 
 function Question({ subject }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
