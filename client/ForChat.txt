@@ -217,10 +217,17 @@ export default function ArmControl(props) {
   align-items: center;
   margin: 0 auto;
   max-width: 60%;
+  background-color: #222;
+  color: #fff;
+  border: 2px solid #ccc;
+  box-shadow: 0 0 10px #ccc;
+  padding: 20px;
+  border-radius: 5px;
 }
 
 .axis-container > div {
   margin-bottom: 10px;
+  font-size: 18px;
 }
 
 .axis-container input[type='range'] {
@@ -233,11 +240,27 @@ export default function ArmControl(props) {
 
 .current-state > div {
   margin-bottom: 10px;
+  font-size: 18px;
 }
 
 .reset-btn {
   margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ccc;
+  color: #222;
+  border: none;
+  box-shadow: 0 0 10px #ccc;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
 }
+
+.reset-btn:hover {
+  background-color: #999;
+}
+
 
 
 
@@ -277,10 +300,9 @@ export default Quiz;
 
 
 // file: Question.js
-
 import React, { useState } from 'react';
 import questions from '../data/questions';
-import './Question.css';
+import '../CSS/Question.css';
 
 function Question({ subject }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -336,6 +358,7 @@ function Question({ subject }) {
 }
 
 export default Question;
+
 
 
 
