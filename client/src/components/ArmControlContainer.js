@@ -21,10 +21,10 @@ function ArmControlContainer() {
   });
 
   const handleChange = (axis, angle) => {
-    const newAngles = { ...targetAngles };
-    newAngles[axis] = angle;
+    const newAngles = { ...targetAngles, [axis]: angle };
     setTargetAngles(newAngles);
-    axios.post('/set-axis-angle', { axis, angle });
+
+    axios.post('http://localhost:5000/api/set-axis-angle', { axis, angle });
   };
 
   const handleReset = () => {
@@ -36,12 +36,13 @@ function ArmControlContainer() {
       E: 0,
       F: 0,
     });
-    axios.post('/reset-arm');
+
+    axios.post('http://localhost:5000/api/reset-arm');
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get('/get-angles').then((res) => {
+      axios.get('http://localhost:5000/api/get-angles').then((res) => {
         setCurrentAngles(res.data);
       });
     }, 1000);

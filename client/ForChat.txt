@@ -1,4 +1,4 @@
-// file: App.js
+// file: esp32-robotArm-app/client/App.js
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
@@ -23,7 +23,7 @@ export default App;
 
 
 
-// file: Home.js
+// file: esp32-robotArm-app/client/src/components/Home.js
 
 import { useNavigate } from 'react-router-dom';
 
@@ -54,7 +54,7 @@ function Home() {
 export default Home;
 
 
-// file: ArmControlContainer.js
+// file: esp32-robotArm-app/client/src/components/ArmControlContainer.js
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -79,10 +79,10 @@ function ArmControlContainer() {
   });
 
   const handleChange = (axis, angle) => {
-    const newAngles = { ...targetAngles };
-    newAngles[axis] = angle;
+    const newAngles = { ...targetAngles, [axis]: angle };
     setTargetAngles(newAngles);
-    axios.post('/set-axis-angle', { axis, angle });
+
+    axios.post('http://localhost:5000/api/set-axis-angle', { axis, angle });
   };
 
   const handleReset = () => {
@@ -94,12 +94,13 @@ function ArmControlContainer() {
       E: 0,
       F: 0,
     });
-    axios.post('/reset-arm');
+
+    axios.post('http://localhost:5000/api/reset-arm');
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get('/get-angles').then((res) => {
+      axios.get('http://localhost:5000/api/get-angles').then((res) => {
         setCurrentAngles(res.data);
       });
     }, 1000);
@@ -120,7 +121,8 @@ export default ArmControlContainer;
 
 
 
-// file: ArmControl.js
+
+// file: esp32-robotArm-app/client/src/components/ArmControl.js
 
 import React from 'react';
 import '../CSS/ArmControl.css';
@@ -209,7 +211,7 @@ export default function ArmControl(props) {
 
 
 
-// file: ArmControl.css
+// file: esp32-robotArm-app/client/src/CSS/ArmControl.css
 
 .axis-container {
   display: flex;
@@ -265,7 +267,7 @@ export default function ArmControl(props) {
 
 
 
-// file: Quiz.js
+// file: esp32-robotArm-app/client/src/components/Quiz.js
 
 import React, { useState } from 'react';
 import Question from './Question';
@@ -299,7 +301,7 @@ export default Quiz;
 
 
 
-// file: Question.js
+// file: esp32-robotArm-app/client/src/components/Question.js
 import React, { useState } from 'react';
 import questions from '../data/questions';
 import '../CSS/Question.css';
@@ -362,7 +364,7 @@ export default Question;
 
 
 
-// file: Question.css
+// file: esp32-robotArm-app/client/src/CSS/Question.css
 
 .question-container {
   display: flex;
@@ -471,7 +473,7 @@ export default Question;
 
 
 
-// file: questions.js
+// file: esp32-robotArm-app/client/src/data/questions.js
 const questions = {
 	Math: [
 		{
@@ -526,14 +528,18 @@ const questions = {
 export default questions;
 
 
-// file: server/index.js
+// file: esp32-robotArm-app/server/index.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const axios = require('axios');
+const path = require('path');
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+console.log(`ESP32 IP: ${process.env.ESP32_IP}`);
+console.log(`ESP32 Port: ${process.env.ESP32_PORT}`);
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -543,11 +549,15 @@ app.use(cors());
 const esp32Ip = process.env.ESP32_IP;
 const esp32Port = process.env.ESP32_PORT;
 
-// 設置個軸的角度
-app.post('/set-axis-angle', (req, res) => {
+// 创建 API 路由
+const apiRouter = express.Router();
+app.use('/api', apiRouter);
+
+// 设置各轴的角度
+app.post('/api/set-axis-angle', (req, res) => {
   const { axis, angle } = req.body;
   axios
-    .get(
+    .post(
       `http://${esp32Ip}:${esp32Port}/set-axis-angle?axis=${axis}&angle=${angle}`
     )
     .then((response) => {
@@ -559,8 +569,8 @@ app.post('/set-axis-angle', (req, res) => {
     });
 });
 
-// 獲取個軸的角度
-app.get('/get-angles', (req, res) => {
+// 获取各轴的角度
+app.get('/api/get-angles', (req, res) => {
   axios
     .get(`http://${esp32Ip}:${esp32Port}/get-angles`)
     .then((response) => {
@@ -568,14 +578,16 @@ app.get('/get-angles', (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).send({ error: 'Failed to get angles' });
+      res
+        .status(500)
+        .send({ error: 'Failed to get angles', message: error.message });
     });
 });
 
-// 重置機械手臂
-app.post('/reset-arm', (req, res) => {
+// 重置机械手臂
+app.post('/api/reset-arm', (req, res) => {
   axios
-    .get(`http://${esp32Ip}:${esp32Port}/reset-arm`)
+    .post(`http://${esp32Ip}:${esp32Port}/reset-arm`)
     .then((response) => {
       res.send(response.data);
     })
@@ -585,8 +597,125 @@ app.post('/reset-arm', (req, res) => {
     });
 });
 
-// 啟動 Express server
+// 启动 Express 服务器
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
+
+// file: esp32-robotArm-app/esp32-arm/esp32-arm.ino
+#include <WiFi.h>
+#include <WebServer.h>
+#include <ESP32Servo.h>
+
+const char* ssid = "108-3-1"; // WiFi熱點名稱
+const char* password = "0987352372"; // WiFi密碼
+WebServer server(80); // 創建Web Server
+
+Servo servoA, servoB, servoC, servoD, servoE, servoF; 
+
+// 初始化角度
+int angleA = 0; 
+int angleB = 0; 
+int angleC = 0; 
+int angleD = 0; 
+int angleE = 0; 
+int angleF = 0; 
+
+void setup() {
+  Serial.begin(115200); // 开启串口调试
+  WiFi.begin(ssid, password); // 连接WiFi
+  while (WiFi.status() != WL_CONNECTED) { // 等待连接
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  // 处理/set-axis-angle路由的POST请求
+  server.on("/set-axis-angle", HTTP_POST, []() {
+    String axis = server.arg("axis"); // 获取轴的编号
+    int angle = server.arg("angle").toInt(); // 获取目标角度
+    if (axis == "A") { // 如果是A轴
+      angleA = angle; // 更新A轴的角度
+      servoA.write(angleA); // 将A轴的舵机转动到目标角度
+    } else if (axis == "B") { // 如果是B轴
+      angleB = angle; // 更新B轴的角度
+      servoB.write(angleB); // 将B轴的舵机转动到目标角度
+    } else if (axis == "C") { // 如果是C轴
+      angleC = angle; // 更新C轴的角度
+      servoC.write(angleC); // 将C轴的舵机转动到目标角度
+    } else if (axis == "D") { // 如果是D轴
+      angleD = angle; // 更新D轴的角度
+      servoD.write(angleD); // 将D轴的舵机转动到目标角度
+    } else if (axis == "E") { // 如果是E轴
+      angleE = angle; // 更新E轴的角度
+      servoE.write(angleE); // 将E轴的舵机转动到目标角度
+    } else if (axis == "F") { // 如果是F轴
+      angleF = angle; // 更新F轴的角度
+      servoF.write(angleF); // 将F轴的舵机转动到目标角度
+    }
+    server.send(200); // 发送响应码200，表示请求已被成功处理
+  });
+
+  // 處理/reset-arm路由的POST請求
+  server.on("/reset-arm", HTTP_POST, []() {
+
+    angleA = angleB = angleC = angleD =  angleE = angleF = 0;
+
+    servoA.write(angleA);
+    servoB.write(angleB);
+    servoC.write(angleC);
+    servoD.write(angleD);
+    servoE.write(angleE);
+    servoF.write(angleF);
+    
+    server.send(200);
+    Serial.println("Servos reseted");
+  });
+
+  // 处理/get-angles路由的GET请求
+  server.on("/get-angles", HTTP_GET, []() {
+    String response = "{\"A\":" + String(angleA) +
+                      ",\"B\":" + String(angleB) +
+                      ",\"C\":" + String(angleC) +
+                      ",\"D\":" + String(angleD) +
+                      ",\"E\":" + String(angleE) +
+                      ",\"F\":" + String(angleF) + "}";
+    server.send(200, "application/json", response); // 发送包含角度信息的JSON响应
+  });
+
+  server.begin(); // 启动Web服务器
+  Serial.println("Web server started");
+
+  // 为每个舵机对象分配控制板上的GPIO引脚号
+  servoA.attach(32);
+  servoB.attach(33);
+  servoC.attach(25);
+  servoD.attach(26);
+  servoE.attach(27);
+  servoF.attach(14);
+
+  // 将六个舵机初始化为0度
+  servoA.write(angleA);
+  servoB.write(angleB);
+  servoC.write(angleC);
+  servoD.write(angleD);
+  servoE.write(angleE);
+  servoF.write(angleF);
+
+  Serial.println("Servos attached and initialized");
+}
+
+void loop() {
+  server.handleClient(); // 处理客户端请求
+  delay(10); // 延迟10毫秒，避免过多的CPU占用
+}
+
+
+
+
+// file: esp32-robotArm-app/.env
+ESP32_IP=192.168.0.12  
+ESP32_PORT=80
