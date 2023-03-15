@@ -3,9 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const axios = require('axios');
-const path = require('path');
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config();
 
 console.log(`ESP32 IP: ${process.env.ESP32_IP}`);
 console.log(`ESP32 Port: ${process.env.ESP32_PORT}`);
