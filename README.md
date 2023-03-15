@@ -6,16 +6,16 @@ A web app for controlling a robotic arm developed using React for the frontend a
 
 ### Currently, the following functionalities have been implemented:
 
--Basic quiz functionality
--Control of the six axes of the robotic arm
--Retrieval of the current angles of the six axes of the robotic arm
--Resetting of the angles of the robotic arm's axes to their initial values
+- Basic quiz functionality
+- Control of the six axes of the robotic arm
+- Retrieval of the current angles of the six axes of the robotic arm
+- Resetting of the angles of the robotic arm's axes to their initial values
 
 ### In progress:
 
--Updating the motion control panel to add new ways of controlling the robotic arm
--Integrating the quiz functionality with the movement of the robotic arm to provide feedback based on the player's performance
--Displaying quiz results
+- Updating the motion control panel to add new ways of controlling the robotic arm
+- Integrating the quiz functionality with the movement of the robotic arm to provide feedback based on the player's performance
+- Displaying quiz results
 
 ---
 
