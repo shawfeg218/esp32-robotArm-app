@@ -18,11 +18,11 @@ app.use(cors());
 const esp32Ip = process.env.ESP32_IP;
 const esp32Port = process.env.ESP32_PORT;
 
-// 创建 API 路由
+// 創建 API 路由
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
 
-// 设置各轴的角度
+// 設置某軸的角度
 app.post('/api/set-axis-angle', (req, res) => {
   const { axis, angle } = req.body;
   axios
@@ -38,7 +38,7 @@ app.post('/api/set-axis-angle', (req, res) => {
     });
 });
 
-// 获取各轴的角度
+// 獲取esp32端當前角度
 app.get('/api/get-angles', (req, res) => {
   axios
     .get(`http://${esp32Ip}:${esp32Port}/get-angles`)
@@ -53,7 +53,7 @@ app.get('/api/get-angles', (req, res) => {
     });
 });
 
-// 重置机械手臂
+// 將各角度還原為預設值
 app.post('/api/reset-arm', (req, res) => {
   axios
     .post(`http://${esp32Ip}:${esp32Port}/reset-arm`)
@@ -66,7 +66,7 @@ app.post('/api/reset-arm', (req, res) => {
     });
 });
 
-// 启动 Express 服务器
+// 啟動 Express Server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

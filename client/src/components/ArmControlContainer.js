@@ -6,18 +6,18 @@ function ArmControlContainer() {
   const [targetAngles, setTargetAngles] = useState({
     A: 0,
     B: 0,
-    C: 0,
+    C: 180,
     D: 0,
-    E: 0,
-    F: 0,
+    E: 180,
+    F: 18,
   });
   const [currentAngles, setCurrentAngles] = useState({
     A: 0,
     B: 0,
-    C: 0,
+    C: 180,
     D: 0,
-    E: 0,
-    F: 0,
+    E: 180,
+    F: 18,
   });
 
   const handleChange = (axis, angle) => {
@@ -31,10 +31,10 @@ function ArmControlContainer() {
     setTargetAngles({
       A: 0,
       B: 0,
-      C: 0,
+      C: 180,
       D: 0,
-      E: 0,
-      F: 0,
+      E: 180,
+      F: 18,
     });
 
     axios.post('http://localhost:5000/api/reset-arm');
