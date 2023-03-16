@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const axios = require('axios');
@@ -10,8 +9,8 @@ console.log(`ESP32 IP: ${process.env.ESP32_IP}`);
 console.log(`ESP32 Port: ${process.env.ESP32_PORT}`);
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors());
 
 const esp32Ip = process.env.ESP32_IP;
