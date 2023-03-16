@@ -2,7 +2,15 @@ import React from 'react';
 import '../CSS/ArmControl.css';
 
 export default function ArmControl(props) {
-  const { targetAngles, currentAngles, handleChange, handleReset } = props;
+  const {
+    targetAngles,
+    currentAngles,
+    handleChange,
+    handleReset,
+    handleCorrectAction,
+    handleWrongAction,
+    handleGrabAction,
+  } = props;
 
   return (
     <div className="axis-container">
@@ -55,28 +63,37 @@ export default function ArmControl(props) {
         onChange={(e) => handleChange('F', e.target.value)}
       />
 
-      <button className="reset-btn" onClick={handleReset}>
+      <button className="control-btn" onClick={handleReset}>
         返回初始狀態
+      </button>
+      <button className="control-btn" onClick={handleCorrectAction}>
+        答對動作
+      </button>
+      <button className="control-btn" onClick={handleWrongAction}>
+        答錯動作
+      </button>
+      <button className="control-btn" onClick={handleGrabAction}>
+        抓動作
       </button>
       <div className="current-state">
         <div>當前狀態:</div>
         <div>
-          A軸-當前位置：{currentAngles.A}° - 目標位置：{targetAngles.A}°
+          A軸-當前角度：{currentAngles.A}° - 目標角度：{targetAngles.A}°
         </div>
         <div>
-          B軸-當前位置：{currentAngles.B}° - 目標位置：{targetAngles.B}°
+          B軸-當前角度：{currentAngles.B}° - 目標角度：{targetAngles.B}°
         </div>
         <div>
-          C軸-當前位置：{currentAngles.C}° - 目標位置：{targetAngles.C}°
+          C軸-當前角度：{currentAngles.C}° - 目標角度：{targetAngles.C}°
         </div>
         <div>
-          D軸-當前位置：{currentAngles.D}° - 目標位置：{targetAngles.D}°
+          D軸-當前角度：{currentAngles.D}° - 目標角度：{targetAngles.D}°
         </div>
         <div>
-          E軸-當前位置：{currentAngles.E}° - 目標位置：{targetAngles.E}°
+          E軸-當前角度：{currentAngles.E}° - 目標角度：{targetAngles.E}°
         </div>
         <div>
-          F軸-當前位置：{currentAngles.F}° - 目標位置：{targetAngles.F}°
+          F軸-當前角度：{currentAngles.F}° - 目標角度：{targetAngles.F}°
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@
   font-size: 18px;
 }
 
-.reset-btn {
+.control-btn {
   margin-top: 20px;
   padding: 10px 20px;
   background-color: #ccc;
@@ -44,6 +44,6 @@
   transition: background-color 0.3s ease-in-out;
 }
 
-.reset-btn:hover {
+.control-btn:hover {
   background-color: #999;
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import questions from '../data/questions';
+import axios from 'axios';
 import '../CSS/Question.css';
 
 function Question({ subject }) {
@@ -13,6 +14,12 @@ function Question({ subject }) {
     if (!isAnswered) {
       setSelectedOptionIndex(optionIndex);
       setIsAnswered(true);
+    }
+
+    if (selectedOptionIndex === currentQuestion.correctOptionId) {
+      axios.post('http://localhost:5000/api/correct-act');
+    } else {
+      axios.post('http://localhost:5000/api/wrong-act');
     }
   };
 

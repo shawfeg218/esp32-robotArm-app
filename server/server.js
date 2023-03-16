@@ -26,7 +26,7 @@ app.post('/api/set-axis-angle', (req, res) => {
   const { axis, angle } = req.body;
   axios
     .post(
-      `http://${esp32Ip}:${esp32Port}/set-axis-angle?axis=${axis}&angle=${angle}`
+      `http://${esp32Ip}:${esp32Port}/api/set-axis-angle?axis=${axis}&angle=${angle}`
     )
     .then((response) => {
       res.send(response.data);
@@ -37,10 +37,62 @@ app.post('/api/set-axis-angle', (req, res) => {
     });
 });
 
+// 答對動作
+app.post('/api/correct-act', (req, res) => {
+  axios
+    .post(`http://${esp32Ip}:${esp32Port}/api/correct-act`)
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({ error: 'correc-act Failed' });
+    });
+});
+
+// 答錯動作
+app.post('/api/wrong-act', (req, res) => {
+  axios
+    .post(`http://${esp32Ip}:${esp32Port}/api/wrong-act`)
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({ error: 'wrong-act Failed' });
+    });
+});
+
+// 抓動作
+app.post('/api/grab-act', (req, res) => {
+  axios
+    .post(`http://${esp32Ip}:${esp32Port}/api/grab-act`)
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({ error: 'grab-act Failed' });
+    });
+});
+
+// 將各角度還原為預設值
+app.post('/api/reset-arm', (req, res) => {
+  axios
+    .post(`http://${esp32Ip}:${esp32Port}/api/reset-arm`)
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({ error: 'Failed to reset arm' });
+    });
+});
+
 // 獲取esp32端當前角度
 app.get('/api/get-angles', (req, res) => {
   axios
-    .get(`http://${esp32Ip}:${esp32Port}/get-angles`)
+    .get(`http://${esp32Ip}:${esp32Port}/api/get-angles`)
     .then((response) => {
       res.send(response.data);
     })
@@ -49,19 +101,6 @@ app.get('/api/get-angles', (req, res) => {
       res
         .status(500)
         .send({ error: 'Failed to get angles', message: error.message });
-    });
-});
-
-// 將各角度還原為預設值
-app.post('/api/reset-arm', (req, res) => {
-  axios
-    .post(`http://${esp32Ip}:${esp32Port}/reset-arm`)
-    .then((response) => {
-      res.send(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).send({ error: 'Failed to reset arm' });
     });
 });
 

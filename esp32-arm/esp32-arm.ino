@@ -53,8 +53,8 @@ void setup() {
   servoF.write(init_angleF);
   Serial.println("Servos attached and initialized");
   
-  // 處理/set-axis-angle路由的POST請求
-  server.on("/set-axis-angle", HTTP_POST, []() {
+  // 處理/api/set-axis-angle路由的POST請求
+  server.on("/api/set-axis-angle", HTTP_POST, []() {
     
     String targetAxis = server.arg("axis"); // 獲取軸的編號
     int targetAngle = server.arg("angle").toInt(); // 獲取目標角度
@@ -83,8 +83,78 @@ void setup() {
     Serial.println("servo" + targetAxis + " move to " + targetAngle);
   });
 
-  // 處理/reset-arm路由的POST請求
-  server.on("/reset-arm", HTTP_POST, []() {
+  // 處理/api/correct-act路由的POST請求
+  server.on("/api/correct-act", HTTP_POST, []() {
+
+    for(int i=0; i<3; i++) {
+      angleD = init_angleD;
+      servoD.write(angleD);
+      angleD = 65;
+      servoD.write(angleD);
+    }
+    angleD = init_angleD;
+    servoD.write(angleD);
+
+    server.send(200);
+
+    Serial.println("correct-action");
+  });
+
+  // 處理/api/wrong-act路由的POST請求
+  server.on("/api/wrong-act", HTTP_POST, []() {
+    angleD = 24;
+    servoD.write(angleD);
+    angleF = 18;
+    servoF.write(angleF);
+    for(int i=0; i<2; i++) {
+      angleF = 64;
+      servoF.write(angleF);
+      angleF = 18;
+      servoF.write(angleF);
+    }
+    angleD = 0;
+    servoD.write(angleD);
+
+    server.send(200); // 發送回應碼200，表示請求已成功處理
+
+    Serial.println("wrong-action");
+  });
+
+  // 處理/api/grab-act路由的POST請求
+  server.on("/api/grab-act", HTTP_POST, []() {
+    angleD = 59;
+    servoD.write(angleD);
+    angleE = 112;
+    servoE.write(angleE);
+    
+    angleC = init_angleC;
+    servoC.write(angleC);
+    angleC = 108;
+    servoC.write(angleC);
+
+    angleB = init_angleB;
+    servoB.write(angleB);
+    angleB = 59;
+    servoB.write(angleB);
+    angleB = init_angleB;
+    servoB.write(angleB);
+
+    angleC = init_angleC;
+    servoC.write(angleC);
+
+
+    angleE = init_angleE;
+    servoE.write(angleE);
+    angleD = init_angleD;
+    servoD.write(angleD);
+
+    server.send(200); // 發送回應碼200，表示請求已成功處理
+
+    Serial.println("grab-action");
+  });
+
+  // 處理/api/reset-arm路由的POST請求
+  server.on("/api/reset-arm", HTTP_POST, []() {
 
     angleA = init_angleA;   // 將各角度還原為預設值
     angleB = init_angleB; 
@@ -106,7 +176,7 @@ void setup() {
   });
 
   // 處理/get-angles路由的GET請求
-  server.on("/get-angles", HTTP_GET, []() {
+  server.on("/api/get-angles", HTTP_GET, []() {
     String response = "{\"A\":" + String(angleA) +
                       ",\"B\":" + String(angleB) +
                       ",\"C\":" + String(angleC) +

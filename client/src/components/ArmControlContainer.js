@@ -40,6 +40,18 @@ function ArmControlContainer() {
     axios.post('http://localhost:5000/api/reset-arm');
   };
 
+  const handleCorrectAction = () => {
+    axios.post('http://localhost:5000/api/correct-act');
+  };
+
+  const handleWrongAction = () => {
+    axios.post('http://localhost:5000/api/wrong-act');
+  };
+
+  const handleGrabAction = () => {
+    axios.post('http://localhost:5000/api/grab-act');
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       axios.get('http://localhost:5000/api/get-angles').then((res) => {
@@ -55,6 +67,9 @@ function ArmControlContainer() {
       currentAngles={currentAngles}
       handleChange={handleChange}
       handleReset={handleReset}
+      handleCorrectAction={handleCorrectAction}
+      handleWrongAction={handleWrongAction}
+      handleGrabAction={handleGrabAction}
     />
   );
 }
