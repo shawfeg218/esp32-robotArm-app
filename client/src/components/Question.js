@@ -14,12 +14,10 @@ function Question({ subject }) {
     if (!isAnswered) {
       setSelectedOptionIndex(optionIndex);
       setIsAnswered(true);
-    }
 
-    if (selectedOptionIndex === currentQuestion.correctOptionId) {
-      axios.post('http://localhost:5000/api/correct-act');
-    } else {
-      axios.post('http://localhost:5000/api/wrong-act');
+      optionIndex === currentQuestion.correctOptionIndex
+        ? axios.post('http://localhost:5000/api/correct-act')
+        : axios.post('http://localhost:5000/api/wrong-act');
     }
   };
 
@@ -31,23 +29,30 @@ function Question({ subject }) {
     }
   };
 
+  const getOptionClassName = (index) => {
+    if (!isAnswered) {
+      return 'option';
+    }
+    if (index === currentQuestion.correctOptionIndex) {
+      return 'option disabled correct';
+    }
+    if (index === selectedOptionIndex) {
+      return 'option disabled incorrect';
+    }
+    return 'option disabled';
+  };
+
   return (
     <div className="question-container">
       <div className="question-text">{currentQuestion.text}</div>
       <div className="options-container">
-        {currentQuestion.options.map((option, index) => (
+        {currentQuestion.options.map((optionText, index) => (
           <div
-            key={option.id}
-            className={`option ${isAnswered ? 'disabled' : ''} ${
-              isAnswered && option.id === currentQuestion.correctOptionId
-                ? 'correct'
-                : isAnswered && index === selectedOptionIndex
-                ? 'incorrect'
-                : ''
-            }`}
+            key={index}
+            className={getOptionClassName(index)}
             onClick={() => handleOptionClick(index)}
           >
-            {option.text}
+            {optionText}
           </div>
         ))}
       </div>

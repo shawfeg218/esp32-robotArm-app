@@ -39,7 +39,7 @@
   transition: all 0.3s ease-in-out;
 }
 
-.option:hover {
+.option:not(.disabled):hover {
   background-color: #e0e0e0;
   transform: translateY(-5px);
 }
@@ -48,11 +48,11 @@
   cursor: not-allowed;
 }
 
-.disabled.correct {
+.option.disabled.correct {
   background-color: #d8e8c2;
 }
 
-.disabled.incorrect {
+.option.disabled.incorrect {
   background-color: #f8c2c2;
 }
 

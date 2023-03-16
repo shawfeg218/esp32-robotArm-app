@@ -2,8 +2,8 @@
 #include <WebServer.h>
 #include <ESP32Servo.h>
 
-const char* ssid = "108-3-1"; // WiFi熱點名稱
-const char* password = "0987352372"; // WiFi密碼
+const char* ssid = "Shawn"; // WiFi熱點名稱
+const char* password = "zxcvbnm0000"; // WiFi密碼
 WebServer server(80); // 創建Web Server
 
 Servo servoA, servoB, servoC, servoD, servoE, servoF; 
@@ -32,6 +32,8 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+
+  //
 
   server.begin(); // 啟動Web Server
   Serial.println("Web server started");
@@ -89,8 +91,10 @@ void setup() {
     for(int i=0; i<3; i++) {
       angleD = init_angleD;
       servoD.write(angleD);
+      delay(10);
       angleD = 65;
       servoD.write(angleD);
+      delay(10);
     }
     angleD = init_angleD;
     servoD.write(angleD);
@@ -104,13 +108,17 @@ void setup() {
   server.on("/api/wrong-act", HTTP_POST, []() {
     angleD = 24;
     servoD.write(angleD);
+    delay(10);    
     angleF = 18;
     servoF.write(angleF);
+    delay(10);    
     for(int i=0; i<2; i++) {
       angleF = 64;
       servoF.write(angleF);
+      delay(10);    
       angleF = 18;
       servoF.write(angleF);
+      delay(10);    
     }
     angleD = 0;
     servoD.write(angleD);
@@ -122,20 +130,26 @@ void setup() {
 
   // 處理/api/grab-act路由的POST請求
   server.on("/api/grab-act", HTTP_POST, []() {
+
     angleD = 59;
     servoD.write(angleD);
+    delay(10);
     angleE = 112;
     servoE.write(angleE);
+    delay(10);
     
     angleC = init_angleC;
     servoC.write(angleC);
+    delay(10);
     angleC = 108;
     servoC.write(angleC);
 
     angleB = init_angleB;
     servoB.write(angleB);
+    delay(10);
     angleB = 59;
     servoB.write(angleB);
+    delay(10);
     angleB = init_angleB;
     servoB.write(angleB);
 
