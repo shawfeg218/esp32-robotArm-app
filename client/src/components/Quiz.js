@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import Question from './Question';
+import AppContext from '../AppContext';
 
 function Quiz() {
-	const [selectedSubject, setSelectedSubject] = useState('');
+  const { selectedSubject, setSelectedSubject } = useContext(AppContext);
+  const handleSelectSubject = (subject) => {
+    setSelectedSubject(subject);
+  };
 
-	const handleSelectSubject = (subject) => {
-		setSelectedSubject(subject);
-	};
-
-	return (
-		<div>
-			<h2>Quiz</h2>
-			<div>
-				{selectedSubject ? null : (
-					<>
-						<button onClick={() => handleSelectSubject('Math')}>Math</button>
-						<button onClick={() => handleSelectSubject('English')}>
-							English
-						</button>
-					</>
-				)}
-			</div>
-			{selectedSubject ? <Question subject={selectedSubject} /> : null}
-		</div>
-	);
+  return (
+    <div>
+      <h2>Quiz</h2>
+      <div>
+        {selectedSubject ? null : (
+          <>
+            <button onClick={() => handleSelectSubject('Math')}>Math</button>
+            <button onClick={() => handleSelectSubject('English')}>
+              English
+            </button>
+          </>
+        )}
+      </div>
+      {selectedSubject ? <Question subject={selectedSubject} /> : null}
+    </div>
+  );
 }
 
 export default Quiz;
