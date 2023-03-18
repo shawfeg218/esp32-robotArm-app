@@ -1,33 +1,16 @@
-import React, { useState } from 'react';
-import questions from '../data/questions';
-import axios from 'axios';
+import React from 'react';
 import '../CSS/Question.css';
 
-function Question({ subject }) {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
-  const [isAnswered, setIsAnswered] = useState(false);
-  const selectedQuestions = questions[subject];
-  const currentQuestion = selectedQuestions[currentQuestionIndex];
-
-  const handleOptionClick = (optionIndex) => {
-    if (!isAnswered) {
-      setSelectedOptionIndex(optionIndex);
-      setIsAnswered(true);
-
-      optionIndex === currentQuestion.correctOptionIndex
-        ? axios.post('http://localhost:5000/api/correct-act')
-        : axios.post('http://localhost:5000/api/wrong-act');
-    }
-  };
-
-  const handleNextClick = () => {
-    if (currentQuestionIndex < selectedQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setIsAnswered(false);
-      setSelectedOptionIndex(-1);
-    }
-  };
+function Question(props) {
+  const {
+    currentQuestionIndex,
+    selectedOptionIndex,
+    isAnswered,
+    selectedQuestions,
+    currentQuestion,
+    handleOptionClick,
+    handleNextClick,
+  } = props;
 
   const getOptionClassName = (index) => {
     if (!isAnswered) {
