@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import Question from './Question';
 import AppContext from '../AppContext';
+import QuestionContainer from './QuestionContainer';
 
 function Quiz() {
   const { selectedSubject, setSelectedSubject } = useContext(AppContext);
@@ -21,7 +21,7 @@ function Quiz() {
           </>
         )}
       </div>
-      {selectedSubject ? <Question subject={selectedSubject} /> : null}
+      {selectedSubject ? <QuestionContainer subject={selectedSubject} /> : null}
     </div>
   );
 }
