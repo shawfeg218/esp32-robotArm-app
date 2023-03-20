@@ -23,6 +23,74 @@ int angleD;
 int angleE;
 int angleF;
 
+// correct-act
+void correctAct() {
+  for(int i=0; i<3; i++) {
+    angleD = init_angleD;
+    servoD.write(angleD);
+    delay(10);
+    angleD = 65;
+    servoD.write(angleD);
+    delay(10);
+  }
+  angleD = init_angleD;
+  servoD.write(angleD);
+}  
+
+// wrong-act
+void wrongAct() {
+  angleD = 24;
+  servoD.write(angleD);
+  delay(10);    
+  angleF = 18;
+  servoF.write(angleF);
+  delay(10);    
+  for(int i=0; i<2; i++) {
+    angleF = 64;
+    servoF.write(angleF);
+    delay(10);    
+    angleF = 18;
+    servoF.write(angleF);
+    delay(10);    
+  }
+  angleD = 0;
+  servoD.write(angleD);
+}
+
+// grab-act
+void grabAct() {
+  angleD = 59;
+  servoD.write(angleD);
+  delay(10);
+  angleE = 112;
+  servoE.write(angleE);
+  delay(10);
+    
+  angleC = init_angleC;
+  servoC.write(angleC);
+  delay(10);
+  angleC = 108;
+  servoC.write(angleC);
+
+  angleB = init_angleB;
+  servoB.write(angleB);
+  delay(10);
+  angleB = 59;
+  servoB.write(angleB);
+  delay(10);
+  angleB = init_angleB;
+  servoB.write(angleB);
+
+  angleC = init_angleC;
+  servoC.write(angleC);
+
+
+  angleE = init_angleE;
+  servoE.write(angleE);
+  angleD = init_angleD;
+  servoD.write(angleD);  
+}
+
 void setup() {
   Serial.begin(115200); 
     
@@ -33,7 +101,6 @@ void setup() {
   }
   Serial.println("Connected to WiFi");
 
-  //
 
   server.begin(); // 啟動Web Server
   Serial.println("Web server started");
@@ -87,17 +154,18 @@ void setup() {
 
   // 處理/api/correct-act路由的POST請求
   server.on("/api/correct-act", HTTP_POST, []() {
-
-    for(int i=0; i<3; i++) {
-      angleD = init_angleD;
-      servoD.write(angleD);
-      delay(10);
-      angleD = 65;
-      servoD.write(angleD);
-      delay(10);
-    }
-    angleD = init_angleD;
-    servoD.write(angleD);
+    //correctAct
+    correctAct();
+    // for(int i=0; i<3; i++) {
+    //   angleD = init_angleD;
+    //   servoD.write(angleD);
+    //   delay(10);
+    //   angleD = 65;
+    //   servoD.write(angleD);
+    //   delay(10);
+    // }
+    // angleD = init_angleD;
+    // servoD.write(angleD);
 
     server.send(200);
 
@@ -106,22 +174,24 @@ void setup() {
 
   // 處理/api/wrong-act路由的POST請求
   server.on("/api/wrong-act", HTTP_POST, []() {
-    angleD = 24;
-    servoD.write(angleD);
-    delay(10);    
-    angleF = 18;
-    servoF.write(angleF);
-    delay(10);    
-    for(int i=0; i<2; i++) {
-      angleF = 64;
-      servoF.write(angleF);
-      delay(10);    
-      angleF = 18;
-      servoF.write(angleF);
-      delay(10);    
-    }
-    angleD = 0;
-    servoD.write(angleD);
+    // wrongAct
+    wrongAct();
+    // angleD = 24;
+    // servoD.write(angleD);
+    // delay(10);    
+    // angleF = 18;
+    // servoF.write(angleF);
+    // delay(10);    
+    // for(int i=0; i<2; i++) {
+    //   angleF = 64;
+    //   servoF.write(angleF);
+    //   delay(10);    
+    //   angleF = 18;
+    //   servoF.write(angleF);
+    //   delay(10);    
+    // }
+    // angleD = 0;
+    // servoD.write(angleD);
 
     server.send(200); // 發送回應碼200，表示請求已成功處理
 
@@ -130,37 +200,38 @@ void setup() {
 
   // 處理/api/grab-act路由的POST請求
   server.on("/api/grab-act", HTTP_POST, []() {
-
-    angleD = 59;
-    servoD.write(angleD);
-    delay(10);
-    angleE = 112;
-    servoE.write(angleE);
-    delay(10);
+    // grabAct
+    grabAct();
+    // angleD = 59;
+    // servoD.write(angleD);
+    // delay(10);
+    // angleE = 112;
+    // servoE.write(angleE);
+    // delay(10);
     
-    angleC = init_angleC;
-    servoC.write(angleC);
-    delay(10);
-    angleC = 108;
-    servoC.write(angleC);
+    // angleC = init_angleC;
+    // servoC.write(angleC);
+    // delay(10);
+    // angleC = 108;
+    // servoC.write(angleC);
 
-    angleB = init_angleB;
-    servoB.write(angleB);
-    delay(10);
-    angleB = 59;
-    servoB.write(angleB);
-    delay(10);
-    angleB = init_angleB;
-    servoB.write(angleB);
+    // angleB = init_angleB;
+    // servoB.write(angleB);
+    // delay(10);
+    // angleB = 59;
+    // servoB.write(angleB);
+    // delay(10);
+    // angleB = init_angleB;
+    // servoB.write(angleB);
 
-    angleC = init_angleC;
-    servoC.write(angleC);
+    // angleC = init_angleC;
+    // servoC.write(angleC);
 
 
-    angleE = init_angleE;
-    servoE.write(angleE);
-    angleD = init_angleD;
-    servoD.write(angleD);
+    // angleE = init_angleE;
+    // servoE.write(angleE);
+    // angleD = init_angleD;
+    // servoD.write(angleD);
 
     server.send(200); // 發送回應碼200，表示請求已成功處理
 
@@ -204,6 +275,11 @@ void setup() {
 }
 
 void loop() {
-  server.handleClient();
-  delay(10); // 延遲10毫秒，避免過多的CPU占用
+  // server.handleClient();
+  correctAct();
+  delay(10); 
+  wrongAct();
+  delay(10); 
+  grabAct();
+  delay(10);
 }
