@@ -1,18 +1,27 @@
 // file: Home.js
-import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import AppContext from "../AppContext";
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AppContext from '../AppContext';
+import axios from 'axios';
 
 function Home() {
   const navigate = useNavigate();
-  const { history } = useContext(AppContext);
+
+  const { history, esp32WifiConnected, setEsp32WifiConnected } =
+    useContext(AppContext);
+
+  function handleResetWifi() {
+    axios.post('http://localhost:5000/api/reset-wifi');
+  }
 
   return (
     <div>
-      <div>testing</div>
+      <div className="navbar">
+        <button onClick={handleResetWifi}>重置手臂WiFi</button>
+      </div>
       <h1>Welcome to my web app!</h1>
-      <button onClick={() => navigate("/quiz")}>Quiz</button>
-      <button onClick={() => navigate("/arm-control")}>操作手臂</button>
+      <button onClick={() => navigate('/quiz')}>Quiz</button>
+      <button onClick={() => navigate('/arm-control')}>操作手臂</button>
 
       <h2>History:</h2>
       <ul>

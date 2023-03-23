@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const axios = require('axios');
+const net = require('net');
 
 dotenv.config();
 
@@ -13,12 +14,37 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-const esp32Ip = process.env.ESP32_IP;
-const esp32Port = process.env.ESP32_PORT;
+let esp32Ip = process.env.ESP32_IP;
+let esp32Port = process.env.ESP32_PORT;
 
 // 創建 API 路由
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
+
+// server更新esp32Ip
+app.post('/api/update-esp32-ip', (req, res) => {
+  const newIp = req.body.ip;
+  if (newIp && net.isIP(newIp)) {
+    esp32Ip = newIp;
+    console.log(`Updated ESP32 IP: ${esp32Ip}`);
+    res.status(200).send({ message: 'ESP32 IP updated on server' });
+  } else {
+    res.status(400).send({ error: 'Invalid IP' });
+  }
+});
+
+// 重設ESP32的WiFi
+app.post('/api/reset-wifi', (req, res) => {
+  axios
+    .post(`http://${esp32Ip}:${esp32Port}/api/reset-wifi`)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({ error: 'Failed to reset Wi-Fi' });
+    });
+});
 
 // 設置某軸的角度
 app.post('/api/set-axis-angle', (req, res) => {
@@ -27,12 +53,16 @@ app.post('/api/set-axis-angle', (req, res) => {
     .post(
       `http://${esp32Ip}:${esp32Port}/api/set-axis-angle?axis=${axis}&angle=${angle}`
     )
-    .then((response) => {
-      res.send(response.data);
+    .then(() => {
+      res.status(204).send();
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).send({ error: 'Failed to set angle' });
+      if (error.response && error.response.status === 400) {
+        res.status(400).send({ error: 'Invalid request' });
+      } else {
+        res.status(500).send({ error: 'Failed to set angle' });
+      }
     });
 });
 
@@ -40,8 +70,8 @@ app.post('/api/set-axis-angle', (req, res) => {
 app.post('/api/correct-act', (req, res) => {
   axios
     .post(`http://${esp32Ip}:${esp32Port}/api/correct-act`)
-    .then((response) => {
-      res.send(response.data);
+    .then(() => {
+      res.status(204).send();
     })
     .catch((error) => {
       console.log(error);
@@ -53,8 +83,8 @@ app.post('/api/correct-act', (req, res) => {
 app.post('/api/wrong-act', (req, res) => {
   axios
     .post(`http://${esp32Ip}:${esp32Port}/api/wrong-act`)
-    .then((response) => {
-      res.send(response.data);
+    .then(() => {
+      res.status(204).send();
     })
     .catch((error) => {
       console.log(error);
@@ -66,8 +96,8 @@ app.post('/api/wrong-act', (req, res) => {
 app.post('/api/grab-act', (req, res) => {
   axios
     .post(`http://${esp32Ip}:${esp32Port}/api/grab-act`)
-    .then((response) => {
-      res.send(response.data);
+    .then(() => {
+      res.status(204).send();
     })
     .catch((error) => {
       console.log(error);
@@ -79,8 +109,8 @@ app.post('/api/grab-act', (req, res) => {
 app.post('/api/reset-arm', (req, res) => {
   axios
     .post(`http://${esp32Ip}:${esp32Port}/api/reset-arm`)
-    .then((response) => {
-      res.send(response.data);
+    .then(() => {
+      res.status(204).send();
     })
     .catch((error) => {
       console.log(error);
