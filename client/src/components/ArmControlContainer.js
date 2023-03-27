@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ArmControl from './ArmControl';
+import { SERVER_URL } from '../config';
 
 function ArmControlContainer() {
   const [targetAngles, setTargetAngles] = useState({
@@ -24,7 +25,7 @@ function ArmControlContainer() {
     const newAngles = { ...targetAngles, [axis]: angle };
     setTargetAngles(newAngles);
 
-    axios.post('http://localhost:5000/api/set-axis-angle', { axis, angle });
+    axios.post(`${SERVER_URL}/api/set-axis-angle`, { axis, angle });
   };
 
   const handleReset = () => {
@@ -37,25 +38,26 @@ function ArmControlContainer() {
       F: 18,
     });
 
-    axios.post('http://localhost:5000/api/reset-arm');
+    axios.post(`${SERVER_URL}/api/reset-arm`);
   };
 
   const handleCorrectAction = () => {
-    axios.post('http://localhost:5000/api/correct-act');
+    axios.post(`${SERVER_URL}/api/correct-act`);
   };
 
   const handleWrongAction = () => {
-    axios.post('http://localhost:5000/api/wrong-act');
+    axios.post(`${SERVER_URL}/api/wrong-act`);
   };
 
   const handleGrabAction = () => {
-    axios.post('http://localhost:5000/api/grab-act');
+    axios.post(`${SERVER_URL}/api/grab-act`);
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get('http://localhost:5000/api/get-angles').then((res) => {
+      axios.get(`${SERVER_URL}/api/get-angles`).then((res) => {
         setCurrentAngles(res.data);
+        console.log(res.data);
       });
     }, 1000);
     return () => clearInterval(interval);

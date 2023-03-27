@@ -4,6 +4,7 @@ import AppContext from '../AppContext';
 import questions from '../data/questions';
 import axios from 'axios';
 import Question from './Question';
+import { SERVER_URL } from '../config';
 
 function QuestionContainer() {
   const navigate = useNavigate();
@@ -33,10 +34,10 @@ function QuestionContainer() {
 
   useEffect(() => {
     if (correct === true) {
-      axios.post('http://localhost:5000/api/correct-act');
+      axios.post(`${SERVER_URL}/api/correct-act`);
       setPoint((prev) => prev + 1);
     } else if (correct === false) {
-      axios.post('http://localhost:5000/api/wrong-act');
+      axios.post(`${SERVER_URL}/api/wrong-act`);
     }
   }, [correct]);
 

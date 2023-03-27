@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppContext from '../AppContext';
 import axios from 'axios';
+import { SERVER_URL } from '../config';
 
 function Home() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ function Home() {
     useContext(AppContext);
 
   function handleResetWifi() {
-    axios.post('http://localhost:5000/api/reset-wifi');
+    axios.post(`${SERVER_URL}/api/reset-wifi`);
   }
 
   return (
