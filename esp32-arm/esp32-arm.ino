@@ -2,13 +2,18 @@
 #include <WebServer.h>
 #include <ESP32Servo.h>
 #include <WiFiManager.h>
-#include <HTTPClient.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
 
 WebServer server(80);
 
 WiFiManager wifiManager;
 
-const char* serverURL = "http://192.168.0.10:5000";
+const char* mqtt_server = "0.tcp.jp.ngrok.io";
+const int mqtt_port = 17096;
+
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
 
 Servo servoA, servoB, servoC, servoD, servoE, servoF; 
 
@@ -26,17 +31,12 @@ int angleD;
 int angleE;
 int angleF;
 
-void updateEsp32Ip();
 void handleResetWifi();
 void correctAct();
 void wrongAct();
 void grabAct();
 void resetArm();
 void handleSetAxisAngle();
-void handleCorrectAct();
-void handleWrongAct();
-void handleGrabAct();
-void handleResetArm();
 void handleGetAngles();
 
 void setup() {
@@ -48,35 +48,31 @@ void setup() {
   server.begin(); 
   Serial.println("Web server started");
 
-  // 向網頁server更新Esp32Ip
-  updateEsp32Ip();
-
   attachServos();
   initializedAngles();
   Serial.println("Servos attached and initialized");
 
-  server.on("/api/reset-wifi", HTTP_POST, handleResetWifi);
-  server.on("/api/set-axis-angle", HTTP_POST, handleSetAxisAngle);
-  server.on("/api/correct-act", HTTP_POST, handleCorrectAct);
-  server.on("/api/wrong-act", HTTP_POST, handleWrongAct);
-  server.on("/api/grab-act", HTTP_POST, handleGrabAct);
-  server.on("/api/reset-arm", HTTP_POST, handleResetArm);
-  server.on("/api/get-angles", HTTP_GET, handleGetAngles);
+  mqttClient.setServer(mqtt_server, mqtt_port);
+  mqttClient.setCallback(mqttCallback);
+  reconnectMqtt();
+
 }
 
 void loop() {
+  if (!mqttClient.connected()) {
+    reconnectMqtt();
+  }
+  mqttClient.loop();
   server.handleClient();
   delay(10);
 }
 
 void setupWifiManager() {
-  wifiManager.setConfigPortalTimeout(20);
+  wifiManager.setConfigPortalTimeout(180);
 
   if (!wifiManager.autoConnect("ESP32_AP", "")) {
     Serial.println("無法連接到WiFi，請重新設置");
     ESP.restart();
-  } else {
-    updateEsp32Ip();
   }
 
   Serial.println("Connected to WiFi");
@@ -109,31 +105,60 @@ void initializedAngles() {
   servoF.write(init_angleF);
 }
 
-void updateEsp32Ip() {
-  if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    String url = String(serverURL) + "/api/update-esp32-ip";
-    http.begin(url);
-    http.addHeader("Content-Type", "application/json");
-
-    String requestBody = "{\"ip\":\"" + WiFi.localIP().toString() + "\"}";
-
-    int httpResponseCode = http.POST(requestBody);
-    String responseMessage = http.getString();
-
-    if (httpResponseCode == 200) {
-      Serial.println(responseMessage);
+void reconnectMqtt() {
+  while (!mqttClient.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    if (mqttClient.connect("ESP32Client")) {
+      Serial.println("connected");
+      mqttClient.subscribe("esp32/control/reset-wifi");
+      mqttClient.subscribe("esp32/control/set-axis-angle");
+      mqttClient.subscribe("esp32/control/correct-act");
+      mqttClient.subscribe("esp32/control/wrong-act");
+      mqttClient.subscribe("esp32/control/grab-act");
+      mqttClient.subscribe("esp32/control/reset-arm");
+      mqttClient.subscribe("esp32/control/get-angles");
     } else {
-      Serial.println(responseMessage);
+      Serial.print("failed, rc=");
+      Serial.print(mqttClient.state());
+      Serial.println(" try again in 5 seconds");
+      delay(5000);
     }
+  }  
+}
 
-    http.end();
-  } else {
-    Serial.println("Not connected to WiFi");
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  String message;
+  for(unsigned int i=0; i<length; i++) {
+    message += (char)payload[i];
   }
+
+  if(String(topic) == "esp32/control/reset-wifi") {
+    Serial.println("topic: esp32/control/reset-wifi");
+    handleResetWifi();
+  } else if(String(topic) == "esp32/control/set-axis-angle") {
+    Serial.println("topic: esp32/control/set-axis-angle");
+    handleSetAxisAngle(message);
+  } else if(String(topic) == "esp32/control/correct-act") {
+    Serial.println("topic: esp32/control/correct-act");
+    correctAct();
+  } else if(String(topic) == "esp32/control/wrong-act") {
+    Serial.println("topic: esp32/control/wrong-act");
+    wrongAct();
+  } else if(String(topic) == "esp32/control/grab-act") {
+    Serial.println("topic: esp32/control/grab-act");
+    grabAct();
+  } else if(String(topic) == "esp32/control/reset-arm") {
+    Serial.println("topic: esp32/control/reset-arm");
+    resetArm();
+  } else if(String(topic) == "esp32/control/get-angles") {
+    handleGetAngles();
+  }
+
+
 }
 
 void correctAct() {
+  Serial.println("correct-action");
   for (int i = 0; i < 3; i++) {
     angleD = init_angleD;
     servoD.write(angleD);
@@ -149,6 +174,7 @@ void correctAct() {
 }
 
 void wrongAct() {
+  Serial.println("wrong-action");
   for (int i = 0; i < 3; i++) {
     angleA = init_angleA;
     servoA.write(angleA);
@@ -165,6 +191,7 @@ void wrongAct() {
 }
 
 void grabAct() {
+  Serial.println("grab-action");
   angleF = init_angleF;
   servoF.write(angleF);
   delay(500);
@@ -175,6 +202,7 @@ void grabAct() {
 }
 
 void resetArm() {
+  Serial.println("Servos reseted");
   angleA = init_angleA;
   angleB = init_angleB;
   angleC = init_angleC;
@@ -190,9 +218,11 @@ void resetArm() {
   servoF.write(angleF);
 }
 
-void handleSetAxisAngle() {
-  String targetAxis = server.arg("axis");
-  int targetAngle  = server.arg("angle").toInt();
+void handleSetAxisAngle(String message) {
+  DynamicJsonDocument jsonDoc(1024);
+  deserializeJson(jsonDoc, message);
+  String targetAxis = jsonDoc["axis"];
+  int targetAngle  = jsonDoc["angle"];
 
   if (targetAxis == "A") {
     angleA = targetAngle ;
@@ -216,39 +246,12 @@ void handleSetAxisAngle() {
     server.send(400);
     return;
   }
+
   Serial.println("servo" + targetAxis + " move to " + targetAngle);
-  server.send(204);
 }
 
-void handleCorrectAct() {
-  correctAct();
-  server.send(204);
-
-  Serial.println("correct-action");
-}
-
-void handleWrongAct() {
-  wrongAct();
-  server.send(204);
-
-  Serial.println("wrong-action");
-}
-
-void handleGrabAct() {
-  grabAct();
-  server.send(204);
-
-  Serial.println("grab-action");
-}
-
-void handleResetArm() {
-  resetArm();
-  server.send(204);
-
-  Serial.println("Servos reseted");
-}
 
 void handleGetAngles() {
   String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + "}";
-  server.send(200, "application/json", angles);
+  mqttClient.publish("esp32/angles", angles.c_str());
 }
