@@ -1,0 +1,46 @@
+/* components/Navbar.module.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000000;
+  padding: 0.05rem;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+}
+
+.icon a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.25rem;
+  margin-left: 1rem;
+}
+
+.navbarList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0.5rem;
+}
+
+.navbarItem {
+  margin-right: 1rem;
+}
+
+.navbarItem a {
+  color: white;
+  text-decoration: none;
+}
+
+.resetWifiButton {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 1rem;
+}

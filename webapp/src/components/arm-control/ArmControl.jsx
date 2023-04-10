@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { SERVER_URL } from '../../../next.config';
 import ArmControlView from './ArmControlView';
 
 export default function ArmControl() {

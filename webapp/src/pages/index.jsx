@@ -1,22 +1,13 @@
 import React, { useContext } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import AppContext from '@/contexts/AppContext';
 
 export default function HomePage() {
-  const { history, esp32WifiConnected, setEsp32WifiConnected } =
-    useContext(AppContext);
-
-  function handleResetWifi() {
-    axios.post('/api/reset-wifi');
-  }
+  const { history } = useContext(AppContext);
 
   return (
     <div>
-      <div className="navbar">
-        <button onClick={handleResetWifi}>重置手臂WiFi</button>
-      </div>
-      <h1>Welcome to my web app!</h1>
+      <h1>Home Page</h1>
       <Link href="/quiz" passHref>
         <button>Quiz</button>
       </Link>
