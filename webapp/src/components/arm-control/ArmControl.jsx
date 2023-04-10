@@ -1,10 +1,9 @@
-// file: ArmControlContainer.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ArmControl from './ArmControl';
-import { SERVER_URL } from '../config';
+import { SERVER_URL } from '../../../next.config';
+import ArmControlView from './ArmControlView';
 
-function ArmControlContainer() {
+export default function ArmControl() {
   const [targetAngles, setTargetAngles] = useState({
     A: 0,
     B: 0,
@@ -65,7 +64,7 @@ function ArmControlContainer() {
   }, []);
 
   return (
-    <ArmControl
+    <ArmControlView
       targetAngles={targetAngles}
       currentAngles={currentAngles}
       handleChange={handleChange}
@@ -76,5 +75,3 @@ function ArmControlContainer() {
     />
   );
 }
-
-export default ArmControlContainer;

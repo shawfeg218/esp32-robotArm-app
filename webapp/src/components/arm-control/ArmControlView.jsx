@@ -1,8 +1,8 @@
 // file: ArmControl.js
 import React from 'react';
-import '../CSS/ArmControl.css';
+import styles from '../../styles/ArmControl.module.css';
 
-export default function ArmControl(props) {
+export default function ArmControlView(props) {
   const {
     targetAngles,
     currentAngles,
@@ -14,7 +14,7 @@ export default function ArmControl(props) {
   } = props;
 
   return (
-    <div className="axis-container">
+    <div className={styles.axisContainer}>
       <div>A軸角度：{targetAngles.A}°</div>
       <input
         type="range"
@@ -63,20 +63,21 @@ export default function ArmControl(props) {
         value={targetAngles.F}
         onChange={(e) => handleChange('F', e.target.value)}
       />
-
-      <button className="control-btn" onClick={handleReset}>
-        返回初始狀態
-      </button>
-      <button className="control-btn" onClick={handleCorrectAction}>
-        答對動作
-      </button>
-      <button className="control-btn" onClick={handleWrongAction}>
-        答錯動作
-      </button>
-      <button className="control-btn" onClick={handleGrabAction}>
-        抓動作
-      </button>
-      <div className="current-state">
+      <div className={styles.btnContainer}>
+        <button className={styles.controlBtn} onClick={handleReset}>
+          返回初始狀態
+        </button>
+        <button className={styles.controlBtn} onClick={handleCorrectAction}>
+          答對動作
+        </button>
+        <button className={styles.controlBtn} onClick={handleWrongAction}>
+          答錯動作
+        </button>
+        <button className={styles.controlBtn} onClick={handleGrabAction}>
+          抓動作
+        </button>
+      </div>
+      <div className={styles.currentState}>
         <div>當前狀態:</div>
         <div>
           A軸-當前角度：{currentAngles.A}° - 目標角度：{targetAngles.A}°
