@@ -32,10 +32,10 @@ export default function Question() {
 
   useEffect(() => {
     if (correct === true) {
-      axios.post(`${SERVER_URL}/api/correct-act`);
+      axios.post('/api/correct-act');
       setPoint((prev) => prev + 1);
     } else if (correct === false) {
-      axios.post(`${SERVER_URL}/api/wrong-act`);
+      axios.post('/api/wrong-act');
     }
   }, [correct]);
 

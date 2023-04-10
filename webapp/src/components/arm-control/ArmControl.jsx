@@ -25,7 +25,7 @@ export default function ArmControl() {
     const newAngles = { ...targetAngles, [axis]: angle };
     setTargetAngles(newAngles);
 
-    axios.post(`${SERVER_URL}/api/set-axis-angle`, { axis, angle });
+    axios.post('/api/set-axis-angle', { axis, angle });
   };
 
   const handleReset = () => {
@@ -38,24 +38,24 @@ export default function ArmControl() {
       F: 18,
     });
 
-    axios.post(`${SERVER_URL}/api/reset-arm`);
+    axios.post('/api/reset-arm');
   };
 
   const handleCorrectAction = () => {
-    axios.post(`${SERVER_URL}/api/correct-act`);
+    axios.post('/api/correct-act');
   };
 
   const handleWrongAction = () => {
-    axios.post(`${SERVER_URL}/api/wrong-act`);
+    axios.post('/api/wrong-act');
   };
 
   const handleGrabAction = () => {
-    axios.post(`${SERVER_URL}/api/grab-act`);
+    axios.post('/api/grab-act');
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get(`${SERVER_URL}/api/get-angles`).then((res) => {
+      axios.get('/api/get-angles').then((res) => {
         setCurrentAngles(res.data);
         console.log(res.data);
       });

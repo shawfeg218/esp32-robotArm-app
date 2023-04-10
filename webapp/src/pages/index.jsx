@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
-import { SERVER_URL } from '../../next.config';
 import AppContext from '@/contexts/AppContext';
 
 export default function HomePage() {
@@ -9,7 +8,7 @@ export default function HomePage() {
     useContext(AppContext);
 
   function handleResetWifi() {
-    axios.post(`${SERVER_URL}/api/reset-wifi`);
+    axios.post('/api/reset-wifi');
   }
 
   return (
