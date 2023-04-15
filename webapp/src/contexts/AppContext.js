@@ -7,6 +7,7 @@ export const AppContextProvider = ({ children }) => {
   const [point, setPoint] = useState(0);
   const [history, setHistory] = useState([]);
   const [esp32WifiConnected, setEsp32WifiConnected] = useState(false);
+  const [isLogin, setIsLongin] = useState(false);
 
   const addHistory = (subject, point) => {
     setHistory((prevHistory) => [
@@ -27,6 +28,8 @@ export const AppContextProvider = ({ children }) => {
         addHistory,
         esp32WifiConnected,
         setEsp32WifiConnected,
+        isLogin,
+        setIsLongin,
       }}
     >
       {children}

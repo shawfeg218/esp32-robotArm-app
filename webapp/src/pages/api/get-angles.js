@@ -1,4 +1,4 @@
-import { getAngles } from '../../controllers/esp32Controller';
+import { getAngles } from '@/controllers/esp32Controller';
 
 export default function handler(req, res) {
   if (req.method === 'GET') {

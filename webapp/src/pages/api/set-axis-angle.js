@@ -1,4 +1,4 @@
-import { setAxisAngle } from '../../controllers/esp32Controller.js';
+import { setAxisAngle } from '@/controllers/esp32Controller.js';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

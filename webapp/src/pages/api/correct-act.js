@@ -1,4 +1,4 @@
-import { correctAct } from '../../controllers/esp32Controller';
+import { correctAct } from '@/controllers/esp32Controller';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

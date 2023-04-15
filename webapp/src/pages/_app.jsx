@@ -1,5 +1,5 @@
-import '../styles/globals.css';
-import Layout from '../components/Layout';
+import '@/styles/globals.css';
+import Layout from '@/components/Layout';
 import { AppContextProvider } from '@/contexts/AppContext';
 import nc from 'next-connect';
 import cors from 'cors';

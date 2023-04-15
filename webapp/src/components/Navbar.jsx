@@ -1,7 +1,6 @@
-// components/Navbar.js
 import Link from 'next/link';
 import axios from 'axios';
-import styles from '../styles/Navbar.module.css';
+import styles from '@/styles/Navbar.module.css';
 
 const Navbar = () => {
   const resetWifi = async () => {
@@ -40,6 +39,9 @@ const Navbar = () => {
         <button className={styles.resetWifiButton} onClick={resetWifi}>
           Reset Arm Wi-Fi
         </button>
+        <Link href={'/login'} passHref>
+          <button className={styles.loginButton}>Login</button>
+        </Link>
       </ul>
     </nav>
   );

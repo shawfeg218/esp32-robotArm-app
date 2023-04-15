@@ -44,3 +44,13 @@
   font-size: 16px;
   margin-right: 1rem;
 }
+
+.loginButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10%;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 16px;
+}
