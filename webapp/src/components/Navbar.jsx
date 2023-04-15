@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import axios from 'axios';
 import styles from '@/styles/Navbar.module.css';
+import Avatar from './account/Avatar';
 
 const Navbar = () => {
   const resetWifi = async () => {
@@ -36,11 +37,15 @@ const Navbar = () => {
             <a>asd</a>
           </Link>
         </li>
-        <button className={styles.resetWifiButton} onClick={resetWifi}>
-          Reset Arm Wi-Fi
-        </button>
-        <Link href={'/login'} passHref>
-          <button className={styles.loginButton}>Login</button>
+        <li className={styles.navbarItem}>
+          <button className={styles.resetWifiButton} onClick={resetWifi}>
+            Reset Arm Wi-Fi
+          </button>
+        </li>
+        <Link href={'/account'} passHref>
+          <div className={styles.avatarContainer}>
+            <Avatar size={35} />
+          </div>
         </Link>
       </ul>
     </nav>

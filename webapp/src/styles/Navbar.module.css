@@ -35,6 +35,15 @@
   text-decoration: none;
 }
 
+.avatarContainer {
+  width: 2.3rem;
+  height: 2.3rem;
+}
+
+.avatarContainer:hover {
+  cursor: pointer;
+}
+
 .resetWifiButton {
   background-color: #f44336;
   color: white;
@@ -42,7 +51,7 @@
   padding: 0.25rem 0.5rem;
   cursor: pointer;
   font-size: 16px;
-  margin-right: 1rem;
+  margin-top: 0;
 }
 
 .loginButton {
