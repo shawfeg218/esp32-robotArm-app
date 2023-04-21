@@ -8,17 +8,21 @@
   padding: 0.03rem;
 }
 
-.icon {
+.logo {
+  margin-left: 0.5rem;
   display: flex;
   align-items: center;
 }
 
-.icon a {
+.logo span {
   color: rgb(0, 0, 0);
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   font-size: 1.25rem;
-  margin-left: 1rem;
+}
+
+.logo :hover {
+  cursor: pointer;
 }
 
 .navbarList {

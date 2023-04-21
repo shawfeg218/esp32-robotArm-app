@@ -1,6 +1,7 @@
 import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';
 import React, { useContext } from 'react';
+import { FaChalkboardTeacher } from 'react-icons/fa';
 
 export default function Home() {
   const { history } = useContext(AppContext);
@@ -12,7 +13,9 @@ export default function Home() {
         <Link href="/quiz" passHref>
           <div className="card">
             <p>Quiz</p>
-            <div></div>
+            <div className="reactIconsDiv">
+              <FaChalkboardTeacher className="reactIcons" size="5rem" />
+            </div>
           </div>
         </Link>
 

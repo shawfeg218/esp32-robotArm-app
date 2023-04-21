@@ -2,6 +2,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import styles from '@/styles/Navbar.module.css';
 import Avatar from './account/Avatar';
+import { BsBook } from 'react-icons/bs';
 
 const Navbar = () => {
   const resetWifi = async () => {
@@ -16,11 +17,13 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar}>
-      <div className={styles.icon}>
-        <Link href="/">
-          <a>Esp32App</a>
-        </Link>
-      </div>
+      <Link href="/" passHref>
+        <div className={styles.logo}>
+          <BsBook className="reactIcons" size="2rem" />
+          <span>Esp32App</span>
+        </div>
+      </Link>
+
       <ul className={styles.navbarList}>
         <li className={styles.navbarItem}>
           <Link href="">

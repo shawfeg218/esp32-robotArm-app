@@ -183,7 +183,7 @@ export default function Account() {
 
       <div>
         <button
-          className="button primary block"
+          className="button primary "
           onClick={() => updateProfile({ username, arm_id, avatar_url })}
           disabled={loading}
         >
@@ -192,10 +192,7 @@ export default function Account() {
       </div>
 
       <div>
-        <button
-          className="button block"
-          onClick={() => supabase.auth.signOut()}
-        >
+        <button className="button " onClick={() => supabase.auth.signOut()}>
           Sign Out
         </button>
       </div>
