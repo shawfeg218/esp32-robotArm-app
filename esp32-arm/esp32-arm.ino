@@ -6,6 +6,11 @@
 #include <ArduinoJson.h>
 #include "config.h"
 
+extern "C"
+{
+    uint8_t temprature_sens_read();
+}
+
 
 WebServer server(80);
 
@@ -37,6 +42,7 @@ void grabAct();
 void resetArm();
 void handleSetAxisAngle();
 void handleGetAngles();
+void handleGetEsp32Status();
 
 void setup() {
   Serial.begin(115200); 
@@ -116,6 +122,7 @@ void reconnectMqtt() {
       mqttClient.subscribe("esp32/control/grab-act");
       mqttClient.subscribe("esp32/control/reset-arm");
       mqttClient.subscribe("esp32/control/get-angles");
+      mqttClient.subscribe("esp32/control/get-esp32Status");
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -151,6 +158,8 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     resetArm();
   } else if(String(topic) == "esp32/control/get-angles") {
     handleGetAngles();
+  } else if(String(topic) == "esp32/control/get-esp32Status") {
+    handleGetEsp32Status();    
   }
 
 
@@ -255,4 +264,23 @@ void handleSetAxisAngle(String message) {
 void handleGetAngles() {
   String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + "}";
   mqttClient.publish("esp32/angles", angles.c_str());
+}
+
+void handleGetEsp32Status() {
+  String esp32Status = "{";
+  esp32Status += "\"uptime\": " + String(millis()) + ",";
+  esp32Status += "\"freeHeap\": " + String(ESP.getFreeHeap()) + ",";
+  esp32Status += "\"chipId\": \"" + String((uint32_t)(ESP.getEfuseMac() >> 32), HEX) + (uint32_t)ESP.getEfuseMac() + "\",";
+  esp32Status += "\"chipRevision\": " + String(ESP.getChipRevision()) + ",";
+  esp32Status += "\"cpuFrequency\": " + String(ESP.getCpuFreqMHz()) + ",";
+  esp32Status += "\"flashSize\": " + String(ESP.getFlashChipSize()) + ",";
+  esp32Status += "\"temperature\": " + String((temprature_sens_read() - 32) * 0.5554) + ",";
+  esp32Status += "\"hallEffect\": " + String(hallRead()) + ",";
+  esp32Status += "\"ssid\": \"" + WiFi.SSID() + "\",";
+  esp32Status += "\"localIP\": \"" + WiFi.localIP().toString() + "\",";
+  esp32Status += "\"rssi\": " + String(WiFi.RSSI());
+  esp32Status += "}";
+
+  Serial.println(esp32Status);
+  mqttClient.publish("esp32/esp32Status", esp32Status.c_str());
 }
