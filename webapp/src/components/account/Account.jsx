@@ -5,13 +5,15 @@ import {
   useSession,
 } from '@supabase/auth-helpers-react';
 
+import styles from '@/styles/Account.module.css';
+
 export default function Account() {
   const supabase = useSupabaseClient();
   const user = useUser();
   const session = useSession();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
-  const [website, setWebsite] = useState(null);
+  const [arm_id, setArmId] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
   const [avatarFileUrl, setAvatarFileUrl] = useState(null);
 
@@ -29,7 +31,7 @@ export default function Account() {
 
       let { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, website, avatar_url`)
+        .select(`username, arm_id, avatar_url`)
         .eq('id', user.id)
         .single();
 
@@ -39,7 +41,7 @@ export default function Account() {
 
       if (data) {
         setUsername(data.username);
-        setWebsite(data.website);
+        setArmId(data.arm_id);
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
@@ -50,14 +52,14 @@ export default function Account() {
     }
   }
 
-  async function updateProfile({ username, website, avatar_url }) {
+  async function updateProfile({ username, arm_id, avatar_url }) {
     try {
       setLoading(true);
 
       const updates = {
         id: user.id,
         username,
-        website,
+        arm_id,
         avatar_url,
         updated_at: new Date().toISOString(),
       };
@@ -95,7 +97,7 @@ export default function Account() {
       }
 
       setAvatarUrl(filePath);
-      updateProfile({ username, website, avatar_url: filePath });
+      updateProfile({ username, arm_id, avatar_url: filePath });
     } catch (error) {
       alert('Error uploading avatar!');
       console.log(error);
@@ -120,36 +122,42 @@ export default function Account() {
   }
 
   return (
-    <div className="form-widget">
+    <div className={styles.formWidget}>
       <div>
-        <div>
-          {avatar_url ? (
-            <img
-              src={avatarFileUrl}
-              alt="Avatar"
-              className="avatar image"
-              style={{ height: 150, width: 150 }}
+        <div className={styles.profileContainer}>
+          <div>
+            {avatar_url ? (
+              <img
+                src={avatarFileUrl}
+                alt="Avatar"
+                className="avatar image"
+                style={{ height: 150, width: 150 }}
+              />
+            ) : (
+              <div
+                className="avatar no-image"
+                style={{ height: 150, width: 150 }}
+              />
+            )}
+            <label className={styles.avatarBtn} htmlFor="single">
+              {loading ? 'Loading ...' : 'Upload'}
+            </label>
+            <input
+              style={{
+                visibility: 'hidden',
+                position: 'absolute',
+              }}
+              type="file"
+              id="single"
+              accept="image/*"
+              onChange={uploadAvatar}
+              disabled={loading}
             />
-          ) : (
-            <div
-              className="avatar no-image"
-              style={{ height: 150, width: 150 }}
-            />
-          )}
-          <label className="button primary block" htmlFor="single">
-            {loading ? 'Loading ...' : 'Upload'}
-          </label>
-          <input
-            style={{
-              visibility: 'hidden',
-              position: 'absolute',
-            }}
-            type="file"
-            id="single"
-            accept="image/*"
-            onChange={uploadAvatar}
-            disabled={loading}
-          />
+          </div>
+          <div className={styles.profileData}>
+            {/* <div>user name: {username}</div> */}
+            {/* <div>{arm_id ? arm_id : 'no arm-id'}</div> */}
+          </div>
         </div>
         <label htmlFor="email">Email</label>
         <input id="email" type="text" value={session.user.email} disabled />
@@ -164,19 +172,19 @@ export default function Account() {
         />
       </div>
       <div>
-        <label htmlFor="website">Website</label>
+        <label htmlFor="arm_id">arm_id</label>
         <input
-          id="website"
+          id="arm_id"
           type="url"
-          value={website || ''}
-          onChange={(e) => setWebsite(e.target.value)}
+          value={arm_id || ''}
+          onChange={(e) => setArmId(e.target.value)}
         />
       </div>
 
       <div>
         <button
           className="button primary block"
-          onClick={() => updateProfile({ username, website, avatar_url })}
+          onClick={() => updateProfile({ username, arm_id, avatar_url })}
           disabled={loading}
         >
           {loading ? 'Loading ...' : 'Update'}

@@ -12,12 +12,19 @@ function Quiz() {
     <div>
       <div>
         {selectedSubject ? null : (
-          <>
-            <button onClick={() => handleSelectSubject('Math')}>Math</button>
-            <button onClick={() => handleSelectSubject('English')}>
-              English
-            </button>
-          </>
+          <div className="cardContainer">
+            <div className="card" onClick={() => handleSelectSubject('Math')}>
+              <p>MATH</p>
+              <div></div>
+            </div>
+            <div
+              className="card"
+              onClick={() => handleSelectSubject('English')}
+            >
+              <p>ENGLISH</p>
+              <div></div>
+            </div>
+          </div>
         )}
       </div>
       {selectedSubject ? <Question subject={selectedSubject} /> : null}

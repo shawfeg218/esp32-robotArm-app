@@ -11,11 +11,11 @@ export default function Layout({ children }) {
   return (
     <div>
       {!session ? (
-        <div className={styles.container}>
+        <div className={styles.authContainer}>
           <Auth
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
-            theme="light"
+            theme="default"
             providers={['google', 'facebook', 'twitter']}
           />
         </div>

@@ -7,14 +7,31 @@ export default function Home() {
   return (
     <div>
       <h1>Home Page</h1>
-      <Link href="/quiz" passHref>
-        <button>Quiz</button>
-      </Link>
-      <Link href="/arm-control" passHref>
-        <button>操作手臂</button>
-      </Link>
 
-      <h2>History:</h2>
+      <div className="cardContainer">
+        <Link href="/quiz" passHref>
+          <div className="card">
+            <p>Quiz</p>
+            <div></div>
+          </div>
+        </Link>
+
+        <Link href="/arm-control" passHref>
+          <div className="card">
+            <p>操作手臂</p>
+            <div></div>
+          </div>
+        </Link>
+
+        <Link href="/arm-control" passHref>
+          <div className="card">
+            <p>操作手臂</p>
+            <div></div>
+          </div>
+        </Link>
+      </div>
+
+      <h2>History</h2>
       <ul>
         {history.map((entry, index) => (
           <li key={index}>

@@ -18,7 +18,7 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.icon}>
         <Link href="/">
-          <a>Esp32 App</a>
+          <a>Esp32App</a>
         </Link>
       </div>
       <ul className={styles.navbarList}>
@@ -44,7 +44,7 @@ const Navbar = () => {
         </li>
         <Link href={'/account'} passHref>
           <div className={styles.avatarContainer}>
-            <Avatar size={35} />
+            <Avatar size={36} />
           </div>
         </Link>
       </ul>
