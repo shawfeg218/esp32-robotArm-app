@@ -23,9 +23,12 @@ export default function ArmControl() {
   const handleChange = (axis, angle) => {
     const newAngles = { ...targetAngles, [axis]: angle };
     setTargetAngles(newAngles);
-
-    axios.post('/api/set-axis-angle', { axis, angle });
   };
+
+  useEffect(() => {
+    axios.post('/api/set-axis-angle', targetAngles);
+    console.log(targetAngles);
+  }, [targetAngles]);
 
   const handleReset = () => {
     setTargetAngles({
@@ -56,7 +59,7 @@ export default function ArmControl() {
     const interval = setInterval(() => {
       axios.get('/api/get-angles').then((res) => {
         setCurrentAngles(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       });
     }, 1000);
     return () => clearInterval(interval);

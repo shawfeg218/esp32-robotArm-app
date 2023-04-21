@@ -4,13 +4,12 @@
 #include <WiFiManager.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include "config.h"
+
 
 WebServer server(80);
 
 WiFiManager wifiManager;
-
-const char* mqtt_server = "0.tcp.jp.ngrok.io";
-const int mqtt_port = 17096;
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
@@ -221,33 +220,35 @@ void resetArm() {
 void handleSetAxisAngle(String message) {
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, message);
-  String targetAxis = jsonDoc["axis"];
-  int targetAngle  = jsonDoc["angle"];
 
-  if (targetAxis == "A") {
-    angleA = targetAngle ;
+
+  if (angleA != jsonDoc["A"]) {
+    angleA = jsonDoc["A"];
     servoA.write(angleA);
-  } else if (targetAxis == "B") {
-    angleB = targetAngle ;
+  } 
+  if (angleB != jsonDoc["B"]) {
+    angleB = jsonDoc["B"];
     servoB.write(angleB);
-  } else if (targetAxis == "C") {
-    angleC = targetAngle ;
+  } 
+  if (angleC != jsonDoc["C"]) {
+    angleC = jsonDoc["C"];
     servoC.write(angleC);
-  } else if (targetAxis == "D") {
-    angleD = targetAngle ;
+  } 
+  if (angleD != jsonDoc["D"]) {
+    angleD = jsonDoc["D"];
     servoD.write(angleD);
-  } else if (targetAxis == "E") {
-    angleE = targetAngle ;
+  } 
+  if (angleE != jsonDoc["E"]) {
+    angleE = jsonDoc["E"];
     servoE.write(angleE);
-  } else if (targetAxis == "F") {
-    angleF = targetAngle ;
+  } 
+  if (angleF != jsonDoc["F"]) {
+    angleF = jsonDoc["F"];
     servoF.write(angleF);
-  } else {
-    server.send(400);
-    return;
   }
 
-  Serial.println("servo" + targetAxis + " move to " + targetAngle);
+  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + "}"; 
+  Serial.println(angles);
 }
 
 

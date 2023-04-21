@@ -1,5 +1,8 @@
 import mqtt from 'mqtt';
-const mqttClient = mqtt.connect('mqtt://localhost:1883');
+
+const MQTT_SERVER_IP = process.env.MQTT_SERVER_IP;
+const MQTT_SERVER_PORT = process.env.MQTT_SERVER_PORT;
+const mqttClient = mqtt.connect(`mqtt://${MQTT_SERVER_IP}:${MQTT_SERVER_PORT}`);
 
 let currentAngles = {};
 

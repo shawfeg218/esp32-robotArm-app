@@ -6,11 +6,8 @@ export const resetWifi = (req, res) => {
 };
 
 export const setAxisAngle = (req, res) => {
-  const { axis, angle } = req.body;
-  mqttClient.publish(
-    'esp32/control/set-axis-angle',
-    JSON.stringify({ axis, angle })
-  );
+  const angles = req.body;
+  mqttClient.publish('esp32/control/set-axis-angle', JSON.stringify(angles));
   res.status(204).send();
 };
 
