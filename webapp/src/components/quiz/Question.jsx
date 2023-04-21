@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { SERVER_URL } from '../../../next.config';
 import QuestionView from './QuestionView';
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';

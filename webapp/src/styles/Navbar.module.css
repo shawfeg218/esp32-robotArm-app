@@ -3,8 +3,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #000000;
-  padding: 0.05rem;
+  background-color: #ffffff;
+  box-shadow: rgb(130, 130, 130) 0px 0px 5px 0px;
+  padding: 0.03rem;
 }
 
 .icon {
@@ -13,7 +14,8 @@
 }
 
 .icon a {
-  color: white;
+  color: rgb(0, 0, 0);
+  font-weight: 600;
   text-decoration: none;
   font-size: 1.25rem;
   margin-left: 1rem;
@@ -31,8 +33,16 @@
 }
 
 .navbarItem a {
-  color: white;
+  color: rgb(0, 0, 0);
   text-decoration: none;
+}
+
+.navbarItem a:hover {
+  color: rgb(61, 132, 255);
+}
+
+.avatarContainer:hover {
+  cursor: pointer;
 }
 
 .resetWifiButton {
@@ -42,5 +52,15 @@
   padding: 0.25rem 0.5rem;
   cursor: pointer;
   font-size: 16px;
-  margin-right: 1rem;
+  margin-top: 0;
+}
+
+.loginButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10%;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 16px;
 }

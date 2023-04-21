@@ -1,4 +1,4 @@
-import { mqttClient, getCurrentAngles } from '../middlewares/mqttMiddleware';
+import { mqttClient, getCurrentAngles } from '@/middlewares/mqttMiddleware';
 
 export const resetWifi = (req, res) => {
   mqttClient.publish('esp32/control/reset-wifi', '');
