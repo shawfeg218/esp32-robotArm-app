@@ -1,36 +1,64 @@
-.axisContainer {
+.container {
+  display: flex;
+}
+
+.statusContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  max-width: 60%;
+  width: 350px;
   border: 2px solid #ccc;
   box-shadow: 0 0 10px #ccc;
-  padding: 20px;
+  padding: 0px 20px 20px 20px;
   border-radius: 5px;
 }
 
-.axisContainer > div {
+.statusContainer div {
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: 16px;
 }
 
-.axisContainer input[type='range'] {
+.controlPanel {
+  width: 350px;
+  margin: 0 auto;
+  border: 2px solid #ccc;
+  box-shadow: 0 0 10px #ccc;
+  padding: 0px 20px 0px 20px;
+  border-radius: 5px;
+}
+
+.controlPanel div {
+  font-size: 16px;
+}
+
+.controlPanel input[type='range'] {
+  margin-bottom: 10px;
   width: 100%;
 }
 
-.currentState {
-  margin-top: 20px;
+.servoState {
+  width: 350px;
+  border: 2px solid #ccc;
+  box-shadow: 0 0 10px #ccc;
+  padding: 0px 20px 20px 20px;
+  border-radius: 5px;
 }
 
-.currentState > div {
+.servoState div {
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: 16px;
+}
+
+.btnContainer {
+  display: grid;
+  justify-content: strech;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+  margin-top: 10px;
 }
 
 .controlBtn {
-  margin-top: 20px;
   padding: 10px 20px;
+  margin-top: 10px;
   background-color: #ccc;
   color: #222;
   border: none;
@@ -44,11 +72,4 @@
 
 .controlBtn:hover {
   background-color: #999;
-}
-
-.btnContainer {
-  display: grid;
-  justify-content: strech;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 10px;
 }
