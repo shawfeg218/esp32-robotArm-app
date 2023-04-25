@@ -43,6 +43,7 @@ void resetArm();
 void handleSetAxisAngle();
 void handleGetAngles();
 void handleGetEsp32Status();
+void heartbeat();
 
 void setup() {
   Serial.begin(115200); 
@@ -123,6 +124,7 @@ void reconnectMqtt() {
       mqttClient.subscribe("esp32/control/reset-arm");
       mqttClient.subscribe("esp32/control/get-angles");
       mqttClient.subscribe("esp32/control/get-esp32Status");
+      mqttClient.subscribe("esp32/control/get-heartbeat");
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -160,6 +162,8 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     handleGetAngles();
   } else if(String(topic) == "esp32/control/get-esp32Status") {
     handleGetEsp32Status();    
+  } else if(String(topic) == "esp32/control/get-heartbeat") {
+    heartbeat();
   }
 
 
@@ -266,11 +270,15 @@ void handleGetAngles() {
   mqttClient.publish("esp32/angles", angles.c_str());
 }
 
+void heartbeat(){
+  mqttClient.publish("esp32/heartbeat", "");
+}
+
 void handleGetEsp32Status() {
   String esp32Status = "{";
   esp32Status += "\"uptime\": " + String(millis()) + ",";
   esp32Status += "\"freeHeap\": " + String(ESP.getFreeHeap()) + ",";
-  esp32Status += "\"chipId\": \"" + String((uint32_t)(ESP.getEfuseMac() >> 32), HEX) + (uint32_t)ESP.getEfuseMac() + "\",";
+  esp32Status += "\"macAddress\": \"" + WiFi.macAddress() + "\",";
   esp32Status += "\"chipRevision\": " + String(ESP.getChipRevision()) + ",";
   esp32Status += "\"cpuFrequency\": " + String(ESP.getCpuFreqMHz()) + ",";
   esp32Status += "\"flashSize\": " + String(ESP.getFlashChipSize()) + ",";

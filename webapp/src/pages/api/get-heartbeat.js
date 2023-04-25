@@ -1,10 +1,8 @@
-// file: webapp\src\pages\api\get-angles.js
-
-import { getAngles } from '@/controllers/esp32Controller';
+import { getHeartbeat } from '@/controllers/esp32Controller';
 
 export default function handler(req, res) {
   if (req.method === 'GET') {
-    getAngles(req, res);
+    getHeartbeat(req, res);
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

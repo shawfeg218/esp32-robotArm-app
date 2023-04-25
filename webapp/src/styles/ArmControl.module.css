@@ -1,11 +1,10 @@
 .container {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .statusContainer {
-  display: flex;
-  flex-direction: column;
-  width: 350px;
+  width: 300px;
   border: 2px solid #ccc;
   box-shadow: 0 0 10px #ccc;
   padding: 0px 20px 20px 20px;
@@ -18,11 +17,10 @@
 }
 
 .controlPanel {
-  width: 350px;
-  margin: 0 auto;
+  width: 300px;
   border: 2px solid #ccc;
   box-shadow: 0 0 10px #ccc;
-  padding: 0px 20px 0px 20px;
+  padding: 0px 20px 20px 20px;
   border-radius: 5px;
 }
 
@@ -39,7 +37,7 @@
   width: 350px;
   border: 2px solid #ccc;
   box-shadow: 0 0 10px #ccc;
-  padding: 0px 20px 20px 20px;
+  padding: 0px 10px 10px 20px;
   border-radius: 5px;
 }
 
@@ -49,16 +47,18 @@
 }
 
 .btnContainer {
-  display: grid;
-  justify-content: strech;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 10px;
-  margin-top: 10px;
+  width: 350px;
+  border: 2px solid #ccc;
+  box-shadow: 0 0 10px #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .controlBtn {
-  padding: 10px 20px;
-  margin-top: 10px;
+  width: 46%;
   background-color: #ccc;
   color: #222;
   border: none;
