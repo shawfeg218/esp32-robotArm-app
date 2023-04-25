@@ -26,9 +26,9 @@ export default function Home() {
           </div>
         </Link>
 
-        <Link href="/arm-control" passHref>
+        <Link href="/device" passHref>
           <div className="card">
-            <p>操作手臂</p>
+            <p>手臂連線設置</p>
             <div></div>
           </div>
         </Link>

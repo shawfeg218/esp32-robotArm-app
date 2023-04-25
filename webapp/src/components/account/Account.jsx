@@ -13,7 +13,6 @@ export default function Account() {
   const session = useSession();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
-  const [arm_id, setArmId] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
   const [avatarFileUrl, setAvatarFileUrl] = useState(null);
 
@@ -41,7 +40,6 @@ export default function Account() {
 
       if (data) {
         setUsername(data.username);
-        setArmId(data.arm_id);
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
@@ -169,15 +167,6 @@ export default function Account() {
           type="text"
           value={username || ''}
           onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="arm_id">arm_id</label>
-        <input
-          id="arm_id"
-          type="url"
-          value={arm_id || ''}
-          onChange={(e) => setArmId(e.target.value)}
         />
       </div>
 
