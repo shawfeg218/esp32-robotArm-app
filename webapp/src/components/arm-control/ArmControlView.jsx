@@ -1,7 +1,7 @@
 // file: ArmControl.js
 import React from 'react';
 import styles from '@/styles/ArmControl.module.css';
-import Esp32Status from './Esp32Status';
+import Link from 'next/link';
 
 export default function ArmControlView(props) {
   const {
@@ -70,7 +70,7 @@ export default function ArmControlView(props) {
         />
       </div>
 
-      <div>
+      <div className={styles.columnContainer}>
         <div className={styles.servoState}>
           <h2>Servo</h2>
           <div>
@@ -108,11 +108,10 @@ export default function ArmControlView(props) {
           <button className={styles.controlBtn} onClick={handleResetWifi}>
             重置wifi
           </button>
+          <Link href="/device" passHref>
+            <button className={styles.controlBtn}>設置</button>
+          </Link>
         </div>
-      </div>
-
-      <div>
-        <Esp32Status />
       </div>
     </div>
   );

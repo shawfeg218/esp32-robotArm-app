@@ -1,6 +1,14 @@
 .container {
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.columnContainer {
+  display: flex;
+  flex-direction: column;
+  /* background-color: rgb(116, 135, 135); */
+  justify-content: space-between;
 }
 
 .statusContainer {
