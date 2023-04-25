@@ -2,6 +2,7 @@ import {
   mqttClient,
   getCurrentAngles,
   getCurrentEsp32Status,
+  returnHeartbeat,
 } from '@/middlewares/mqttMiddleware';
 
 export const resetWifi = (req, res) => {
@@ -43,4 +44,9 @@ export const getAngles = (req, res) => {
 export const getEsp32Status = (req, res) => {
   mqttClient.publish('esp32/control/get-esp32Status', '');
   res.status(200).send(getCurrentEsp32Status());
+};
+
+export const getHeartbeat = (req, res) => {
+  mqttClient.publish('esp32/control/get-heartbeat', '');
+  res.status(200).send(returnHeartbeat());
 };

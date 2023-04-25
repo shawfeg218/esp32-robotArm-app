@@ -40,11 +40,6 @@ const Navbar = () => {
             <a>asd</a>
           </Link>
         </li>
-        <li className={styles.navbarItem}>
-          <button className={styles.resetWifiButton} onClick={resetWifi}>
-            Reset Arm Wi-Fi
-          </button>
-        </li>
         <Link href={'/account'} passHref>
           <div className={styles.avatarContainer}>
             <Avatar size={36} />

@@ -3,7 +3,6 @@ import axios from 'axios';
 import ArmControlView from './ArmControlView';
 
 export default function ArmControl() {
-  const [esp32Status, setEsp32Status] = useState({});
   const [targetAngles, setTargetAngles] = useState({
     A: 0,
     B: 0,
@@ -56,6 +55,10 @@ export default function ArmControl() {
     axios.post('/api/grab-act');
   };
 
+  const handleResetWifi = () => {
+    axios.post('/api/reset-wifi');
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       axios.get('/api/get-angles').then((res) => {
@@ -66,26 +69,16 @@ export default function ArmControl() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      axios.get('/api/get-esp32Status').then((res) => {
-        setEsp32Status(res.data);
-        console.log(res.data);
-      });
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <ArmControlView
       targetAngles={targetAngles}
       currentAngles={currentAngles}
-      esp32Status={esp32Status}
       handleChange={handleChange}
       handleReset={handleReset}
       handleCorrectAction={handleCorrectAction}
       handleWrongAction={handleWrongAction}
       handleGrabAction={handleGrabAction}
+      handleResetWifi={handleResetWifi}
     />
   );
 }

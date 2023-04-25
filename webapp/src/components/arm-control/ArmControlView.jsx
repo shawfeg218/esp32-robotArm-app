@@ -1,17 +1,19 @@
 // file: ArmControl.js
 import React from 'react';
 import styles from '@/styles/ArmControl.module.css';
+import Esp32Status from './Esp32Status';
 
 export default function ArmControlView(props) {
   const {
     targetAngles,
     currentAngles,
-    esp32Status,
     handleChange,
     handleReset,
     handleCorrectAction,
     handleWrongAction,
+
     handleGrabAction,
+    handleResetWifi,
   } = props;
 
   return (
@@ -66,41 +68,9 @@ export default function ArmControlView(props) {
           value={targetAngles.F}
           onChange={(e) => handleChange('F', e.target.value)}
         />
-        <div className={styles.btnContainer}>
-          <button className={styles.controlBtn} onClick={handleReset}>
-            返回初始狀態
-          </button>
-          <button className={styles.controlBtn} onClick={handleCorrectAction}>
-            答對動作
-          </button>
-          <button className={styles.controlBtn} onClick={handleWrongAction}>
-            答錯動作
-          </button>
-          <button className={styles.controlBtn} onClick={handleGrabAction}>
-            抓動作
-          </button>
-        </div>
       </div>
+
       <div>
-        <div className={styles.statusContainer}>
-          <h2>ESP32 Status</h2>
-          <div>
-            <div>Chip ID: {esp32Status.chipId}</div>
-            <div>Chip Revision: {esp32Status.chipRevision}</div>
-            <div>Uptime: {esp32Status.uptime} ms</div>
-            <div>Temperature: {esp32Status.temperature} °C</div>
-            <div>CPU Frequency: {esp32Status.cpuFrequency} MHz</div>
-            {/* <div>Free Heap: {esp32Status.freeHeap} bytes</div> */}
-            {/* <div>Flash Size: {esp32Status.flashSize} bytes</div> */}
-            {/* <div>Hall Effect: {esp32Status.hallEffect}</div> */}
-            <div>SSID: {esp32Status.ssid}</div>
-            <div>Local IP: {esp32Status.localIP}</div>
-            <div>RSSI: {esp32Status.rssi}</div>
-            {/* <div>Subnet: {esp32Status.subnet}</div> */}
-            {/* <div>Gateway: {esp32Status.gateway}</div> */}
-            {/* <div>DNS: {esp32Status.dnsIP}</div> */}
-          </div>
-        </div>
         <div className={styles.servoState}>
           <h2>Servo</h2>
           <div>
@@ -122,6 +92,27 @@ export default function ArmControlView(props) {
             F軸-當前角度：{currentAngles.F}° - 目標角度：{targetAngles.F}°
           </div>
         </div>
+        <div className={styles.btnContainer}>
+          <button className={styles.controlBtn} onClick={handleReset}>
+            返回初始狀態
+          </button>
+          <button className={styles.controlBtn} onClick={handleCorrectAction}>
+            答對動作
+          </button>
+          <button className={styles.controlBtn} onClick={handleWrongAction}>
+            答錯動作
+          </button>
+          <button className={styles.controlBtn} onClick={handleGrabAction}>
+            抓動作
+          </button>
+          <button className={styles.controlBtn} onClick={handleResetWifi}>
+            重置wifi
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <Esp32Status />
       </div>
     </div>
   );
