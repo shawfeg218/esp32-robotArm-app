@@ -4,7 +4,6 @@ import Avatar from './account/Avatar';
 import { BsBook } from 'react-icons/bs';
 
 const Navbar = () => {
-
   return (
     <nav className={styles.navbar}>
       <Link href="/" passHref>
@@ -16,18 +15,18 @@ const Navbar = () => {
 
       <ul className={styles.navbarList}>
         <li className={styles.navbarItem}>
-          <Link href="">
-            <a>asd</a>
+          <Link href="/quiz">
+            <p>Quiz</p>
           </Link>
         </li>
         <li className={styles.navbarItem}>
-          <Link href="">
-            <a>asd</a>
+          <Link href="/arm-control">
+            <p>ArmControl</p>
           </Link>
         </li>
         <li className={styles.navbarItem}>
-          <Link href="">
-            <a>asd</a>
+          <Link href="/device">
+            <p>Device</p>
           </Link>
         </li>
         <Link href={'/account'} passHref>
