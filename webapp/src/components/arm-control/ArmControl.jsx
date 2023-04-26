@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import ArmControlView from './ArmControlView';
+import AppContext from '@/contexts/AppContext';
 
 export default function ArmControl() {
+  const { connectedMacAddress } = useContext(AppContext);
+
   const [targetAngles, setTargetAngles] = useState({
     A: 0,
     B: 0,
@@ -26,7 +29,10 @@ export default function ArmControl() {
   };
 
   useEffect(() => {
-    axios.post('/api/set-axis-angle', targetAngles);
+    axios.post('/api/set-axis-angle', {
+      targetAngles,
+      connectedMacAddress,
+    });
     console.log(targetAngles);
   }, [targetAngles]);
 
@@ -40,31 +46,47 @@ export default function ArmControl() {
       F: 18,
     });
 
-    axios.post('/api/reset-arm');
+    axios.post('/api/reset-arm', {
+      connectedMacAddress,
+    });
   };
 
   const handleCorrectAction = () => {
-    axios.post('/api/correct-act');
+    axios.post('/api/correct-act', {
+      connectedMacAddress,
+    });
   };
 
   const handleWrongAction = () => {
-    axios.post('/api/wrong-act');
+    axios.post('/api/wrong-act', {
+      connectedMacAddress,
+    });
   };
 
   const handleGrabAction = () => {
-    axios.post('/api/grab-act');
+    axios.post('/api/grab-act', {
+      connectedMacAddress,
+    });
   };
 
   const handleResetWifi = () => {
-    axios.post('/api/reset-wifi');
+    axios.post('/api/reset-wifi', {
+      connectedMacAddress,
+    });
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      axios.get('/api/get-angles').then((res) => {
-        setCurrentAngles(res.data);
-        // console.log(res.data);
-      });
+      axios
+        .get('/api/get-angles', {
+          param: {
+            connectedMacAddress,
+          },
+        })
+        .then((res) => {
+          setCurrentAngles(res.data);
+          // console.log(res.data);
+        });
     }, 1000);
     return () => clearInterval(interval);
   }, []);

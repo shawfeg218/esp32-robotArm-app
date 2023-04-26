@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import AppContext from '@/contexts/AppContext';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 import styles from '@/styles/Esp32Devices.module.css';
+import { changeSubMacAddress } from '@/middlewares/mqttMiddleware';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { AiOutlineEdit } from 'react-icons/ai';
+import { GrConnect } from 'react-icons/gr';
 
 export default function Esp32Devices() {
   const supabase = useSupabaseClient();
@@ -14,6 +17,14 @@ export default function Esp32Devices() {
   const [editingDeviceIndex, setEditingDeviceIndex] = useState(null);
   const [editDeviceName, setEditDeviceName] = useState('');
   const [editMacAddress, setEditMacAddress] = useState('');
+  const { setConnectedMacAddress, setConnectedDeviceName } =
+    useContext(AppContext);
+
+  const handleConnect = (deviceName, macAddress) => {
+    setConnectedDeviceName(deviceName);
+    setConnectedMacAddress(macAddress);
+    changeSubMacAddress(macAddress);
+  };
 
   useEffect(() => {
     getDevices();
@@ -153,6 +164,13 @@ export default function Esp32Devices() {
                       </div>
                       <div onClick={() => handleDeviceEdit(index)}>
                         <AiOutlineEdit className="reactIcons" size="1rem" />
+                      </div>
+                      <div
+                        onClick={() =>
+                          handleConnect(device.device_name, device.mac_address)
+                        }
+                      >
+                        <GrConnect className="reactIcons" size="1rem" />
                       </div>
                     </div>
                   </div>

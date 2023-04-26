@@ -9,24 +9,32 @@ let currentAngles = {};
 let currentEsp32Status = {};
 let lastHeartbeat = Date.now();
 
-mqttClient.on('connect', () => {
-  mqttClient.subscribe('esp32/angles');
-  mqttClient.subscribe('esp32/esp32Status');
-  mqttClient.subscribe('esp32/heartbeat');
-});
+const changeSubMacAddress = (macAddress) => {
+  mqttClient.on('connect', () => {
+    mqttClient.subscribe(`esp32/${macAddress}/angles`);
+    mqttClient.subscribe(`esp32/${macAddress}/esp32Status`);
+    mqttClient.subscribe(`esp32/${macAddress}/heartbeat`);
+  });
 
-mqttClient.on('message', (topic, message) => {
-  if (topic === 'esp32/angles') {
-    currentAngles = JSON.parse(message.toString());
-  } else if (topic === 'esp32/esp32Status') {
-    currentEsp32Status = JSON.parse(message.toString());
-  } else if (topic === 'esp32/heartbeat') {
-    lastHeartbeat = Date.now();
-  }
-});
+  mqttClient.on('message', (topic, message) => {
+    if (topic === `esp32/${macAddress}/angles`) {
+      currentAngles = JSON.parse(message.toString());
+    } else if (topic === `esp32/${macAddress}/esp32Status`) {
+      currentEsp32Status = JSON.parse(message.toString());
+    } else if (topic === `esp32/${macAddress}/heartbeat`) {
+      lastHeartbeat = Date.now();
+    }
+  });
+};
 
 const getCurrentAngles = () => currentAngles;
 const getCurrentEsp32Status = () => currentEsp32Status;
 const returnHeartbeat = () => lastHeartbeat;
 
-export { mqttClient, getCurrentAngles, getCurrentEsp32Status, returnHeartbeat };
+export {
+  mqttClient,
+  changeSubMacAddress,
+  getCurrentAngles,
+  getCurrentEsp32Status,
+  returnHeartbeat,
+};

@@ -1,19 +1,9 @@
 import Link from 'next/link';
-import axios from 'axios';
 import styles from '@/styles/Navbar.module.css';
 import Avatar from './account/Avatar';
 import { BsBook } from 'react-icons/bs';
 
 const Navbar = () => {
-  const resetWifi = async () => {
-    try {
-      await axios.post('/api/reset-wifi');
-      alert('Wi-Fi reset command sent.');
-    } catch (error) {
-      console.error('Error resetting Wi-Fi:', error);
-      alert('Failed to send Wi-Fi reset command.');
-    }
-  };
 
   return (
     <nav className={styles.navbar}>
