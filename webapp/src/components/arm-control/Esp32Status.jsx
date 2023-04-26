@@ -11,13 +11,12 @@ export default function Esp32Status() {
   useEffect(() => {
     const interval = setInterval(() => {
       axios
-        .get('/api/get-esp32Status', {
-          params: {
-            connectedMacAddress,
-          },
+        .post('/api/get-esp32Status', {
+          connectedMacAddress,
         })
         .then((res) => {
           setEsp32Status(res.data);
+          // console.log(res.data);
         });
     }, 3000);
     return () => clearInterval(interval);
@@ -27,18 +26,18 @@ export default function Esp32Status() {
     const currentTime = Date.now();
     if (currentTime - lastHeartbeat > 6000) {
       setConnected(false);
+      console.log('disconnected');
     } else {
       setConnected(true);
+      console.log('connected');
     }
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
       axios
-        .get('/api/get-heartbeat', {
-          params: {
-            connectedMacAddress,
-          },
+        .post('/api/get-heartbeat', {
+          connectedMacAddress,
         })
         .then((res) => {
           checkConnection(res.data);

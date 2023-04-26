@@ -78,10 +78,8 @@ export default function ArmControl() {
   useEffect(() => {
     const interval = setInterval(() => {
       axios
-        .get('/api/get-angles', {
-          param: {
-            connectedMacAddress,
-          },
+        .post('/api/get-angles', {
+          connectedMacAddress,
         })
         .then((res) => {
           setCurrentAngles(res.data);
