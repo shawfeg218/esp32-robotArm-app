@@ -1,5 +1,5 @@
 .container {
-  width: 400px;
+  width: 410px;
 }
 
 .container h3 {
@@ -20,7 +20,7 @@
 }
 .esp32Devices ul {
   margin: 0;
-  padding: 0 30px;
+  padding: 0 20px;
 }
 .esp32Devices li {
   list-style: none;
@@ -33,7 +33,12 @@
 }
 
 .listItems p {
+  font-weight: bold;
   margin: 0;
+}
+
+.listItems span {
+  font-weight: normal;
 }
 
 .editIcons {

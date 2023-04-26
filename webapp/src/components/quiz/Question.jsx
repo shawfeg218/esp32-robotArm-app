@@ -11,7 +11,7 @@ export default function Question() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState();
-  const { point, setPoint, selectedSubject, addHistory } =
+  const { point, setPoint, selectedSubject, addHistory, connectedMacAddress } =
     useContext(AppContext);
 
   // question data
@@ -31,10 +31,14 @@ export default function Question() {
 
   useEffect(() => {
     if (correct === true) {
-      axios.post('/api/correct-act');
+      axios.post('/api/correct-act', {
+        connectedMacAddress,
+      });
       setPoint((prev) => prev + 1);
     } else if (correct === false) {
-      axios.post('/api/wrong-act');
+      axios.post('/api/wrong-act', {
+        connectedMacAddress,
+      });
     }
   }, [correct]);
 
