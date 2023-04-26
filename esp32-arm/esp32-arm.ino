@@ -291,6 +291,6 @@ void handleGetEsp32Status() {
   esp32Status += "\"rssi\": " + String(WiFi.RSSI());
   esp32Status += "}";
 
-  Serial.println(esp32Status);
-  mqttClient.publish((baseTopic + "/esp32Status").c_str(), esp32Status.c_str());
+  Serial.println((esp32Status.c_str()));
+  mqttClient.publish((baseTopic + "/esp32Status").c_str(), (esp32Status.c_str()));
 }
