@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 import styles from '@/styles/Esp32Devices.module.css';
-import { changeSubMacAddress } from '@/middlewares/mqttMiddleware';
+// import { changeSubMacAddress } from '@/middlewares/mqttMiddleware';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { GrConnect } from 'react-icons/gr';
@@ -23,7 +23,7 @@ export default function Esp32Devices() {
   const handleConnect = (deviceName, macAddress) => {
     setConnectedDeviceName(deviceName);
     setConnectedMacAddress(macAddress);
-    changeSubMacAddress(macAddress);
+    // changeSubMacAddress(macAddress);
   };
 
   useEffect(() => {

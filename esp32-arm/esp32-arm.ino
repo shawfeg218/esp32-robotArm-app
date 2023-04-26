@@ -21,6 +21,8 @@ PubSubClient mqttClient(espClient);
 
 Servo servoA, servoB, servoC, servoD, servoE, servoF; 
 
+const String baseTopic = "esp32/" + WiFi.macAddress();
+
 const int init_angleA = 0; 
 const int init_angleB = 0; 
 const int init_angleC = 180; 
@@ -116,15 +118,15 @@ void reconnectMqtt() {
     Serial.print("Attempting MQTT connection...");
     if (mqttClient.connect("ESP32Client")) {
       Serial.println("connected");
-      mqttClient.subscribe("esp32/control/reset-wifi");
-      mqttClient.subscribe("esp32/control/set-axis-angle");
-      mqttClient.subscribe("esp32/control/correct-act");
-      mqttClient.subscribe("esp32/control/wrong-act");
-      mqttClient.subscribe("esp32/control/grab-act");
-      mqttClient.subscribe("esp32/control/reset-arm");
-      mqttClient.subscribe("esp32/control/get-angles");
-      mqttClient.subscribe("esp32/control/get-esp32Status");
-      mqttClient.subscribe("esp32/control/get-heartbeat");
+      mqttClient.subscribe((baseTopic + "/control/reset-wifi").c_str());
+      mqttClient.subscribe((baseTopic + "/control/set-axis-angle").c_str());
+      mqttClient.subscribe((baseTopic + "/control/correct-act").c_str());
+      mqttClient.subscribe((baseTopic + "/control/wrong-act").c_str());
+      mqttClient.subscribe((baseTopic + "/control/grab-act").c_str());
+      mqttClient.subscribe((baseTopic + "/control/reset-arm").c_str());
+      mqttClient.subscribe((baseTopic + "/control/get-angles").c_str());
+      mqttClient.subscribe((baseTopic + "/control/get-esp32Status").c_str());
+      mqttClient.subscribe((baseTopic + "/control/get-heartbeat").c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -140,29 +142,29 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     message += (char)payload[i];
   }
 
-  if(String(topic) == "esp32/control/reset-wifi") {
-    Serial.println("topic: esp32/control/reset-wifi");
+  if(String(topic) == (baseTopic + "/control/reset-wifi")) {
+    Serial.println("topic: " + String(topic));
     handleResetWifi();
-  } else if(String(topic) == "esp32/control/set-axis-angle") {
-    Serial.println("topic: esp32/control/set-axis-angle");
+  } else if(String(topic) == (baseTopic + "/control/set-axis-angle")) {
+    Serial.println("topic: " + String(topic));
     handleSetAxisAngle(message);
-  } else if(String(topic) == "esp32/control/correct-act") {
-    Serial.println("topic: esp32/control/correct-act");
+  } else if(String(topic) == (baseTopic + "/control/correct-act")) {
+    Serial.println("topic: " + String(topic));
     correctAct();
-  } else if(String(topic) == "esp32/control/wrong-act") {
-    Serial.println("topic: esp32/control/wrong-act");
+  } else if(String(topic) == (baseTopic + "/control/wrong-act")) {
+    Serial.println("topic: " + String(topic));
     wrongAct();
-  } else if(String(topic) == "esp32/control/grab-act") {
-    Serial.println("topic: esp32/control/grab-act");
+  } else if(String(topic) == (baseTopic + "/control/grab-act")) {
+    Serial.println("topic: " + String(topic));
     grabAct();
-  } else if(String(topic) == "esp32/control/reset-arm") {
-    Serial.println("topic: esp32/control/reset-arm");
+  } else if(String(topic) == (baseTopic + "/control/reset-arm")) {
+    Serial.println("topic: " + String(topic));
     resetArm();
-  } else if(String(topic) == "esp32/control/get-angles") {
+  } else if(String(topic) == (baseTopic + "/control/get-angles")) {
     handleGetAngles();
-  } else if(String(topic) == "esp32/control/get-esp32Status") {
+  } else if(String(topic) == (baseTopic + "/control/get-esp32Status")) {
     handleGetEsp32Status();    
-  } else if(String(topic) == "esp32/control/get-heartbeat") {
+  } else if(String(topic) == (baseTopic + "/control/get-heartbeat")) {
     heartbeat();
   }
 
@@ -267,11 +269,11 @@ void handleSetAxisAngle(String message) {
 
 void handleGetAngles() {
   String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + "}";
-  mqttClient.publish("esp32/angles", angles.c_str());
+  mqttClient.publish((baseTopic + "/angles").c_str(), angles.c_str());
 }
 
 void heartbeat(){
-  mqttClient.publish("esp32/heartbeat", "");
+  mqttClient.publish((baseTopic + "/heartbeat").c_str(), "");
 }
 
 void handleGetEsp32Status() {
@@ -290,5 +292,5 @@ void handleGetEsp32Status() {
   esp32Status += "}";
 
   Serial.println(esp32Status);
-  mqttClient.publish("esp32/esp32Status", esp32Status.c_str());
+  mqttClient.publish((baseTopic + "/esp32Status").c_str(), esp32Status.c_str());
 }
