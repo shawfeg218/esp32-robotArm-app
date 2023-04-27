@@ -277,20 +277,23 @@ void heartbeat(){
 }
 
 void handleGetEsp32Status() {
-  String esp32Status = "{";
-  esp32Status += "\"uptime\": " + String(millis()) + ",";
-  esp32Status += "\"freeHeap\": " + String(ESP.getFreeHeap()) + ",";
-  esp32Status += "\"macAddress\": \"" + WiFi.macAddress() + "\",";
-  esp32Status += "\"chipRevision\": " + String(ESP.getChipRevision()) + ",";
-  esp32Status += "\"cpuFrequency\": " + String(ESP.getCpuFreqMHz()) + ",";
-  esp32Status += "\"flashSize\": " + String(ESP.getFlashChipSize()) + ",";
-  esp32Status += "\"temperature\": " + String((temprature_sens_read() - 32) * 0.5554) + ",";
-  esp32Status += "\"hallEffect\": " + String(hallRead()) + ",";
-  esp32Status += "\"ssid\": \"" + WiFi.SSID() + "\",";
-  esp32Status += "\"localIP\": \"" + WiFi.localIP().toString() + "\",";
-  esp32Status += "\"rssi\": " + String(WiFi.RSSI());
-  esp32Status += "}";
 
-  Serial.println((esp32Status.c_str()));
+  DynamicJsonDocument doc(1024);
+
+  doc["uptime"] = millis();
+  doc["freeHeap"] = ESP.getFreeHeap();
+  doc["macAddress"] = WiFi.macAddress();
+  doc["chipRevision"] = ESP.getChipRevision();
+  doc["cpuFrequency"] = ESP.getCpuFreqMHz();
+  doc["flashSize"] = ESP.getFlashChipSize();
+  doc["temperature"] = (temprature_sens_read() - 32) * 0.5554;
+  doc["hallEffect"] = hallRead();
+  doc["ssid"] = WiFi.SSID();
+  doc["localIP"] = WiFi.localIP().toString();
+  doc["rssi"] = WiFi.RSSI();
+
+  String esp32Status;
+  serializeJson(doc, esp32Status);
+  Serial.println(esp32Status);
   mqttClient.publish((baseTopic + "/esp32Status").c_str(), (esp32Status.c_str()));
 }

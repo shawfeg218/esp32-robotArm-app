@@ -6,7 +6,7 @@ import AppContext from '@/contexts/AppContext';
 export default function Esp32Status() {
   const { connectedDeviceName, connectedMacAddress } = useContext(AppContext);
   const [esp32Status, setEsp32Status] = useState({});
-  const [connected, setConnected] = useState(false);
+  const [connected, setConnected] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,19 +33,19 @@ export default function Esp32Status() {
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      axios
-        .post('/api/get-heartbeat', {
-          connectedMacAddress,
-        })
-        .then((res) => {
-          checkConnection(res.data);
-          // console.log(res.data);
-        });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     axios
+  //       .post('/api/get-heartbeat', {
+  //         connectedMacAddress,
+  //       })
+  //       .then((res) => {
+  //         checkConnection(res.data);
+  //         // console.log(res.data);
+  //       });
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div className={styles.statusContainer}>
@@ -59,13 +59,13 @@ export default function Esp32Status() {
             <div>SSID: {esp32Status.ssid}</div>
             <div>Local IP: {esp32Status.localIP}</div>
             <div>RSSI: {esp32Status.rssi}</div>
-            {/* <div>Chip Revision: {esp32Status.chipRevision}</div> */}
+            <div>Chip Revision: {esp32Status.chipRevision}</div>
             <div>Uptime: {esp32Status.uptime} ms</div>
             <div>Temperature: {esp32Status.temperature} °C</div>
             <div>CPU Frequency: {esp32Status.cpuFrequency} MHz</div>
-            {/* <div>Free Heap: {esp32Status.freeHeap} bytes</div> */}
-            {/* <div>Flash Size: {esp32Status.flashSize} bytes</div> */}
-            {/* <div>Hall Effect: {esp32Status.hallEffect}</div> */}
+            <div>Free Heap: {esp32Status.freeHeap} bytes</div>
+            <div>Flash Size: {esp32Status.flashSize} bytes</div>
+            <div>Hall Effect: {esp32Status.hallEffect}</div>
           </>
         )}
       </div>
