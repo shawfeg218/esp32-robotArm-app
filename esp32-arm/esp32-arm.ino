@@ -176,43 +176,69 @@ void correctAct() {
   for (int i = 0; i < 3; i++) {
     angleD = init_angleD;
     servoD.write(angleD);
-    delay(10);
-    angleD = init_angleD + 40;
-    servoD.write(angleD);
-    delay(200);
-
+    delay(500);
+    for(int a=0;a<=40;a++){
+      angleD = init_angleD + a;
+      servoD.write(angleD);
+      delay(15);
+    }
     angleD = init_angleD;
     servoD.write(angleD);
-    delay(200);
+    delay(500);
   }
 }
 
 void wrongAct() {
   Serial.println("wrong-action");
   for (int i = 0; i < 3; i++) {
-    angleA = init_angleA;
-    servoA.write(angleA);
-    delay(10);
+angleC = init_angleC;
+    servoC.write(angleC);
+    delay(500);
 
-    angleA = init_angleA + 40;
-    servoA.write(angleA);
-    delay(200);
+    angleC = init_angleC + 50;
+    servoC.write(angleC);
+    delay(250);
 
-    angleA = init_angleA;
-    servoA.write(angleA);
-    delay(200);
+    angleC = init_angleC;
+    servoC.write(angleC);
+    delay(500);
+
+    angleC = init_angleC-50;
+    servoC.write(angleC);
+    delay(250);
+
+    angleC = init_angleC;
+    servoC.write(angleC);
+    delay(500);
   }
 }
 
 void grabAct() {
   Serial.println("grab-action");
-  angleF = init_angleF;
+   angleF = init_angleF;
   servoF.write(angleF);
   delay(500);
 
-  angleF = init_angleF - 18;
+  angleF = init_angleF -30;
   servoF.write(angleF);
+  delay(100);
+
+  angleE = init_angleE;
+  servoE.write(angleE);
+  delay(100);
+
+  angleE = init_angleE+60;
+  servoE.write(angleE);
   delay(500);
+
+  
+  angleD = init_angleD;
+  servoD.write(angleD);
+  delay(100);
+
+  angleD = init_angleD+50;
+  servoD.write(angleD);
+  delay(100);
 }
 
 void resetArm() {
