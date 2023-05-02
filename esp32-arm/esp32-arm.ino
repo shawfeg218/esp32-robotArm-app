@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "config.h"
-
+// hahahaha
 extern "C"
 {
     uint8_t temprature_sens_read();
