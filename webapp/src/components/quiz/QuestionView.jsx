@@ -1,3 +1,4 @@
+// file: webapp\src\components\quiz\QuestionView.jsx
 import React from 'react';
 import styles from '@/styles/Question.module.css';
 import Link from 'next/link';

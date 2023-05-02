@@ -1,6 +1,8 @@
+// file: webapp\src\components\quiz\Quiz.jsx
 import React, { useContext } from 'react';
 import Question from './Question';
 import AppContext from '@/contexts/AppContext';
+// import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 function Quiz() {
   const { selectedSubject, setSelectedSubject } = useContext(AppContext);
@@ -27,7 +29,7 @@ function Quiz() {
           </div>
         )}
       </div>
-      {selectedSubject ? <Question subject={selectedSubject} /> : null}
+      {selectedSubject ? <Question /> : null}
     </div>
   );
 }
