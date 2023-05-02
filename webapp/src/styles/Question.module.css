@@ -1,10 +1,22 @@
+.leaveDiv {
+  display: flex;
+  height: fit-content;
+  margin-right: 70px;
+  align-items: center;
+  margin-bottom: 30px;
+  /* background-color: #d8e8c2; */
+}
+.leaveDiv :hover {
+  cursor: pointer;
+}
+
 .questionContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-height: 100vh;
-  overflow: auto;
+  max-height: 400px;
+  /* overflow: auto; */
 }
 
 .questionText {
@@ -18,8 +30,7 @@
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
-  max-width: 500px;
-  width: 100%;
+  width: 400px;
   overflow: auto;
 }
 
@@ -31,7 +42,6 @@
   margin-bottom: 20px;
   font-size: 16px;
   font-weight: bold;
-  max-width: 50%;
   width: 100%;
   text-align: center;
   cursor: pointer;
@@ -57,6 +67,7 @@
 }
 
 .nextButton {
+  width: 90px;
   margin-top: 20px;
   padding: 10px 20px;
   border: none;

@@ -24,43 +24,44 @@ export default function Question() {
     try {
       const { data: subjects, error: subjectsError } = await supabase
         .from('subjects')
-        .select('*');
+        .select('*')
+        .eq('name', selectedSubject);
 
       if (subjectsError) throw subjectsError;
 
-      for (const subject of subjects) {
-        const { data: questions, error: questionsError } = await supabase
-          .from('questions')
-          .select('*')
-          .eq('subject_id', subject.id);
+      const subject = subjects[0];
 
-        if (questionsError) throw questionsError;
+      const { data: questions, error: questionsError } = await supabase
+        .from('questions')
+        .select('*')
+        .eq('subject_id', subject.id);
 
-        const questionList = await Promise.all(
-          questions.map(async (question) => {
-            const { data: options, error: optionsError } = await supabase
-              .from('options')
-              .select('*')
-              .eq('question_id', question.id);
+      if (questionsError) throw questionsError;
 
-            if (optionsError) throw optionsError;
+      const questionList = await Promise.all(
+        questions.map(async (question) => {
+          const { data: options, error: optionsError } = await supabase
+            .from('options')
+            .select('*')
+            .eq('question_id', question.id);
 
-            const optionsList = options.map((option) => option.text);
-            const correctOptionIndex = options.findIndex(
-              (option) => option.is_correct
-            );
+          if (optionsError) throw optionsError;
 
-            return {
-              id: question.id,
-              text: question.text,
-              options: optionsList,
-              correctOptionIndex: correctOptionIndex,
-            };
-          })
-        );
+          const optionsList = options.map((option) => option.text);
+          const correctOptionIndex = options.findIndex(
+            (option) => option.is_correct
+          );
 
-        result[subject.name] = questionList;
-      }
+          return {
+            id: question.id,
+            text: question.text,
+            options: optionsList,
+            correctOptionIndex: correctOptionIndex,
+          };
+        })
+      );
+
+      result[selectedSubject] = questionList;
     } catch (error) {
       console.log('Error fetching questions:', error);
     }
@@ -71,7 +72,7 @@ export default function Question() {
   useEffect(() => {
     fetchQuestionsData().then((result) => {
       setQuestions(result);
-      console.log(questions);
+      console.log(result);
     });
   }, []);
 
