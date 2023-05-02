@@ -1,33 +1,54 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Question from './Question';
 import AppContext from '@/contexts/AppContext';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 function Quiz() {
   const { selectedSubject, setSelectedSubject } = useContext(AppContext);
+  const [subjects, setSubjects] = useState([]);
+  const supabase = useSupabaseClient();
+
   const handleSelectSubject = (subject) => {
     setSelectedSubject(subject);
   };
+
+  async function fetchSubjects() {
+    try {
+      const { data, error } = await supabase.from('subjects').select('name');
+
+      if (error) {
+        throw error;
+      }
+
+      setSubjects(data.map((subject) => subject.name));
+    } catch (error) {
+      console.log('Error fetching subjects:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
 
   return (
     <div>
       <div>
         {selectedSubject ? null : (
           <div className="cardContainer">
-            <div className="card" onClick={() => handleSelectSubject('Math')}>
-              <p>MATH</p>
-              <div></div>
-            </div>
-            <div
-              className="card"
-              onClick={() => handleSelectSubject('English')}
-            >
-              <p>ENGLISH</p>
-              <div></div>
-            </div>
+            {subjects.map((subject) => (
+              <div
+                key={subject}
+                className="card"
+                onClick={() => handleSelectSubject(subject)}
+              >
+                <p>{subject.toUpperCase()}</p>
+                <div></div>
+              </div>
+            ))}
           </div>
         )}
       </div>
-      {selectedSubject ? <Question subject={selectedSubject} /> : null}
+      {selectedSubject ? <Question /> : null}
     </div>
   );
 }
