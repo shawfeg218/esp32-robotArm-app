@@ -30,7 +30,7 @@ export default function Account() {
 
       let { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, arm_id, avatar_url`)
+        .select(`username, avatar_url`)
         .eq('id', user.id)
         .single();
 
@@ -50,14 +50,13 @@ export default function Account() {
     }
   }
 
-  async function updateProfile({ username, arm_id, avatar_url }) {
+  async function updateProfile({ username, avatar_url }) {
     try {
       setLoading(true);
 
       const updates = {
         id: user.id,
         username,
-        arm_id,
         avatar_url,
         updated_at: new Date().toISOString(),
       };
@@ -95,7 +94,7 @@ export default function Account() {
       }
 
       setAvatarUrl(filePath);
-      updateProfile({ username, arm_id, avatar_url: filePath });
+      updateProfile({ username, avatar_url: filePath });
     } catch (error) {
       alert('Error uploading avatar!');
       console.log(error);
@@ -154,7 +153,6 @@ export default function Account() {
           </div>
           <div className={styles.profileData}>
             {/* <div>user name: {username}</div> */}
-            {/* <div>{arm_id ? arm_id : 'no arm-id'}</div> */}
           </div>
         </div>
         <label htmlFor="email">Email</label>
@@ -173,7 +171,7 @@ export default function Account() {
       <div>
         <button
           className="button primary "
-          onClick={() => updateProfile({ username, arm_id, avatar_url })}
+          onClick={() => updateProfile({ username, avatar_url })}
           disabled={loading}
         >
           {loading ? 'Loading ...' : 'Update'}

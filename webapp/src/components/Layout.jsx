@@ -16,7 +16,7 @@ export default function Layout({ children }) {
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             theme="default"
-            providers={['google', 'facebook', 'twitter']}
+            providers={[]}
           />
         </div>
       ) : (
