@@ -7,7 +7,7 @@ export default function Home() {
   const { history } = useContext(AppContext);
   return (
     <div>
-      <h1>Home Page</h1>
+      <h2>Home Page</h2>
 
       <div className="cardContainer">
         <Link href="/quiz" passHref>
@@ -28,7 +28,7 @@ export default function Home() {
 
         <Link href="/device" passHref>
           <div className="card">
-            <p>手臂連線設置</p>
+            <p>裝置設定</p>
             <div></div>
           </div>
         </Link>
