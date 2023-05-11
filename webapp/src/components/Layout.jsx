@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import Sidebar from './Sidebar';
 
 export default function Layout({ children }) {
   const session = useSession();
@@ -22,7 +23,10 @@ export default function Layout({ children }) {
       ) : (
         <>
           <Navbar />
-          <div className={styles.container}>{children}</div>
+          <div className={styles.flex}>
+            <Sidebar />
+            <div className={styles.container}>{children}</div>
+          </div>
         </>
       )}
     </div>

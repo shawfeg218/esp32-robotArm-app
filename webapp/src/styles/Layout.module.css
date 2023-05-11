@@ -1,7 +1,6 @@
 .container {
-  max-width: 100%;
   padding: 1.5rem 1rem;
-  margin: 3rem 1rem 6rem;
+  margin: 3rem auto;
   display: flex;
   justify-content: center;
 }
@@ -10,4 +9,9 @@
   max-width: 50%;
   padding: 0 1rem;
   margin: 3rem auto 5rem;
+}
+
+.flex {
+  height: 100vh;
+  display: flex;
 }
