@@ -92,6 +92,7 @@ export default function ArmControlView(props) {
             F軸-當前角度：{currentAngles.F}° - 目標角度：{targetAngles.F}°
           </div>
         </div>
+        
         <div className={styles.btnContainer}>
           <button className={styles.controlBtn} onClick={handleReset}>
             返回初始狀態

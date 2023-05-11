@@ -65,11 +65,14 @@
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  padding: 10px;
+  padding: 1rem 1.25rem 3rem 1.25rem;
   border: 2px solid #ccc;
   border-radius: 5px;
-  background-color: var(--custom-bg-color-light);
   box-shadow: var(--custom-box-shadow);
+}
+
+.addDeviceForm div {
+  margin-top: 0.65rem;
 }
 
 .editDeviceForm {

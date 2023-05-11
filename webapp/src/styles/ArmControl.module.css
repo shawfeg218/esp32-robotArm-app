@@ -8,11 +8,13 @@
   display: flex;
   flex-direction: column;
   /* background-color: rgb(116, 135, 135); */
-  justify-content: space-between;
+  /* justify-content: space-around; */
+
 }
 
 .statusContainer {
   width: 300px;
+  height: 100%;
   border: 2px solid #ccc;
   box-shadow: 0 0 10px #ccc;
   padding: 0px 20px 20px 20px;
@@ -58,15 +60,18 @@
   width: 350px;
   border: 2px solid #ccc;
   box-shadow: 0 0 10px #ccc;
-  padding: 20px;
+  padding: 4rem 1rem;
   border-radius: 5px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  /* background-color: rgb(110, 151, 151); */
+
 }
 
 .controlBtn {
   width: 46%;
+  margin-top: 1rem;
   background-color: #ccc;
   color: #222;
   border: none;

@@ -3,10 +3,12 @@
   margin: 3rem auto;
   display: flex;
   justify-content: center;
+  /* background-color: brown; */
+  width: 80%;
 }
 
 .authContainer {
-  max-width: 50%;
+  width: 27rem;
   padding: 0 1rem;
   margin: 3rem auto 5rem;
 }

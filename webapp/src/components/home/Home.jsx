@@ -2,11 +2,12 @@ import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';
 import React, { useContext } from 'react';
 import { FaChalkboardTeacher } from 'react-icons/fa';
+import styles from '@/styles/Home.module.css';
 
 export default function Home() {
   const { history } = useContext(AppContext);
   return (
-    <div>
+    <div className={styles.container}>
       <h2>Home Page</h2>
 
       <div className="cardContainer">
