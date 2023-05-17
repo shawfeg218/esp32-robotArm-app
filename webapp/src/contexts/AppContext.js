@@ -1,3 +1,4 @@
+// file: webapp\src\contexts\AppContext.js
 import { createContext, useState } from 'react';
 
 const AppContext = createContext();
