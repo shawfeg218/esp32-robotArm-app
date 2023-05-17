@@ -1,11 +1,53 @@
+// file: webapp\src\components\home\Home.jsx
 import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FaChalkboardTeacher } from 'react-icons/fa';
 import styles from '@/styles/Home.module.css';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 export default function Home() {
   const { history } = useContext(AppContext);
+  const [recentHistory, setRecentHistory] = useState([]);
+  const supabase = useSupabaseClient();
+  const user = useUser();
+
+  useEffect(() => {
+    fetchRecentHistory();
+  }, []);
+
+  async function fetchRecentHistory() {
+    const { data, error } = await supabase
+      .from('result_history')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('inserted_at', { ascending: false })
+      .limit(3);
+    if (error) {
+      console.log('Error fetching recent history:', error);
+    } else {
+      // Fetch the names of the subjects associated with each entry
+      const Data_with_subject_name = await Promise.all(
+        data.map(async (entry) => {
+          const { data: subjectData, error: subjectError } = await supabase
+            .from('subjects')
+            .select('name')
+            .eq('id', entry.subject_id)
+            .single();
+
+          if (subjectError) {
+            console.log('Error fetching subject name:', subjectError);
+          } else {
+            // Add the subject name to the entry
+            return { ...entry, subject_name: subjectData.name };
+          }
+        })
+      );
+
+      setRecentHistory(Data_with_subject_name);
+    }
+  }
+
   return (
     <div className={styles.container}>
       <h2>Home Page</h2>
@@ -36,12 +78,30 @@ export default function Home() {
       </div>
 
       <h2>History</h2>
-      <ul>
-        {history.map((entry, index) => (
-          <li key={index}>
-            Subject: {entry.subject}, Points: {entry.point}
-          </li>
-        ))}
+      <ul className={styles.historyUl}>
+        {recentHistory.length > 0 ? (
+          <>
+            {recentHistory.map((entry, index) => (
+              <p key={index}>
+                科目: {entry.subject_name} 得分: {entry.score} Date:{' '}
+                {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}
+                {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+            ))}
+            <Link href="/history">
+              <button>更多</button>
+            </Link>
+          </>
+        ) : (
+          <li>No history data available.</li>
+        )}
       </ul>
     </div>
   );

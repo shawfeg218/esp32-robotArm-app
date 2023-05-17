@@ -4,7 +4,7 @@ import axios from 'axios';
 import QuestionView from './QuestionView';
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 export default function Question() {
   // State
@@ -17,6 +17,9 @@ export default function Question() {
 
   const [questions, setQuestions] = useState({});
   const supabase = useSupabaseClient();
+  const user = useUser();
+  // for uploading result
+  const [subjectId, setSubjectId] = useState(null);
 
   async function fetchQuestionsData() {
     const result = {};
@@ -30,6 +33,7 @@ export default function Question() {
       if (subjectsError) throw subjectsError;
 
       const subject = subjects[0];
+      setSubjectId(subject.id);
 
       const { data: questions, error: questionsError } = await supabase
         .from('questions')
@@ -104,18 +108,32 @@ export default function Question() {
     }
   }, [correct]);
 
-  const handleNextClick = () => {
+  async function handleNextClick() {
     if (currentQuestionIndex < selectedQuestions.length - 1) {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       setIsAnswered(false);
       setSelectedOptionIndex(-1);
       setCorrect();
     } else {
+      // addHistory(selectedSubject, point);
+      try {
+        const { error } = await supabase.from('result_history').insert([
+          {
+            user_id: user.id,
+            subject_id: subjectId,
+            score: point,
+            inserted_at: new Date().toISOString(),
+          },
+        ]);
+        if (error) throw error;
+      } catch (error) {
+        console.log('Error uploading result:', error);
+      }
+
       //finish button
-      addHistory(selectedSubject, point);
-      <Link href={'/quiz/result'}></Link>;
+      <Link href="/quiz/result"></Link>;
     }
-  };
+  }
   return currentQuestion ? (
     <QuestionView
       currentQuestionIndex={currentQuestionIndex}
