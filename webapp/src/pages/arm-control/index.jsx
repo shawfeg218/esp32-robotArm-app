@@ -5,8 +5,8 @@ import React from 'react';
 export default function ArmControlPage() {
   return (
     <div className="flex-container">
-      <Esp32Status />
       <ArmControl />
+      <Esp32Status />
     </div>
   );
 }

@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--custom-main-color);
-  border-bottom: 1px solid #ececf1;
+  border-bottom: 0.0625rem solid #ececf1;
   padding: 0.03rem;
   position: fixed;
   top: 0;
@@ -63,9 +63,36 @@
   text-decoration: none;
 }
 
-.navbarItem p:hover {
+.conBtn {
+  padding: 0.5rem;
+  margin-right: 2rem;
+  display: flex;
+  align-items: center;
+  border: 0.1rem solid #bebebe;
+  border-radius: 0.5rem;
+  /* background-color: #4caf50; */
+}
+
+.conBtn:hover {
   cursor: pointer;
-  color: rgb(61, 132, 255);
+  background-color: #ececf1;
+}
+
+.conBtn p {
+  margin-left: 0.45rem;
+}
+
+.red {
+  display: flex;
+  align-items: center;
+}
+
+.red svg {
+  fill: #f44336;
+}
+
+.green svg {
+  fill: #4caf50;
 }
 
 .avatarContainer:hover {
@@ -78,7 +105,7 @@
   border: none;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
   margin-top: 0;
 }
 
@@ -89,5 +116,5 @@
   border-radius: 10%;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
 }

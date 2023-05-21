@@ -6,7 +6,7 @@ export default function History() {
   const [recentHistory, setRecentHistory] = useState([]);
   const [page, setPage] = useState(0); // page starts from 0
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
   const supabase = useSupabaseClient();
   const user = useUser();
 

@@ -4,9 +4,9 @@
   justify-content: center;
   width: 20rem;
   height: fit-content;
-  padding: 10px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
+  padding: 0.625rem;
+  border: 0.125rem solid #ccc;
+  border-radius: 0.3125rem;
   background-color: var(--custom-bg-color);
   box-shadow: var(--custom-box-shadow);
 }
@@ -18,7 +18,7 @@
 .avatarBtn {
   color: rgb(255, 246, 238);
   background-color: var(--custom-color-brand);
-  border: 1px solid var(--custom-color-brand);
+  border: 0.0625rem solid var(--custom-color-brand);
   border-radius: var(--custom-border-radius);
   padding: 0.5rem 1rem;
   margin-bottom: 1rem;

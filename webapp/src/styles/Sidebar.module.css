@@ -1,6 +1,6 @@
 .container {
   background-color: var(--custom-main-color);
-  border-right: 1px solid #ececf1;
+  border-right: 0.0625rem solid #ececf1;
   /* margin-right: 3rem; */
   width: 7rem;
 }
