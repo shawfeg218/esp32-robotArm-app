@@ -7,7 +7,6 @@ import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 export default function Home() {
-  const { history } = useContext(AppContext);
   const [recentHistory, setRecentHistory] = useState([]);
   const supabase = useSupabaseClient();
   const user = useUser();

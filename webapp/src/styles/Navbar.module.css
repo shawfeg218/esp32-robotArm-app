@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--custom-main-color);
-  border-bottom: 1px solid #ececf1;
+  border-bottom: 0.0625rem solid #ececf1;
   padding: 0.03rem;
   position: fixed;
   top: 0;
@@ -78,7 +78,7 @@
   border: none;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
   margin-top: 0;
 }
 
@@ -89,5 +89,5 @@
   border-radius: 10%;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
 }

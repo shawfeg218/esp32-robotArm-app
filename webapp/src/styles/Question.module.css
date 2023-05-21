@@ -1,10 +1,9 @@
 .leaveDiv {
   display: flex;
   height: fit-content;
-  margin-right: 70px;
+  margin-right: 4.375rem;
   align-items: center;
-  margin-bottom: 30px;
-  /* background-color: #d8e8c2; */
+  margin-bottom: 1.875rem;
 }
 .leaveDiv :hover {
   cursor: pointer;
@@ -15,43 +14,41 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-height: 400px;
-  /* overflow: auto; */
 }
 
 .questionText {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 .optionsContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
-  width: 400px;
+  margin-top: 1.25rem;
+  width: 25rem;
   overflow: auto;
 }
 
 .option {
   background-color: #f0f0f0;
   border: none;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  font-size: 16px;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
   font-weight: bold;
   width: 100%;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease-in-out;
 }
 
 .option:not(.disabled):hover {
   background-color: #e0e0e0;
-  transform: translateY(-5px);
+  transform: translateY(-0.3125rem);
 }
 
 .option.disabled {
@@ -67,23 +64,23 @@
 }
 
 .nextButton {
-  width: 90px;
-  margin-top: 20px;
-  padding: 10px 20px;
+  width: 5.625rem;
+  margin-top: 1rem;
+  padding: 0.625rem 1.25rem;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 0.625rem;
+  font-size: 1rem;
   font-weight: bold;
   background-color: #3f51b5;
   color: white;
   cursor: pointer;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease-in-out;
 }
 
 .nextButton:hover {
   background-color: #2c3e50;
-  transform: translateY(-5px);
+  transform: translateY(-0.3125rem);
 }
 
 @media only screen and (min-width: 320px) {

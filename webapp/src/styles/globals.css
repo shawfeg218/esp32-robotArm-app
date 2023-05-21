@@ -4,13 +4,13 @@ body {
     Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   --custom-bg-color: #ffffff;
   --custom-panel-color: #222;
-  --custom-box-shadow: 0 0 10px #ccc;
+  --custom-box-shadow: 0 0 0.625rem #ccc;
   --custom-color: #000000;
   --custom-color-brand: #24b47e;
   --custom-color-secondary: #666;
-  --custom-border: 1px solid #333;
-  --custom-border-radius: 5px;
-  --custom-spacing: 5px;
+  --custom-border: 0.0625rem solid #333;
+  --custom-border-radius: 0.3125rem;
+  --custom-spacing: 0.3125rem;
   --custom-main-color: #ffffff;
   --bar-shadow-color: #ccc;
 
@@ -38,7 +38,7 @@ body,
 
 label {
   display: block;
-  margin: 5px 0;
+  margin: 0.3125rem 0;
   color: var(--custom-color-secondary);
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -46,9 +46,9 @@ label {
 
 input {
   width: 100%;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
   border: var(--custom-border);
-  padding: 8px;
+  padding: 0.5rem;
   font-size: 0.9rem;
   background-color: var(--custom-bg-color);
   color: var(--custom-color);
@@ -79,7 +79,7 @@ button.primary,
 .button.primary {
   color: rgb(255, 246, 238);
   background-color: var(--custom-color-brand);
-  border: 1px solid var(--custom-color-brand);
+  border: 0.0625rem solid var(--custom-color-brand);
 }
 
 .flex-container {
@@ -95,8 +95,8 @@ button.primary,
   flex-wrap: wrap;
 }
 .card {
-  width: 150px;
-  height: 200px;
+  width: 9.375rem;
+  height: 12.5rem;
   background-color: var(--custom-bg-color);
   border-radius: var(--custom-border-radius);
   padding: 1rem;
@@ -132,13 +132,13 @@ button.primary,
 }
 .avatar.no-image {
   background-color: #838383;
-  border: 1px solid rgb(200, 200, 200);
-  border-radius: 5px;
+  border: 0.0625rem solid rgb(200, 200, 200);
+  border-radius: 0.3125rem;
 }
 
 .reactIconsDiv {
-  border: 2px solid;
-  border-radius: 5px;
+  border: 0.125rem solid;
+  border-radius: 0.3125rem;
   background-color: rgb(255, 255, 255);
   display: flex;
   align-items: center;
@@ -146,7 +146,7 @@ button.primary,
 }
 
 .reactIcons {
-  /* margin: 5px; */
+  /* margin: .3125rem; */
 }
 
 .reactIcons path {
