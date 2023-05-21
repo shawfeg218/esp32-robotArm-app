@@ -6,17 +6,17 @@ const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const [selectedSubject, setSelectedSubject] = useState('');
   const [point, setPoint] = useState(0);
-  const [history, setHistory] = useState([]);
+  // const [history, setHistory] = useState([]);
   const [connectedDeviceName, setConnectedDeviceName] = useState('');
   const [connectedMacAddress, setConnectedMacAddress] = useState('');
   const [connected, setConnected] = useState(false);
 
-  const addHistory = (subject, point) => {
-    setHistory((prevHistory) => [
-      ...prevHistory,
-      { subject: subject, point: point },
-    ]);
-  };
+  // const addHistory = (subject, point) => {
+  //   setHistory((prevHistory) => [
+  //     ...prevHistory,
+  //     { subject: subject, point: point },
+  //   ]);
+  // };
 
   return (
     <AppContext.Provider
@@ -25,9 +25,9 @@ export const AppContextProvider = ({ children }) => {
         setSelectedSubject,
         point,
         setPoint,
-        history,
-        setHistory,
-        addHistory,
+        // history,
+        // setHistory,
+        // addHistory,
         connectedDeviceName,
         setConnectedDeviceName,
         connectedMacAddress,

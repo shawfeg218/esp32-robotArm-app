@@ -68,7 +68,7 @@
   margin-right: 2rem;
   display: flex;
   align-items: center;
-  border: 0.05rem solid #000000;
+  border: 0.1rem solid #bebebe;
   border-radius: 0.5rem;
   /* background-color: #4caf50; */
 }

@@ -61,7 +61,6 @@ export default function Esp32Status() {
       <h2>ESP32 Status</h2>
       <div>
         {!connected ? (
-          // `connecting to ${connectedDeviceName}...`
           <div>{chooseDevice()}</div>
         ) : (
           <>
