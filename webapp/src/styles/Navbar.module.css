@@ -63,9 +63,36 @@
   text-decoration: none;
 }
 
-.navbarItem p:hover {
+.conBtn {
+  padding: 0.5rem;
+  margin-right: 2rem;
+  display: flex;
+  align-items: center;
+  border: 0.05rem solid #000000;
+  border-radius: 0.5rem;
+  /* background-color: #4caf50; */
+}
+
+.conBtn:hover {
   cursor: pointer;
-  color: rgb(61, 132, 255);
+  background-color: #ececf1;
+}
+
+.conBtn p {
+  margin-left: 0.45rem;
+}
+
+.red {
+  display: flex;
+  align-items: center;
+}
+
+.red svg {
+  fill: #f44336;
+}
+
+.green svg {
+  fill: #4caf50;
 }
 
 .avatarContainer:hover {

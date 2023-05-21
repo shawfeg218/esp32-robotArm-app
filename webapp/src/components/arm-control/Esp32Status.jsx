@@ -4,9 +4,18 @@ import axios from 'axios';
 import AppContext from '@/contexts/AppContext';
 
 export default function Esp32Status() {
-  const { connectedDeviceName, connectedMacAddress } = useContext(AppContext);
+  const { connectedDeviceName, connectedMacAddress, connected, setConnected } =
+    useContext(AppContext);
   const [esp32Status, setEsp32Status] = useState({});
-  const [connected, setConnected] = useState(true);
+  // const [connected, setConnected] = useState(false);
+
+  function chooseDevice() {
+    if (connectedDeviceName === '') {
+      return 'choose a device to connect';
+    } else {
+      return `connecting to ${connectedDeviceName}...`;
+    }
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,26 +42,27 @@ export default function Esp32Status() {
     }
   };
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     axios
-  //       .post('/api/get-heartbeat', {
-  //         connectedMacAddress,
-  //       })
-  //       .then((res) => {
-  //         checkConnection(res.data);
-  //         // console.log(res.data);
-  //       });
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      axios
+        .post('/api/get-heartbeat', {
+          connectedMacAddress,
+        })
+        .then((res) => {
+          checkConnection(res.data);
+          // console.log(res.data);
+        });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className={styles.statusContainer}>
       <h2>ESP32 Status</h2>
       <div>
         {!connected ? (
-          `connecting to ${connectedDeviceName}...`
+          // `connecting to ${connectedDeviceName}...`
+          <div>{chooseDevice()}</div>
         ) : (
           <>
             <div>macAddress: {esp32Status.macAddress}</div>

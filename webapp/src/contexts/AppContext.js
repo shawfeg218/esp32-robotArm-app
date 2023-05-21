@@ -9,6 +9,7 @@ export const AppContextProvider = ({ children }) => {
   const [history, setHistory] = useState([]);
   const [connectedDeviceName, setConnectedDeviceName] = useState('');
   const [connectedMacAddress, setConnectedMacAddress] = useState('');
+  const [connected, setConnected] = useState(false);
 
   const addHistory = (subject, point) => {
     setHistory((prevHistory) => [
@@ -31,6 +32,8 @@ export const AppContextProvider = ({ children }) => {
         setConnectedDeviceName,
         connectedMacAddress,
         setConnectedMacAddress,
+        connected,
+        setConnected,
       }}
     >
       {children}
