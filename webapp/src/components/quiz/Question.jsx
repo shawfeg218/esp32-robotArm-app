@@ -1,5 +1,5 @@
 // file: webapp\src\components\quiz\Question.jsx
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import QuestionView from './QuestionView';
 import Link from 'next/link';
@@ -20,6 +20,25 @@ export default function Question() {
   const user = useUser();
   // for uploading result
   const [subjectId, setSubjectId] = useState(null);
+
+  // for sound effect
+  const correctSoundRef = useRef();
+  const wrongSoundRef = useRef();
+
+  function playSound(audioRef) {
+    // 先停止並重置所有的音效
+    [correctSoundRef, wrongSoundRef].forEach((ref) => {
+      if (ref.current) {
+        ref.current.pause();
+        ref.current.currentTime = 0;
+      }
+    });
+
+    // 播放需要的音效
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  }
 
   async function fetchQuestionsData() {
     const result = {};
@@ -101,10 +120,12 @@ export default function Question() {
         connectedMacAddress,
       });
       setPoint((prev) => prev + 1);
+      playSound(correctSoundRef);
     } else if (correct === false) {
       axios.post('/api/wrong-act', {
         connectedMacAddress,
       });
+      playSound(wrongSoundRef);
     }
   }, [correct]);
 
@@ -135,15 +156,28 @@ export default function Question() {
     }
   }
   return currentQuestion ? (
-    <QuestionView
-      currentQuestionIndex={currentQuestionIndex}
-      selectedOptionIndex={selectedOptionIndex}
-      isAnswered={isAnswered}
-      selectedQuestions={selectedQuestions}
-      currentQuestion={currentQuestion}
-      handleOptionClick={handleOptionClick}
-      handleNextClick={handleNextClick}
-    />
+    <>
+      <audio
+        ref={correctSoundRef}
+        src="/audio/mixkit-correct-answer-reward-952.wav"
+        preload="auto"
+      />
+      <audio
+        ref={wrongSoundRef}
+        src="/audio/mixkit-cartoon-failure-piano-473.wav"
+        preload="auto"
+      />
+
+      <QuestionView
+        currentQuestionIndex={currentQuestionIndex}
+        selectedOptionIndex={selectedOptionIndex}
+        isAnswered={isAnswered}
+        selectedQuestions={selectedQuestions}
+        currentQuestion={currentQuestion}
+        handleOptionClick={handleOptionClick}
+        handleNextClick={handleNextClick}
+      />
+    </>
   ) : (
     <div>Loading...</div>
   );
