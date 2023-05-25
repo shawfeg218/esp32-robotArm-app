@@ -1,9 +1,8 @@
-// file: webapp\src\components\quiz\QuestionView.jsx
-import React, { useContext } from 'react';
-import styles from '@/styles/Question.module.css';
-import Link from 'next/link';
-import { GrFormPrevious } from 'react-icons/gr';
 import AppContext from '@/contexts/AppContext';
+import { useContext } from 'react';
+import styles from '@/styles/Question.module.css';
+import { GrFormPrevious } from 'react-icons/gr';
+import Link from 'next/link';
 
 export default function QuestionView(props) {
   const {
@@ -22,7 +21,7 @@ export default function QuestionView(props) {
     if (!isAnswered) {
       return styles.option;
     }
-    if (index === currentQuestion.correctOptionIndex) {
+    if (currentQuestion.options[index].is_correct) {
       return `${styles.option} ${styles.disabled} ${styles.correct}`;
     }
     if (index === selectedOptionIndex) {
@@ -44,13 +43,13 @@ export default function QuestionView(props) {
       <div className={styles.questionContainer}>
         <div className={styles.questionText}>{currentQuestion.text}</div>
         <div className={styles.optionsContainer}>
-          {currentQuestion.options.map((optionText, index) => (
+          {currentQuestion.options.map((option, index) => (
             <div
               key={index}
               className={getOptionClassName(index)}
               onClick={() => handleOptionClick(index)}
             >
-              {optionText}
+              {option.text}
             </div>
           ))}
         </div>

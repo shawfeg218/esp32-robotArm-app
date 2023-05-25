@@ -49,8 +49,6 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <h2>Home Page</h2>
-
       <div className="cardContainer">
         <Link href="/quiz" passHref>
           <div className="card">
@@ -76,8 +74,8 @@ export default function Home() {
         </Link>
       </div>
 
-      <h2>History</h2>
       <ul className={styles.historyUl}>
+        <h2>History</h2>
         {recentHistory.length > 0 ? (
           <>
             {recentHistory.map((entry, index) => (

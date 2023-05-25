@@ -14,13 +14,15 @@ function Quiz() {
 
   async function fetchSubjects() {
     try {
-      const { data, error } = await supabase.from('subjects').select('name');
+      const { data, error } = await supabase
+        .from('subjects')
+        .select('id, name, total_questions');
 
       if (error) {
         throw error;
       }
 
-      setSubjects(data.map((subject) => subject.name));
+      setSubjects(data);
     } catch (error) {
       console.log('Error fetching subjects:', error);
     }
@@ -28,6 +30,7 @@ function Quiz() {
 
   useEffect(() => {
     fetchSubjects();
+    subjects.map((subject) => console.log(subject));
   }, []);
 
   return (
@@ -37,11 +40,13 @@ function Quiz() {
           <div className="cardContainer">
             {subjects.map((subject) => (
               <div
-                key={subject}
+                key={subject.name}
                 className="card"
-                onClick={() => handleSelectSubject(subject)}
+                onClick={() => handleSelectSubject(subject.name)}
               >
-                <p>{subject.toUpperCase()}</p>
+                <p>{subject.name.toUpperCase()}</p>
+                <p>subject id: {subject.id}</p>
+                <p>Total questions: {subject.total_questions}</p>
                 <div></div>
               </div>
             ))}

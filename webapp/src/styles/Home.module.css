@@ -1,12 +1,14 @@
 .container {
   /* background-color: aquamarine; */
-  width: 80%;
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 13rem;
 }
 
 .historyUl {
-  width: 60%;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
   /* background-color: antiquewhite; */
 }

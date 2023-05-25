@@ -35,10 +35,10 @@ export default function Esp32Status() {
     const currentTime = Date.now();
     if (currentTime - lastHeartbeat > 6000) {
       setConnected(false);
-      console.log('disconnected');
+      // console.log('disconnected');
     } else {
       setConnected(true);
-      console.log('connected');
+      // console.log('connected');
     }
   };
 

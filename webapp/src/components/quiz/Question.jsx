@@ -1,4 +1,3 @@
-// file: webapp\src\components\quiz\Question.jsx
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import QuestionView from './QuestionView';
@@ -12,12 +11,13 @@ export default function Question() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState();
-  const { point, setPoint, selectedSubject, addHistory, connectedMacAddress } =
+  const { point, setPoint, selectedSubject, connectedMacAddress } =
     useContext(AppContext);
 
   const [questions, setQuestions] = useState({});
   const supabase = useSupabaseClient();
   const user = useUser();
+
   // for uploading result
   const [subjectId, setSubjectId] = useState(null);
 
@@ -44,46 +44,31 @@ export default function Question() {
     const result = {};
 
     try {
-      const { data: subjects, error: subjectsError } = await supabase
-        .from('subjects')
+      const { data: quizData, error: quizError } = await supabase
+        .from('quiz_data')
         .select('*')
-        .eq('name', selectedSubject);
+        .eq('subject_name', selectedSubject);
 
-      if (subjectsError) throw subjectsError;
+      if (quizError) throw quizError;
 
-      const subject = subjects[0];
-      setSubjectId(subject.id);
-
-      const { data: questions, error: questionsError } = await supabase
-        .from('questions')
-        .select('*')
-        .eq('subject_id', subject.id);
-
-      if (questionsError) throw questionsError;
-
-      const questionList = await Promise.all(
-        questions.map(async (question) => {
-          const { data: options, error: optionsError } = await supabase
-            .from('options')
-            .select('*')
-            .eq('question_id', question.id);
-
-          if (optionsError) throw optionsError;
-
-          const optionsList = options.map((option) => option.text);
-          const correctOptionIndex = options.findIndex(
-            (option) => option.is_correct
-          );
-
-          return {
-            id: question.id,
-            text: question.text,
-            options: optionsList,
-            correctOptionIndex: correctOptionIndex,
+      const questions = quizData.reduce((acc, row) => {
+        if (!(row.question_id in acc)) {
+          acc[row.question_id] = {
+            id: row.question_id,
+            text: row.question_text,
+            options: [],
           };
-        })
-      );
+        }
+        acc[row.question_id].options.push({
+          id: row.option_id,
+          text: row.option_text,
+          is_correct: row.is_correct,
+        });
+        return acc;
+      }, {});
 
+      const questionList = Object.values(questions);
+      setSubjectId(quizData[0].subject_id);
       result[selectedSubject] = questionList;
     } catch (error) {
       console.log('Error fetching questions:', error);
@@ -95,7 +80,7 @@ export default function Question() {
   useEffect(() => {
     fetchQuestionsData().then((result) => {
       setQuestions(result);
-      console.log(result);
+      // console.log(result);
     });
   }, []);
 
@@ -108,9 +93,9 @@ export default function Question() {
       setSelectedOptionIndex(optionIndex);
       setIsAnswered(true);
 
-      optionIndex === currentQuestion.correctOptionIndex
-        ? setCorrect(true)
-        : setCorrect(false);
+      const isCorrect = currentQuestion.options[optionIndex].is_correct;
+      setCorrect(isCorrect);
+      // console.log(isCorrect);
     }
   };
 
@@ -136,7 +121,7 @@ export default function Question() {
       setSelectedOptionIndex(-1);
       setCorrect();
     } else {
-      // addHistory(selectedSubject, point);
+      // add History
       try {
         const { error } = await supabase.from('result_history').insert([
           {
@@ -150,11 +135,9 @@ export default function Question() {
       } catch (error) {
         console.log('Error uploading result:', error);
       }
-
-      //finish button
-      <Link href="/quiz/result"></Link>;
     }
   }
+
   return currentQuestion ? (
     <>
       <audio
