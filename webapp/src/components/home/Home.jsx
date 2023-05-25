@@ -74,8 +74,8 @@ export default function Home() {
         </Link>
       </div>
 
-      <h2>History</h2>
       <ul className={styles.historyUl}>
+        <h2>History</h2>
         {recentHistory.length > 0 ? (
           <>
             {recentHistory.map((entry, index) => (

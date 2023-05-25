@@ -83,7 +83,7 @@ button.primary,
 }
 
 .flex-container {
-  height: 35rem;
+  /* height: 35rem; */
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
