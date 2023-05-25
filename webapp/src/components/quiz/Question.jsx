@@ -12,7 +12,7 @@ export default function Question() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState();
-  const { point, setPoint, selectedSubject, addHistory, connectedMacAddress } =
+  const { point, setPoint, selectedSubject, connectedMacAddress } =
     useContext(AppContext);
 
   const [questions, setQuestions] = useState({});
@@ -136,7 +136,7 @@ export default function Question() {
       setSelectedOptionIndex(-1);
       setCorrect();
     } else {
-      // addHistory(selectedSubject, point);
+      // add History
       try {
         const { error } = await supabase.from('result_history').insert([
           {

@@ -1,4 +1,4 @@
-// file: webapp\src\middlewares\mqttMiddleware.js
+// file: webapp\src\utils\mqttMiddleware.js
 import mqtt from 'mqtt';
 
 const MQTT_SERVER_IP = process.env.MQTT_SERVER_IP;
