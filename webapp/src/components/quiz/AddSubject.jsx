@@ -212,7 +212,7 @@ export default function AddSubject() {
             <div className={styles.optionForm}>
               {question.options.map((option, optionIndex) => (
                 <>
-                  <div className={styles.optionItemContainer}>
+                  <div className={styles.optionItemContainer} key={optionIndex}>
                     <div className={styles.optionContainer}>
                       <div className={styles.option_bar}>
                         <div id="correct" className={styles.correctDiv}>
