@@ -2,13 +2,23 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import styles from '@/styles/AddSubject.module.css';
 import PrettyTextarea from '../PrettyTextarea';
+import { IoIosRemove } from 'react-icons/io';
+import { AiOutlineDelete } from 'react-icons/ai';
 
 export default function AddSubject() {
   const supabase = useSupabaseClient();
 
+  const [message, setMessage] = useState();
+
   const [subjectName, setSubjectName] = useState('');
   const [questions, setQuestions] = useState([
-    { text: '', options: [{ text: '', is_correct: false }] },
+    {
+      text: '',
+      options: [
+        { text: '', is_correct: false },
+        { text: '', is_correct: false },
+      ],
+    },
   ]);
 
   const handleSubjectChange = (e) => {
@@ -38,7 +48,13 @@ export default function AddSubject() {
   const addQuestion = () => {
     setQuestions([
       ...questions,
-      { text: '', options: [{ text: '', is_correct: false }] },
+      {
+        text: '',
+        options: [
+          { text: '', is_correct: false },
+          { text: '', is_correct: false },
+        ],
+      },
     ]);
   };
 
@@ -62,6 +78,39 @@ export default function AddSubject() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 檢查主題名稱是否有被填寫
+    if (!subjectName) {
+      setMessage('必須填寫主題名稱');
+      return;
+    }
+
+    // 檢查每一個問題是否有內容被填寫
+    for (let question of questions) {
+      if (!question.text) {
+        setMessage('所有問題必須有內容');
+        return;
+      }
+
+      // 檢查每一個選項是否有內容被填寫
+      for (let option of question.options) {
+        if (!option.text) {
+          setMessage('所有選項必須有內容');
+          return;
+        }
+      }
+
+      // 檢查每一個問題是否有正確答案被選中
+      const correctOption = question.options.find(
+        (option) => option.is_correct
+      );
+      if (!correctOption) {
+        setMessage('每一題必須勾選一個正確答案');
+        return;
+      }
+    }
+
+    setMessage(null);
     // 這裡你需要實現將主題、問題和選項數據插入到你的資料庫的邏輯
   };
 
@@ -71,6 +120,7 @@ export default function AddSubject() {
         <h2>Subject</h2>
         <label>Subject Name</label>
         <PrettyTextarea
+          id="subjectName"
           value={subjectName}
           onChange={handleSubjectChange}
           required
@@ -79,23 +129,61 @@ export default function AddSubject() {
       <div className={styles.questionForm}>
         <h2>Question</h2>
         {questions.map((question, questionIndex) => (
-          <div key={questionIndex}>
-            <p>Question {questionIndex + 1}</p>
-            <label>題目</label>
-            <PrettyTextarea
-              value={question.text}
-              onChange={(e) => handleQuestionChange(e, questionIndex)}
-              required
-            />
+          <div className={styles.questionItem} key={questionIndex}>
+            <div className={styles.question_bar}>
+              <h3>題目{questionIndex + 1}</h3>
+              {questions.length > 1 && (
+                <div
+                  className={styles.removeIcon}
+                  onClick={() => removeQuestion(questionIndex)}
+                >
+                  <AiOutlineDelete className="reactIcons" size="1.5rem" />
+                </div>
+              )}
+            </div>
+            <label>
+              <PrettyTextarea
+                id={`question-${questionIndex}`}
+                value={question.text}
+                onChange={(e) => handleQuestionChange(e, questionIndex)}
+                required
+              />
+            </label>
 
             <div className={styles.optionForm}>
-              <h2>Option</h2>
               {question.options.map((option, optionIndex) => (
                 <>
                   <div className={styles.optionItemContainer}>
-                    <div className={styles.optionText}>
-                      <label key={optionIndex}>選項 {optionIndex + 1}</label>
+                    <div className={styles.optionContainer}>
+                      <div className={styles.option_bar}>
+                        <div id="correct" className={styles.correctDiv}>
+                          <input
+                            type="checkbox"
+                            name={`correct-option-${questionIndex}`}
+                            checked={option.is_correct}
+                            onChange={() =>
+                              handleOptionCorrectChange(
+                                questionIndex,
+                                optionIndex
+                              )
+                            }
+                          />
+                          <h4>選為正確選項</h4>
+                        </div>
+                        {question.options.length > 2 && (
+                          <div
+                            className={styles.removeIcon}
+                            onClick={() =>
+                              removeOption(questionIndex, optionIndex)
+                            }
+                          >
+                            <IoIosRemove className="reactIcons" size="2rem" />
+                          </div>
+                        )}
+                      </div>
+                      <label key={optionIndex}>選項{optionIndex + 1}</label>
                       <PrettyTextarea
+                        id={`option-${questionIndex}-${optionIndex}`}
                         value={option.text}
                         onChange={(e) =>
                           handleOptionChange(e, questionIndex, optionIndex)
@@ -103,48 +191,41 @@ export default function AddSubject() {
                         required
                       />
                     </div>
-                    <div className={styles.correctDiv}>
-                      <label>Correct</label>
-                      <input
-                        type="checkbox"
-                        name={`correct-option-${questionIndex}`}
-                        checked={option.is_correct}
-                        onChange={() =>
-                          handleOptionCorrectChange(questionIndex, optionIndex)
-                        }
-                      />
-                    </div>
                   </div>
-                  {question.options.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeOption(questionIndex, optionIndex)}
-                    >
-                      Remove Option
-                    </button>
-                  )}
                 </>
               ))}
-              <button type="button" onClick={() => addOption(questionIndex)}>
-                Add Option
-              </button>
             </div>
-            {questions.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeQuestion(questionIndex)}
-              >
-                Remove Question
-              </button>
-            )}
-            <button type="button" onClick={addQuestion}>
-              Add Question
+            <button
+              className={styles.add_option_btn}
+              type="button"
+              onClick={() => addOption(questionIndex)}
+            >
+              Add New Option
             </button>
           </div>
         ))}
+        <button
+          className={styles.add_question_btn}
+          type="button"
+          onClick={addQuestion}
+        >
+          Add Question
+        </button>
       </div>
-
-      <button type="submit">Submit</button>
+      <div className={styles.submit_check}>
+        <h2>
+          Subject Name: <span>{subjectName}</span>
+        </h2>
+        <h2>
+          With
+          <span> {questions.length} </span>
+          Questions
+        </h2>
+        <p>{message ? message : null}</p>
+        <button className={styles.submit_btn} type="submit">
+          Submit
+        </button>
+      </div>
     </form>
   );
 }
