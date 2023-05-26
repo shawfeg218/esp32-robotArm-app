@@ -39,7 +39,7 @@ export default function Sidebar() {
             <div>
               <GrConnect className="reactIcons" size="2rem" />
             </div>
-            <p>裝置設定</p>
+            <p>連線設定</p>
           </div>
         </Link>
       </div>

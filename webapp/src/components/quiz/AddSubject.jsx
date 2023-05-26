@@ -9,6 +9,8 @@ export default function AddSubject() {
   const supabase = useSupabaseClient();
 
   const [message, setMessage] = useState();
+  const [successMessage, setSuccessMessage] = useState();
+  const [udpdating, setUpdating] = useState(false);
 
   const [subjectName, setSubjectName] = useState('');
   const [questions, setQuestions] = useState([
@@ -76,6 +78,63 @@ export default function AddSubject() {
     setQuestions(newQuestions);
   };
 
+  const updateToDatabase = async () => {
+    setUpdating(true);
+
+    try {
+      let { error: subjectError } = await supabase
+        .from('subjects')
+        .insert([{ name: subjectName }]);
+
+      if (subjectError) throw subjectError;
+
+      let { data, error } = await supabase
+        .from('subjects')
+        .select('id')
+        .eq('name', subjectName);
+      console.log(data);
+      let subjectId = data[0].id;
+
+      // For each question
+      for (let question of questions) {
+        // Insert question into the questions table
+        let { error: questionError } = await supabase
+          .from('questions')
+          .insert([{ subject_id: subjectId, text: question.text }]);
+
+        if (questionError) throw questionError;
+
+        // Get the id of the inserted question
+        let { data, error } = await supabase
+          .from('questions')
+          .select('id')
+          .eq('text', question.text);
+        console.log(data);
+        let questionId = data[0].id;
+
+        // For each option of the question
+        for (let option of question.options) {
+          let { error: optionError } = await supabase.from('options').insert([
+            {
+              question_id: questionId,
+              text: option.text,
+              is_correct: option.is_correct,
+            },
+          ]);
+
+          if (optionError) throw optionError;
+        }
+      }
+
+      setSuccessMessage('Data successfully inserted into the database');
+    } catch (error) {
+      console.log('Error: ', error.message);
+      setMessage('There was an error inserting the data into the database');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -111,7 +170,7 @@ export default function AddSubject() {
     }
 
     setMessage(null);
-    // 這裡你需要實現將主題、問題和選項數據插入到你的資料庫的邏輯
+    updateToDatabase();
   };
 
   return (
@@ -222,8 +281,9 @@ export default function AddSubject() {
           Questions
         </h2>
         <p>{message ? message : null}</p>
+        <p>{successMessage ? successMessage : null}</p>
         <button className={styles.submit_btn} type="submit">
-          Submit
+          {udpdating ? 'updating...' : 'submit'}
         </button>
       </div>
     </form>

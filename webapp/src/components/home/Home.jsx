@@ -72,8 +72,8 @@ export default function Home() {
 
         <Link href="/device" passHref>
           <div className="card">
-            <p>裝置設定</p>
-            <div  className="reactIconsDiv">
+            <p>連線設定</p>
+            <div className="reactIconsDiv">
               <GrConnect className="reactIcons" size="5rem" />
             </div>
           </div>
