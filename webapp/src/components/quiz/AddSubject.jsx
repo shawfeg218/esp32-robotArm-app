@@ -1,9 +1,9 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import styles from '@/styles/AddSubject.module.css';
-import PrettyTextarea from '../PrettyTextarea';
 import { IoIosRemove } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
+import PrettyTextarea from '../PrettyTextarea';
 
 export default function AddSubject() {
   const supabase = useSupabaseClient();
