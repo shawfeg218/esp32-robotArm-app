@@ -13,6 +13,7 @@
   width: 100%;
   color: #161616;
   transition: background-color 0.4s;
+  overflow: hidden;
 }
 
 .textarea:focus {
