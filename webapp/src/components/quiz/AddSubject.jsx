@@ -33,9 +33,21 @@ export default function AddSubject() {
     ]);
   };
 
+  const removeQuestion = (questionIndex) => {
+    setQuestions(questions.filter((_, index) => index !== questionIndex));
+  };
+
   const addOption = (questionIndex) => {
     const newQuestions = [...questions];
     newQuestions[questionIndex].options.push({ text: '', is_correct: false });
+    setQuestions(newQuestions);
+  };
+
+  const removeOption = (questionIndex, optionIndex) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].options = newQuestions[
+      questionIndex
+    ].options.filter((_, index) => index !== optionIndex);
     setQuestions(newQuestions);
   };
 
@@ -49,7 +61,7 @@ export default function AddSubject() {
       <div className={styles.subjectForm}>
         <h2>Subject</h2>
         <label>
-          Subject Name:
+          Subject Name
           <input
             type="text"
             value={subjectName}
@@ -59,11 +71,12 @@ export default function AddSubject() {
         </label>
       </div>
       <div className={styles.questionForm}>
+        <h2>Question</h2>
         {questions.map((question, questionIndex) => (
           <div key={questionIndex}>
             <p>Question {questionIndex + 1}</p>
             <label>
-              題目:
+              題目
               <input
                 type="text"
                 value={question.text}
@@ -73,10 +86,11 @@ export default function AddSubject() {
             </label>
 
             <div className={styles.optionForm}>
+              <h2>Option</h2>
               {question.options.map((option, optionIndex) => (
                 <>
                   <label key={optionIndex}>
-                    選項: {optionIndex + 1}
+                    選項 {optionIndex + 1}
                     <input
                       type="text"
                       value={option.text}
@@ -86,12 +100,29 @@ export default function AddSubject() {
                       required
                     />
                   </label>
+
+                  {question.options.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeOption(questionIndex, optionIndex)}
+                    >
+                      Remove Option
+                    </button>
+                  )}
                 </>
               ))}
               <button type="button" onClick={() => addOption(questionIndex)}>
                 Add Option
               </button>
             </div>
+            {questions.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeQuestion(questionIndex)}
+              >
+                Remove Question
+              </button>
+            )}
             <button type="button" onClick={addQuestion}>
               Add Question
             </button>

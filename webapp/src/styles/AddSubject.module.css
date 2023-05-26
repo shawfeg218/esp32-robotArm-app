@@ -3,13 +3,17 @@
   background-color: rgb(247, 215, 215);
 }
 
+.container label {
+  font-weight: bold;
+}
+
 .subjectForm {
-  padding: 1rem;
+  padding: 1rem 2rem;
   background-color: rgb(208, 244, 232);
 }
 
 .questionForm {
-  padding: 1rem;
+  padding: 1rem 2rem;
   background-color: rgb(56, 175, 135);
 }
 
