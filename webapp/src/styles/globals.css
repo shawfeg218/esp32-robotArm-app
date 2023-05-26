@@ -77,7 +77,6 @@ button,
 
 button.primary,
 .button.primary {
-  color: rgb(255, 246, 238);
   background-color: var(--custom-color-brand);
   border: 0.0625rem solid var(--custom-color-brand);
 }
@@ -93,6 +92,8 @@ button.primary,
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 .card {
   width: 9.375rem;

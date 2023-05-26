@@ -1,0 +1,19 @@
+.container {
+  padding: 1rem 5rem;
+  background-color: rgb(247, 215, 215);
+}
+
+.subjectForm {
+  padding: 1rem;
+  background-color: rgb(208, 244, 232);
+}
+
+.questionForm {
+  padding: 1rem;
+  background-color: rgb(56, 175, 135);
+}
+
+.optionForm {
+  padding: 1rem;
+  background-color: rgb(242, 244, 208);
+}
