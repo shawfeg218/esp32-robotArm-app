@@ -3,6 +3,8 @@ import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import { FaChalkboardTeacher } from 'react-icons/fa';
+import { GrConnect } from 'react-icons/gr';
+import { TfiPanel } from 'react-icons/tfi';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
@@ -62,14 +64,18 @@ export default function Home() {
         <Link href="/arm-control" passHref>
           <div className="card">
             <p>操作手臂</p>
-            <div></div>
+            <div className="reactIconsDiv">
+              <TfiPanel className="reactIcons" size="5rem" />
+            </div>
           </div>
         </Link>
 
         <Link href="/device" passHref>
           <div className="card">
             <p>裝置設定</p>
-            <div></div>
+            <div  className="reactIconsDiv">
+              <GrConnect className="reactIcons" size="5rem" />
+            </div>
           </div>
         </Link>
       </div>
