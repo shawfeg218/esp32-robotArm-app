@@ -1,10 +1,15 @@
 .container {
   padding: 1rem 5rem;
   background-color: rgb(247, 215, 215);
+  width: 80%;
 }
 
 .container label {
+  color: var(--custom-Text-color);
   font-weight: bold;
+}
+
+.container textarea {
 }
 
 .subjectForm {
@@ -20,4 +25,28 @@
 .optionForm {
   padding: 1rem;
   background-color: rgb(242, 244, 208);
+}
+
+.optionItemContainer {
+  background-color: rgb(187, 187, 255);
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.optionText {
+  background-color: aliceblue;
+}
+
+.correctDiv {
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: aqua;
+}
+
+.correctDiv input {
+  border-radius: 0.3125rem;
 }
