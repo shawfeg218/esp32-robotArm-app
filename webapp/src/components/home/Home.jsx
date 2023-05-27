@@ -1,4 +1,3 @@
-// file: webapp\src\components\home\Home.jsx
 import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
@@ -80,32 +79,46 @@ export default function Home() {
         </Link>
       </div>
 
-      <ul className={styles.historyUl}>
+      <div className={styles.historyContainer}>
         <h2>History</h2>
         {recentHistory.length > 0 ? (
-          <>
-            {recentHistory.map((entry, index) => (
-              <p key={index}>
-                科目: {entry.subject_name} 得分: {entry.score} Date:{' '}
-                {new Date(entry.inserted_at).toLocaleDateString(undefined, {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                })}
-                {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </p>
-            ))}
-            <Link href="/history">
-              <button>更多</button>
-            </Link>
-          </>
+          <table className="styled-table">
+            <thead>
+              <tr>
+                <th>科目</th>
+                <th>得分</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentHistory.map((entry, index) => (
+                <tr key={index}>
+                  <td>{entry.subject_name}</td>
+                  <td>{entry.score}</td>
+                  <td>
+                    {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                    })}{' '}
+                    {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
-          <li>No history data available.</li>
+          <p>No history data available.</p>
         )}
-      </ul>
+        {recentHistory.length > 0 && (
+          <Link href="/history">
+            <button>更多</button>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
