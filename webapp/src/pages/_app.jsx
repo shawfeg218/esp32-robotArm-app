@@ -6,6 +6,7 @@ import cors from 'cors';
 import { useState } from 'react';
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import 'bootstrap/dist/css/bootstrap.css';
 
 function App({ Component, pageProps }) {
   const handler = nc().use(cors());
