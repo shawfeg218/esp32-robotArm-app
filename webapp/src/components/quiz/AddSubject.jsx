@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styles from '@/styles/AddSubject.module.css';
 import { IoIosRemove } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
-import PrettyTextarea from '../PrettyTextarea';
+import PrettyTextarea from '@/components/PrettyTextarea';
 
 export default function AddSubject() {
   const supabase = useSupabaseClient();
