@@ -83,6 +83,37 @@
   transform: translateY(-0.3125rem);
 }
 
+.addQConatiner {
+  border-left: black 0.16rem solid;
+  padding: 0 1.25rem;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 9.375rem;
+  height: 12.5rem;
+  border: black 0.2rem dashed;
+  border-radius: 0.625rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.addCard:hover {
+  cursor: pointer;
+  transform: translateY(-0.3125rem);
+  background-color: beige;
+}
+
+.addCard path {
+  fill: black;
+}
+
 @media only screen and (min-width: 320px) {
   .optionsContainer {
     max-width: 90%;

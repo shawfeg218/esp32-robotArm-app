@@ -93,6 +93,8 @@ button.primary,
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 .card {
   width: 9.375rem;

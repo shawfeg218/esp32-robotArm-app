@@ -1,4 +1,4 @@
-// file: webapp\src\pages\quiz\result.jsx
+// file: src/components/quiz/Result.jsx
 import React, { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';

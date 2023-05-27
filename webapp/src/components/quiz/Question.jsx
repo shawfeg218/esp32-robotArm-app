@@ -51,6 +51,8 @@ export default function Question() {
 
       if (quizError) throw quizError;
 
+      console.log('quizData:', quizData);
+
       const questions = quizData.reduce((acc, row) => {
         if (!(row.question_id in acc)) {
           acc[row.question_id] = {
@@ -80,7 +82,7 @@ export default function Question() {
   useEffect(() => {
     fetchQuestionsData().then((result) => {
       setQuestions(result);
-      // console.log(result);
+      console.log(result);
     });
   }, []);
 

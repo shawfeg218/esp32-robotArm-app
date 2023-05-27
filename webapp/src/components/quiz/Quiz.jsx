@@ -2,6 +2,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import Question from './Question';
 import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import styles from '@/styles/Question.module.css';
+import { BiPlus } from 'react-icons/bi';
+import Link from 'next/link';
 
 function Quiz() {
   const { selectedSubject, setSelectedSubject } = useContext(AppContext);
@@ -34,27 +37,38 @@ function Quiz() {
   }, []);
 
   return (
-    <div>
-      <div>
+    <>
+      <>
         {selectedSubject ? null : (
-          <div className="cardContainer">
-            {subjects.map((subject) => (
-              <div
-                key={subject.name}
-                className="card"
-                onClick={() => handleSelectSubject(subject.name)}
-              >
-                <p>{subject.name.toUpperCase()}</p>
-                <p>subject id: {subject.id}</p>
-                <p>Total questions: {subject.total_questions}</p>
-                <div></div>
-              </div>
-            ))}
-          </div>
+          <>
+            <div className="cardContainer">
+              {subjects.map((subject) => (
+                <div
+                  key={subject.name}
+                  className="card"
+                  onClick={() => handleSelectSubject(subject.name)}
+                >
+                  <p>{subject.name.toUpperCase()}</p>
+                  <p>subject id: {subject.id}</p>
+                  <p>Total questions: {subject.total_questions}</p>
+                  <div></div>
+                </div>
+              ))}
+              <Link href="/quiz/add-subject" passHref>
+                <div className={styles.addQConatiner}>
+                  <div className={styles.addCard}>
+                    <div className="reactIcon">
+                      <BiPlus size="3rem" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </>
         )}
-      </div>
+      </>
       {selectedSubject ? <Question /> : null}
-    </div>
+    </>
   );
 }
 

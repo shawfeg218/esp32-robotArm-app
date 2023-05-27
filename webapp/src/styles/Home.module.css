@@ -3,7 +3,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-left: 13rem;
+  align-items: center;
 }
 
 .historyUl {
