@@ -73,7 +73,7 @@ export default function History() {
     <div className={styles.container}>
       <h2>History</h2>
       {recentHistory.length > 0 ? (
-        <table className="table">
+        <table className="styled-table">
           <thead>
             <tr>
               <th>科目</th>

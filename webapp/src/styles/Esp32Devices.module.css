@@ -85,7 +85,7 @@
 .editDeviceForm {
   width: fit-content;
   height: fit-content;
-  background-color: var(--custom-bg-color);
+  background-color: var(--custom-color-secondary);
   padding: 0.625rem;
 }
 
