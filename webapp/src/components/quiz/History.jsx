@@ -72,26 +72,38 @@ export default function History() {
   return (
     <div className={styles.container}>
       <h2>History</h2>
-      <ul>
-        {recentHistory.length > 0 ? (
-          recentHistory.map((entry, index) => (
-            <p key={index}>
-              科目: {entry.subject_name} 得分: {entry.score} Date:{' '}
-              {new Date(entry.inserted_at).toLocaleDateString(undefined, {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              })}
-              {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </p>
-          ))
-        ) : (
-          <li>No history data available.</li>
-        )}
-      </ul>
+      {recentHistory.length > 0 ? (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>科目</th>
+              <th>得分</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentHistory.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.subject_name}</td>
+                <td>{entry.score}</td>
+                <td>
+                  {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  })}{' '}
+                  {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No history data available.</p>
+      )}
       <div className={styles.btnContainer}>
         <button onClick={handlePrevPage} disabled={page === 0}>
           Prev
