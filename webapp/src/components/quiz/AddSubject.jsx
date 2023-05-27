@@ -1,9 +1,10 @@
+// webapp\src\components\quiz\AddSubject.jsx
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import styles from '@/styles/AddSubject.module.css';
 import { IoIosRemove } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
-import PrettyTextarea from '../PrettyTextarea';
+import PrettyTextArea from '../PrettyTextArea';
 
 export default function AddSubject() {
   const supabase = useSupabaseClient();
@@ -178,7 +179,7 @@ export default function AddSubject() {
       <div className={styles.subjectForm}>
         <h2>Subject</h2>
         <label>Subject Name</label>
-        <PrettyTextarea
+        <PrettyTextArea
           value={subjectName}
           onChange={handleSubjectChange}
           required
@@ -200,7 +201,7 @@ export default function AddSubject() {
               )}
             </div>
             <label>
-              <PrettyTextarea
+              <PrettyTextArea
                 value={question.text}
                 onChange={(e) => handleQuestionChange(e, questionIndex)}
                 required
@@ -238,7 +239,7 @@ export default function AddSubject() {
                       )}
                     </div>
                     <label key={optionIndex}>選項{optionIndex + 1}</label>
-                    <PrettyTextarea
+                    <PrettyTextArea
                       value={option.text}
                       onChange={(e) =>
                         handleOptionChange(e, questionIndex, optionIndex)

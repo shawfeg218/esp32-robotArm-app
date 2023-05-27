@@ -1,9 +1,9 @@
-// file: webapp\src\components\PrettyTextarea.jsx
+// file: webapp\src\components\PrettyTextArea.jsx
 
 import { useEffect, useRef } from 'react';
-import styles from '@/styles/PrettyTextarea.module.css';
+import styles from '@/styles/PrettyTextArea.module.css';
 
-export default function PrettyTextarea({ value, onChange }) {
+export default function PrettyTextArea({ value, onChange }) {
   const textareaRef = useRef(null);
 
   useEffect(() => {
