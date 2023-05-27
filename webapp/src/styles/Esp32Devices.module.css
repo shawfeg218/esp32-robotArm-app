@@ -20,19 +20,22 @@
 }
 .esp32Devices ul {
   margin: 0;
-  padding: 0 1.25rem;
+  padding: 0 0.5rem;
   height: 100%;
-  overflow: scroll;
-  overflow-x: auto;
+  overflow-y: scroll;
 }
+
 .esp32Devices li {
   list-style: none;
 }
 
 .listItems {
+  padding: 0.5rem 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 0.625rem;
+  border-bottom: #d6dee1 0.0625rem solid;
 }
 
 .listItems p {
@@ -46,10 +49,11 @@
 
 .editIcons {
   display: flex;
-  margin-left: 1.25rem;
+  /* margin-left: 1.25rem; */
 }
 
 .editIcons div {
+  height: fit-content;
   padding: 0.25rem;
   margin-left: 0.625rem;
   display: flex;
