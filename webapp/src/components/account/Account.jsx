@@ -13,6 +13,7 @@ export default function Account() {
   const session = useSession();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
+  const [fullname, setFullname] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
   const [avatarFileUrl, setAvatarFileUrl] = useState(null);
 
@@ -30,7 +31,7 @@ export default function Account() {
 
       let { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, avatar_url`)
+        .select(`username, full_name, avatar_url`)
         .eq('id', user.id)
         .single();
 
@@ -40,6 +41,7 @@ export default function Account() {
 
       if (data) {
         setUsername(data.username);
+        setFullname(data.full_name);
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
@@ -50,18 +52,23 @@ export default function Account() {
     }
   }
 
-  async function updateProfile({ username, avatar_url }) {
+  async function updateProfile(username, fullname, avatar_url) {
     try {
       setLoading(true);
 
       const updates = {
         id: user.id,
-        username,
-        avatar_url,
+        username: username,
+        full_name: fullname,
+        avatar_url: avatar_url,
         updated_at: new Date().toISOString(),
       };
 
-      let { error } = await supabase.from('profiles').upsert(updates);
+      let { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id);
+
       if (error) throw error;
       alert('Profile updated!');
     } catch (error) {
@@ -166,12 +173,19 @@ export default function Account() {
           value={username || ''}
           onChange={(e) => setUsername(e.target.value)}
         />
+        <label htmlFor="fullname">Fullname</label>
+        <input
+          id="fullname"
+          type="text"
+          value={fullname || ''}
+          onChange={(e) => setFullname(e.target.value)}
+        />
       </div>
 
       <div>
         <button
           className="button primary "
-          onClick={() => updateProfile({ username, avatar_url })}
+          onClick={() => updateProfile(username, fullname, avatar_url)}
           disabled={loading}
         >
           {loading ? 'Loading ...' : 'Update'}
@@ -180,7 +194,7 @@ export default function Account() {
 
       <div>
         <button className="button " onClick={() => supabase.auth.signOut()}>
-          Sign Out
+          Log Out
         </button>
       </div>
     </div>

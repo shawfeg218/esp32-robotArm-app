@@ -11,7 +11,6 @@ extern "C"
     uint8_t temprature_sens_read();
 }
 
-
 WebServer server(80);
 
 WiFiManager wifiManager;
@@ -38,8 +37,9 @@ int angleE;
 int angleF;
 
 void handleResetWifi();
+void handleResetWifiWrapper();
+void handleRoot();
 void correctAct();
-void wrongAct();
 void grabAct();
 void resetArm();
 void handleSetAxisAngle();
@@ -53,6 +53,9 @@ void setup() {
   // 嘗試連接到已知的 WiFi 網絡，如果無法連接，開啟熱點
   setupWifiManager();
 
+  server.on("/", handleRoot);  // 新增這一行
+  server.on("/resetWifi", handleResetWifiWrapper);  // 新增這一行
+  
   server.begin(); 
   Serial.println("Web server started");
 
@@ -73,6 +76,31 @@ void loop() {
   mqttClient.loop();
   server.handleClient();
   delay(10);
+}
+
+// 新增這一段
+void handleRoot() {
+  String html = R"(
+    <html>
+    <body>
+    <h1>Hello, world!</h1>
+    <p>MAC Address: )" + WiFi.macAddress() + R"(</p>
+    <button id="resetButton">Reset Wi-Fi</button>
+    <script>
+    document.getElementById('resetButton').addEventListener('click', function() {
+      fetch('/resetWifi');
+    });
+    </script>
+    </body>
+    </html>
+  )";
+  server.send(200, "text/html", html);
+}
+
+// 新增這一段
+void handleResetWifiWrapper() {
+  handleResetWifi();
+  server.send(200, "text/plain", "Wi-Fi reset");
 }
 
 void setupWifiManager() {
