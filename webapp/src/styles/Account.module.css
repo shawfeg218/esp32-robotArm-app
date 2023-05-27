@@ -17,8 +17,8 @@
 
 .avatarBtn {
   color: rgb(255, 246, 238);
-  background-color: var(--custom-color-brand);
-  border: 0.0625rem solid var(--custom-color-brand);
+  background-color: var(--custom-primary-color);
+  border: var(--custom-border);
   border-radius: var(--custom-border-radius);
   padding: 0.5rem 1rem;
   margin-bottom: 1rem;

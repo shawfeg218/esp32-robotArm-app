@@ -21,6 +21,9 @@
 .esp32Devices ul {
   margin: 0;
   padding: 0 1.25rem;
+  height: 100%;
+  overflow: scroll;
+  overflow-x: auto;
 }
 .esp32Devices li {
   list-style: none;

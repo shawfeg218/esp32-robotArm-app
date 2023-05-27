@@ -35,7 +35,8 @@ export default function Esp32Devices() {
       const { data, error } = await supabase
         .from('esp32_devices')
         .select('*')
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .order('inserted_at', { ascending: false });
 
       if (error) {
         throw error;
@@ -46,6 +47,7 @@ export default function Esp32Devices() {
       alert('Error loading devices!');
       console.log(error);
     } finally {
+      console.log(devices);
       setLoading(false);
     }
   }
@@ -66,9 +68,9 @@ export default function Esp32Devices() {
         throw error;
       }
 
-      setDevices([...devices, newDevice]);
       setAddDeviceName('');
       setAddMacAddress('');
+      getDevices();
     } catch (error) {
       alert('Error adding device!');
       console.log(error);
@@ -96,6 +98,7 @@ export default function Esp32Devices() {
         (device) => device.id !== deviceToDelete.id
       );
       setDevices(updatedDevices);
+      getDevices();
     } catch (error) {
       alert('Error deleting device!');
       console.log(error);
@@ -130,11 +133,8 @@ export default function Esp32Devices() {
         throw error;
       }
 
-      const updatedDevices = [...devices];
-      updatedDevices[index].device_name = editDeviceName;
-      updatedDevices[index].mac_address = editMacAddress;
-      setDevices(updatedDevices);
       setEditingDeviceIndex(null);
+      getDevices();
     } catch (error) {
       alert('Error updating device!');
       console.log(error);

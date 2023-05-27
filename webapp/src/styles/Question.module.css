@@ -84,7 +84,7 @@
 }
 
 .addQConatiner {
-  border-left: black 0.16rem solid;
+  border-left: rgb(200, 200, 200) 0.16rem solid;
   padding: 0 1.25rem;
   height: fit-content;
   display: flex;
