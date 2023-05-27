@@ -1,3 +1,5 @@
+// file: webapp\src\components\PrettyTextarea.jsx
+
 import { useEffect, useRef } from 'react';
 import styles from '@/styles/PrettyTextarea.module.css';
 

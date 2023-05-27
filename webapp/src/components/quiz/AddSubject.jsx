@@ -179,7 +179,6 @@ export default function AddSubject() {
         <h2>Subject</h2>
         <label>Subject Name</label>
         <PrettyTextarea
-          id="subjectName"
           value={subjectName}
           onChange={handleSubjectChange}
           required
@@ -202,7 +201,6 @@ export default function AddSubject() {
             </div>
             <label>
               <PrettyTextarea
-                id={`question-${questionIndex}`}
                 value={question.text}
                 onChange={(e) => handleQuestionChange(e, questionIndex)}
                 required
@@ -211,47 +209,44 @@ export default function AddSubject() {
 
             <div className={styles.optionForm}>
               {question.options.map((option, optionIndex) => (
-                <>
-                  <div className={styles.optionItemContainer} key={optionIndex}>
-                    <div className={styles.optionContainer}>
-                      <div className={styles.option_bar}>
-                        <div id="correct" className={styles.correctDiv}>
-                          <input
-                            type="checkbox"
-                            name={`correct-option-${questionIndex}`}
-                            checked={option.is_correct}
-                            onChange={() =>
-                              handleOptionCorrectChange(
-                                questionIndex,
-                                optionIndex
-                              )
-                            }
-                          />
-                          <h4>選為正確選項</h4>
-                        </div>
-                        {question.options.length > 2 && (
-                          <div
-                            className={styles.removeIcon}
-                            onClick={() =>
-                              removeOption(questionIndex, optionIndex)
-                            }
-                          >
-                            <IoIosRemove className="reactIcons" size="2rem" />
-                          </div>
-                        )}
+                <div className={styles.optionItemContainer} key={optionIndex}>
+                  <div className={styles.optionContainer}>
+                    <div className={styles.option_bar}>
+                      <div className={styles.correctDiv}>
+                        <input
+                          type="checkbox"
+                          name={`correct-option-${questionIndex}`}
+                          checked={option.is_correct}
+                          onChange={() =>
+                            handleOptionCorrectChange(
+                              questionIndex,
+                              optionIndex
+                            )
+                          }
+                        />
+                        <h4>選為正確選項</h4>
                       </div>
-                      <label key={optionIndex}>選項{optionIndex + 1}</label>
-                      <PrettyTextarea
-                        id={`option-${questionIndex}-${optionIndex}`}
-                        value={option.text}
-                        onChange={(e) =>
-                          handleOptionChange(e, questionIndex, optionIndex)
-                        }
-                        required
-                      />
+                      {question.options.length > 2 && (
+                        <div
+                          className={styles.removeIcon}
+                          onClick={() =>
+                            removeOption(questionIndex, optionIndex)
+                          }
+                        >
+                          <IoIosRemove className="reactIcons" size="2rem" />
+                        </div>
+                      )}
                     </div>
+                    <label key={optionIndex}>選項{optionIndex + 1}</label>
+                    <PrettyTextarea
+                      value={option.text}
+                      onChange={(e) =>
+                        handleOptionChange(e, questionIndex, optionIndex)
+                      }
+                      required
+                    />
                   </div>
-                </>
+                </div>
               ))}
             </div>
             <button
