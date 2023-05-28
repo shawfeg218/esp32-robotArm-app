@@ -28,7 +28,7 @@
   background-color: #ccc;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1500px) {
   .menuDiv {
     display: none;
   }
