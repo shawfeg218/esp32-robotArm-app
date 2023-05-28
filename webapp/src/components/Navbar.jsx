@@ -27,10 +27,10 @@ export default function Navbar() {
     const currentTime = Date.now();
     if (currentTime - lastHeartbeat > 10000) {
       setConnected(false);
-      console.log('disconnected');
+      // console.log('disconnected');
     } else {
       setConnected(true);
-      console.log('connected');
+      // console.log('connected');
     }
   };
 
@@ -42,7 +42,7 @@ export default function Navbar() {
         })
         .then((res) => {
           checkConnection(res.data);
-          // console.log(res.data);
+          console.log(res.data);
         });
     }, 5000);
     return () => clearInterval(interval);
