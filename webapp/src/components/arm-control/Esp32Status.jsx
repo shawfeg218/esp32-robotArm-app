@@ -31,30 +31,30 @@ export default function Esp32Status() {
     return () => clearInterval(interval);
   }, []);
 
-  const checkConnection = (lastHeartbeat) => {
-    const currentTime = Date.now();
-    if (currentTime - lastHeartbeat > 10000) {
-      setConnected(false);
-      // console.log('disconnected');
-    } else {
-      setConnected(true);
-      // console.log('connected');
-    }
-  };
+  // const checkConnection = (lastHeartbeat) => {
+  //   const currentTime = Date.now();
+  //   if (currentTime - lastHeartbeat > 10000) {
+  //     setConnected(false);
+  //     // console.log('disconnected');
+  //   } else {
+  //     setConnected(true);
+  //     // console.log('connected');
+  //   }
+  // };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      axios
-        .post('/api/get-heartbeat', {
-          connectedMacAddress,
-        })
-        .then((res) => {
-          checkConnection(res.data);
-          // console.log(res.data);
-        });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     axios
+  //       .post('/api/get-heartbeat', {
+  //         connectedMacAddress,
+  //       })
+  //       .then((res) => {
+  //         checkConnection(res.data);
+  //         // console.log(res.data);
+  //       });
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div className={styles.statusContainer}>
