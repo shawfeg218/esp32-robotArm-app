@@ -79,7 +79,7 @@ export default function Navbar() {
           </Link>
         </li>
 
-        <Link href={'/account'} passHref>
+        <Link href="/account" passHref>
           <div className={styles.avatarContainer}>
             <Avatar size={36} />
           </div>

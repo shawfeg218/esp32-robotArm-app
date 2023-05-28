@@ -7,6 +7,7 @@ import { TfiPanel } from 'react-icons/tfi';
 import { GrConnect } from 'react-icons/gr';
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
+import Avatar from './account/Avatar';
 
 export default function Sidebar() {
   const { displaySidebar, setDisplaySidebar } = useContext(AppContext);
@@ -59,6 +60,18 @@ export default function Sidebar() {
             </div>
             <div>
               <p>連線設定</p>
+            </div>
+          </div>
+        </Link>
+        <Link href="/account" passHref>
+          <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
+            <div>
+              <div className={styles.avatarContainer}>
+                <Avatar size={32} />
+              </div>
+            </div>
+            <div>
+              <p>帳號資料</p>
             </div>
           </div>
         </Link>
