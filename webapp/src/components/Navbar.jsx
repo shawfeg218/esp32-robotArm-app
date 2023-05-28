@@ -1,3 +1,4 @@
+// file: Navbar.jsx
 import Link from 'next/link';
 import styles from '@/styles/Navbar.module.css';
 import Avatar from './account/Avatar';
@@ -20,6 +21,7 @@ export default function Navbar() {
 
   const showSidebar = () => {
     setDisplaySidebar(!displaySidebar);
+    // console.log('showSidebar: ' + displaySidebar);
   };
 
   const checkConnection = (lastHeartbeat) => {
