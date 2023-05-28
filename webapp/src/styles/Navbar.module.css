@@ -97,6 +97,11 @@
   fill: #f44336;
 }
 
+.green {
+  display: flex;
+  align-items: center;
+}
+
 .green svg {
   fill: #4caf50;
 }

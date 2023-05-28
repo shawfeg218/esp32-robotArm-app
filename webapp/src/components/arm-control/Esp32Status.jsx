@@ -25,7 +25,7 @@ export default function Esp32Status() {
         })
         .then((res) => {
           setEsp32Status(res.data);
-          // console.log(res.data);
+          console.log(res.data);
         });
     }, 3000);
     return () => clearInterval(interval);
@@ -33,7 +33,7 @@ export default function Esp32Status() {
 
   const checkConnection = (lastHeartbeat) => {
     const currentTime = Date.now();
-    if (currentTime - lastHeartbeat > 6000) {
+    if (currentTime - lastHeartbeat > 10000) {
       setConnected(false);
       // console.log('disconnected');
     } else {
