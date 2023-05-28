@@ -42,7 +42,6 @@ export default function Navbar() {
         })
         .then((res) => {
           checkConnection(res.data);
-          console.log(res.data);
         });
     }, 5000);
     return () => clearInterval(interval);
