@@ -164,10 +164,10 @@ button.primary,
   align-items: center;
   justify-content: center;
 }
-
+/* 
 .reactIcons {
-  /* margin: .3125rem; */
-}
+  margin: .3125rem;
+} */
 
 .reactIcons path {
   color: rgb(0, 0, 0);

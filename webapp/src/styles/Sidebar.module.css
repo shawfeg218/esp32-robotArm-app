@@ -16,6 +16,12 @@
   transform: translateX(0);
 }
 
+@media (min-width: 1200px) {
+  .container {
+    transform: translateX(0);
+  }
+}
+
 .itemDiv {
   padding: 5rem 0;
   display: flex;

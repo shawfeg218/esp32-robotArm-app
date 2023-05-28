@@ -28,6 +28,12 @@
   background-color: #ccc;
 }
 
+@media (min-width: 1200px) {
+  .menuDiv {
+    display: none;
+  }
+}
+
 .logo {
   /* margin-left: 1.5rem; */
   display: flex;
