@@ -6,6 +6,7 @@ export default function History() {
   const [recentHistory, setRecentHistory] = useState([]);
   const [page, setPage] = useState(0); // page starts from 0
   const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 8;
   const supabase = useSupabaseClient();
   const user = useUser();
@@ -25,6 +26,7 @@ export default function History() {
   }
 
   async function fetchRecentHistory() {
+    setLoading(true);
     const { data, error } = await supabase
       .from('result_history')
       .select('*')
@@ -53,6 +55,7 @@ export default function History() {
       );
 
       setRecentHistory(Data_with_subject_name);
+      setLoading(false);
     }
   }
 
@@ -72,50 +75,62 @@ export default function History() {
   return (
     <div className={styles.container}>
       <h2>History</h2>
-      {recentHistory.length > 0 ? (
-        <table className="styled-table">
-          <thead>
-            <tr>
-              <th>科目</th>
-              <th>得分</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentHistory.map((entry, index) => (
-              <tr key={index}>
-                <td>{entry.subject_name}</td>
-                <td>{entry.score}</td>
-                <td>
-                  {new Date(entry.inserted_at).toLocaleDateString(undefined, {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })}{' '}
-                  {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {loading ? (
+        'loading...'
       ) : (
-        <p>No history data available.</p>
+        <div className={styles.history_container}>
+          {recentHistory.length > 0 ? (
+            <table className="styled-table">
+              <thead>
+                <tr>
+                  <th>科目</th>
+                  <th>得分</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentHistory.map((entry, index) => (
+                  <tr key={index}>
+                    <td>{entry.subject_name}</td>
+                    <td>{entry.score}</td>
+                    <td>
+                      {new Date(entry.inserted_at).toLocaleDateString(
+                        undefined,
+                        {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                        }
+                      )}{' '}
+                      {new Date(entry.inserted_at).toLocaleTimeString(
+                        undefined,
+                        {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        }
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No history data available.</p>
+          )}
+          <div className={styles.btnContainer}>
+            <button onClick={handlePrevPage} disabled={page === 0}>
+              Prev
+            </button>
+            <p>{page + 1}</p>
+            <button
+              onClick={handleNextPage}
+              disabled={(page + 1) * itemsPerPage >= totalItems}
+            >
+              Next
+            </button>
+          </div>
+        </div>
       )}
-      <div className={styles.btnContainer}>
-        <button onClick={handlePrevPage} disabled={page === 0}>
-          Prev
-        </button>
-        <p>{page + 1}</p>
-        <button
-          onClick={handleNextPage}
-          disabled={(page + 1) * itemsPerPage >= totalItems}
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 }

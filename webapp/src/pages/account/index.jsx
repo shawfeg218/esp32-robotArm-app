@@ -3,10 +3,5 @@ import Account from '@/components/account/Account';
 import ResetPassword from '@/components/account/ResetPassword';
 
 export default function AccountPage() {
-  return (
-    // <div className="flex-container">
-    <Account />
-    // <ResetPassword />
-    // </div>
-  );
+  return <Account />;
 }

@@ -49,7 +49,7 @@ body,
   padding: 0;
   margin: 0;
   min-height: 100vh;
-  /* overflow-x: hidden; */
+  overflow-x: hidden;
 }
 
 /* Forms */
@@ -178,7 +178,7 @@ button.primary,
   margin: 0.5rem 0;
   font-size: 0.9em;
   font-family: sans-serif;
-  min-width: 400px;
+  min-width: 350px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 

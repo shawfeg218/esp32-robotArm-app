@@ -6,9 +6,11 @@ import { GrConnect } from 'react-icons/gr';
 import { TfiPanel } from 'react-icons/tfi';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import History from '../quiz/History';
 
 export default function Home() {
   const [recentHistory, setRecentHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
   const supabase = useSupabaseClient();
   const user = useUser();
 
@@ -17,6 +19,8 @@ export default function Home() {
   }, []);
 
   async function fetchRecentHistory() {
+    setLoading(true);
+
     const { data, error } = await supabase
       .from('result_history')
       .select('*')
@@ -45,6 +49,7 @@ export default function Home() {
       );
 
       setRecentHistory(Data_with_subject_name);
+      setLoading(false);
     }
   }
 
@@ -78,47 +83,56 @@ export default function Home() {
           </div>
         </Link>
       </div>
-
-      <div className={styles.historyContainer}>
-        <h2>History</h2>
-        {recentHistory.length > 0 ? (
-          <table className="styled-table">
-            <thead>
-              <tr>
-                <th>科目</th>
-                <th>得分</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentHistory.map((entry, index) => (
-                <tr key={index}>
-                  <td>{entry.subject_name}</td>
-                  <td>{entry.score}</td>
-                  <td>
-                    {new Date(entry.inserted_at).toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                    })}{' '}
-                    {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </td>
+      {loading ? (
+        'Loading...'
+      ) : (
+        <div className={styles.history_container}>
+          <h2>History</h2>
+          {recentHistory.length > 0 ? (
+            <table className="styled-table">
+              <thead>
+                <tr>
+                  <th>科目</th>
+                  <th>得分</th>
+                  <th>Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No history data available.</p>
-        )}
-        {recentHistory.length > 0 && (
-          <Link href="/history">
-            <button>更多</button>
-          </Link>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {recentHistory.map((entry, index) => (
+                  <tr key={index}>
+                    <td>{entry.subject_name}</td>
+                    <td>{entry.score}</td>
+                    <td>
+                      {new Date(entry.inserted_at).toLocaleDateString(
+                        undefined,
+                        {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                        }
+                      )}{' '}
+                      {new Date(entry.inserted_at).toLocaleTimeString(
+                        undefined,
+                        {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        }
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No history data available.</p>
+          )}
+          {recentHistory.length > 0 && (
+            <Link href="/history">
+              <button>更多</button>
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   );
 }

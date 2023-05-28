@@ -14,12 +14,12 @@
 }
 
 .menuDiv {
+  margin-left: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 3rem;
   height: 3rem;
-  margin-left: 2rem;
 }
 
 .menuDiv:hover {
@@ -47,10 +47,10 @@
 }
 
 .navbarList {
+  margin-right: 1rem;
   display: flex;
   align-items: center;
   list-style: none;
-  margin: 0.5rem 1rem 0.5rem 0.5rem;
 }
 
 .navbarItem {
@@ -65,7 +65,6 @@
 
 .conBtn {
   padding: 0.5rem;
-  margin-right: 2rem;
   display: flex;
   align-items: center;
   border: 0.1rem solid #bebebe;

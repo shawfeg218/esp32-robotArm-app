@@ -9,8 +9,18 @@ import AppContext from '@/contexts/AppContext';
 import axios from 'axios';
 
 export default function Navbar() {
-  const { connectedDeviceName, connectedMacAddress, connected, setConnected } =
-    useContext(AppContext);
+  const {
+    connectedDeviceName,
+    connectedMacAddress,
+    connected,
+    setConnected,
+    displaySidebar,
+    setDisplaySidebar,
+  } = useContext(AppContext);
+
+  const showSidebar = () => {
+    setDisplaySidebar(!displaySidebar);
+  };
 
   const checkConnection = (lastHeartbeat) => {
     const currentTime = Date.now();
@@ -39,9 +49,9 @@ export default function Navbar() {
 
   return (
     <nav className={styles.navbar}>
-      {/* <div className={styles.menuDiv}>
+      <div className={styles.menuDiv} onClick={showSidebar}>
         <RxHamburgerMenu className="reactIcons" size="1.8rem" />
-      </div> */}
+      </div>
       <Link href="/" passHref>
         <div className={styles.logo}>
           <span>Esp32App</span>
