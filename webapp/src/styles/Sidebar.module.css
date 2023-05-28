@@ -3,7 +3,7 @@
   position: fixed;
   background-color: var(--custom-main-color);
   border-right: 0.0625rem solid #ececf1;
-  width: 9rem;
+  width: 13rem;
   height: 100vh;
   z-index: 999;
 
@@ -38,6 +38,14 @@
   /* flex-direction: column; */
   justify-content: space-around;
   align-items: center;
+}
+
+.item div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: aqua; */
 }
 
 .item p {

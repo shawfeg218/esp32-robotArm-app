@@ -17,33 +17,49 @@ export default function Sidebar() {
         <Link href="/" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
-              <AiOutlineHome className="reactIcons" size="2rem" />
+              <div>
+                <AiOutlineHome className="reactIcons" size="2rem" />
+              </div>
             </div>
-            <p>HOME</p>
+            <div>
+              <p>HOME</p>
+            </div>
           </div>
         </Link>
         <Link href="/quiz" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
-              <FaChalkboardTeacher className="reactIcons" size="2rem" />
+              <div>
+                <FaChalkboardTeacher className="reactIcons" size="2rem" />
+              </div>
             </div>
-            <p>QUIZ</p>
+            <div>
+              <p>QUIZ</p>
+            </div>
           </div>
         </Link>
         <Link href="/arm-control" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
-              <TfiPanel className="reactIcons" size="2rem" />
+              <div>
+                <TfiPanel className="reactIcons" size="2rem" />
+              </div>
             </div>
-            <p>操作手臂</p>
+            <div>
+              <p>操作手臂</p>
+            </div>
           </div>
         </Link>
         <Link href="/device" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
-              <GrConnect className="reactIcons" size="2rem" />
+              <div>
+                <GrConnect className="reactIcons" size="2rem" />
+              </div>
             </div>
-            <p>連線設定</p>
+            <div>
+              <p>連線設定</p>
+            </div>
           </div>
         </Link>
       </div>
