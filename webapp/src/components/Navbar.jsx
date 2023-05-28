@@ -1,3 +1,4 @@
+// file: Navbar.jsx
 import Link from 'next/link';
 import styles from '@/styles/Navbar.module.css';
 import Avatar from './account/Avatar';
@@ -9,8 +10,19 @@ import AppContext from '@/contexts/AppContext';
 import axios from 'axios';
 
 export default function Navbar() {
-  const { connectedDeviceName, connectedMacAddress, connected, setConnected } =
-    useContext(AppContext);
+  const {
+    connectedDeviceName,
+    connectedMacAddress,
+    connected,
+    setConnected,
+    displaySidebar,
+    setDisplaySidebar,
+  } = useContext(AppContext);
+
+  const showSidebar = () => {
+    setDisplaySidebar(!displaySidebar);
+    // console.log('showSidebar: ' + displaySidebar);
+  };
 
   const checkConnection = (lastHeartbeat) => {
     const currentTime = Date.now();
@@ -39,9 +51,9 @@ export default function Navbar() {
 
   return (
     <nav className={styles.navbar}>
-      {/* <div className={styles.menuDiv}>
+      <div className={styles.menuDiv} onClick={showSidebar}>
         <RxHamburgerMenu className="reactIcons" size="1.8rem" />
-      </div> */}
+      </div>
       <Link href="/" passHref>
         <div className={styles.logo}>
           <span>Esp32App</span>
@@ -67,7 +79,7 @@ export default function Navbar() {
           </Link>
         </li>
 
-        <Link href={'/account'} passHref>
+        <Link href="/account" passHref>
           <div className={styles.avatarContainer}>
             <Avatar size={36} />
           </div>

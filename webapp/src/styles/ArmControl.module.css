@@ -2,6 +2,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
+  /* margin-top: 1rem; */
+  width: fit-content;
 }
 
 .columnContainer {
@@ -12,8 +14,7 @@
 }
 
 .statusContainer {
-  width: 18.75rem;
-  height: 100%;
+  width: 21.875rem;
   border: 0.125rem solid #ccc;
   box-shadow: 0 0 0.625rem #ccc;
   padding: 0 1.25rem 1.25rem 1.25rem;
@@ -26,7 +27,7 @@
 }
 
 .controlPanel {
-  width: 17rem;
+  width: 21.875rem;
   border: 0.125rem solid #ccc;
   box-shadow: 0 0 0.625rem #ccc;
   padding: 0 1.25rem 1.25rem 1.25rem;

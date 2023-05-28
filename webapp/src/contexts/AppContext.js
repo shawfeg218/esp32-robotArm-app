@@ -4,6 +4,7 @@ import { createContext, useState } from 'react';
 const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
+  const [displaySidebar, setDisplaySidebar] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState('');
   const [point, setPoint] = useState(0);
   const [connectedDeviceName, setConnectedDeviceName] = useState('');
@@ -13,6 +14,8 @@ export const AppContextProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
+        displaySidebar,
+        setDisplaySidebar,
         selectedSubject,
         setSelectedSubject,
         point,

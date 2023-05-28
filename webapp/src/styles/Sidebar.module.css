@@ -1,8 +1,25 @@
+/* file: Sidebar.module.css */
 .container {
+  position: fixed;
   background-color: var(--custom-main-color);
   border-right: 0.0625rem solid #ececf1;
-  /* margin-right: 3rem; */
-  width: 7rem;
+  width: 13rem;
+  height: 100vh;
+  z-index: 999;
+
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-out;
+}
+
+.container.show {
+  /* 當顯示 Sidebar 時，移動元素到視窗內 */
+  transform: translateX(0);
+}
+
+@media (min-width: 1500px) {
+  .container {
+    transform: translateX(0);
+  }
 }
 
 .itemDiv {
@@ -18,13 +35,20 @@
   width: 100%;
   height: 6rem;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  /* flex-direction: column; */
+  justify-content: space-around;
   align-items: center;
 }
 
+.item div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: aqua; */
+}
+
 .item p {
-  font-size: 0.5rem;
   font-weight: bold;
   margin: 0;
 }

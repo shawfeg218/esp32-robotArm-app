@@ -1,3 +1,8 @@
+.container {
+  width: 100%;
+  max-width: 30rem;
+}
+
 .leaveDiv {
   display: flex;
   height: fit-content;
@@ -14,6 +19,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .questionText {
@@ -27,7 +33,8 @@
   flex-direction: column;
   align-items: center;
   margin-top: 1.25rem;
-  width: 25rem;
+  width: 80%;
+  max-width: 16rem;
   overflow: auto;
 }
 
@@ -84,7 +91,7 @@
 }
 
 .addQConatiner {
-  border-left: rgb(200, 200, 200) 0.16rem solid;
+  /* border-left: rgb(200, 200, 200) 0.16rem solid;  */
   padding: 0 1.25rem;
   height: fit-content;
   display: flex;
@@ -112,31 +119,4 @@
 
 .addCard path {
   fill: black;
-}
-
-@media only screen and (min-width: 320px) {
-  .optionsContainer {
-    max-width: 90%;
-  }
-  .option {
-    max-width: 80%;
-  }
-}
-
-@media only screen and (min-width: 375px) {
-  .optionsContainer {
-    max-width: 80%;
-  }
-}
-
-@media only screen and (min-width: 768px) {
-  .optionsContainer {
-    max-width: 70%;
-  }
-}
-
-@media only screen and (min-width: 1024px) {
-  .optionsContainer {
-    max-width: 50%;
-  }
 }

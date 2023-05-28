@@ -8,7 +8,13 @@
   align-items: center;
 }
 
-.container ul {
+.history_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.history_container ul {
   width: 60%;
   height: 29rem;
   padding: 1rem;
@@ -19,7 +25,7 @@
 }
 
 .btnContainer {
-  width: 40%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
 }

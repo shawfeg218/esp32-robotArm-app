@@ -6,7 +6,7 @@
   border: var(--custom-border);
   border-radius: 0.3125rem;
   margin: 0;
-  padding: 0.5rem;
+  padding: 0.1rem 0.5rem;
   resize: none;
   font-size: 1em;
   line-height: 1.618;

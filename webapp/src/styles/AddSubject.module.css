@@ -1,7 +1,9 @@
 .container {
+  margin-top: 2rem;
   background-color: #fafafa;
-  padding: 0 3rem 3rem 3rem;
-  width: 80%;
+  padding: 0 0.5rem 3rem 0.5rem;
+  width: 100%;
+  max-width: 48.75rem;
 }
 
 .container button {
@@ -32,14 +34,14 @@
 }
 
 .subjectForm {
-  padding: 2rem;
+  padding: 1rem 0.25rem;
   border-bottom: var(--custom-border);
   /* background-color: rgb(208, 244, 232); */
 }
 
 .questionForm {
   margin-bottom: 2rem;
-  padding: 2rem;
+  padding: 1rem 0.25rem;
   padding-bottom: 3rem;
   /* background-color: rgb(208, 244, 232); */
   border-bottom: var(--custom-border);
@@ -55,14 +57,14 @@
   margin-top: 1rem;
   padding: 1rem;
   padding-bottom: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   background-color: rgb(208, 244, 232);
 
   border: var(--custom-border);
 }
 
 .optionForm {
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   /* background-color: rgb(242, 244, 208); */
 }
 
@@ -120,6 +122,11 @@
 .container span {
   color: rgb(255, 55, 55);
 }
+
+.submit_check {
+  word-wrap: break-word;
+}
+
 .submit_check p {
   color: rgb(255, 0, 0);
 }
