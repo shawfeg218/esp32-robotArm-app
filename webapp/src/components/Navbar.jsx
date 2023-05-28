@@ -11,7 +11,6 @@ import axios from 'axios';
 
 export default function Navbar() {
   const {
-    connectedDeviceName,
     connectedMacAddress,
     connected,
     setConnected,
@@ -26,12 +25,12 @@ export default function Navbar() {
 
   const checkConnection = (lastHeartbeat) => {
     const currentTime = Date.now();
-    if (currentTime - lastHeartbeat > 6000) {
+    if (currentTime - lastHeartbeat > 10000) {
       setConnected(false);
-      console.log('disconnected');
+      // console.log('disconnected');
     } else {
       setConnected(true);
-      console.log('connected');
+      // console.log('connected');
     }
   };
 
