@@ -134,6 +134,8 @@ export default function Esp32Devices() {
       }
 
       setEditingDeviceIndex(null);
+      setEditDeviceName('');
+      setEditMacAddress('');
       getDevices();
     } catch (error) {
       alert('Error updating device!');
