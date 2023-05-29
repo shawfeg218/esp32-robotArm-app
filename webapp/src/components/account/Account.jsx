@@ -6,6 +6,7 @@ import {
 } from '@supabase/auth-helpers-react';
 
 import styles from '@/styles/Account.module.css';
+import { Input, Button, Spacer } from '@nextui-org/react';
 
 export default function Account() {
   const supabase = useSupabaseClient();
@@ -162,27 +163,43 @@ export default function Account() {
             {/* <div>user name: {username}</div> */}
           </div>
         </div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={session.user.email} disabled />
+
+        <Input
+          label="Email"
+          color="default"
+          value={session.user.email}
+          readOnly
+          fullWidth
+        />
+        <Spacer y={0.5} />
       </div>
       <div>
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          type="text"
+        <Input
+          label="username"
+          color="default"
+          clearable
+          fullWidth
+          bordered
+          borderWeight="light"
+          placeholder="username"
           value={username || ''}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <label htmlFor="fullname">Fullname</label>
-        <input
-          id="fullname"
-          type="text"
+        <Spacer y={0.5} />
+        <Input
+          label="fullname"
+          color="default"
+          clearable
+          fullWidth
+          bordered
+          borderWeight="light"
+          placeholder="fullname"
           value={fullname || ''}
           onChange={(e) => setFullname(e.target.value)}
         />
       </div>
 
-      <div>
+      <div className={styles.button_group}>
         <button
           className="button primary "
           onClick={() => updateProfile(username, fullname, avatar_url)}
