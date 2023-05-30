@@ -13,6 +13,10 @@
   --custom-main-color: #ffffff;
   --bar-shadow-color: #ccc;
 
+  --navbar-z-index: 1000;
+  --sidebar-z-index: 999;
+  --navbar-overlay-z-index: 998;
+
   font-family: var(--custom-font-family);
   background-color: var(--custom-bg-color);
 }
