@@ -6,21 +6,20 @@
   max-width: 48.75rem;
 }
 
-.container button {
-  color: var(--custom-Text-color);
-  font-weight: 500;
+.submit_btn {
+  width: 100%;
 }
 
 .add_question_btn {
   background-color: rgb(208, 244, 232);
+  color: var(--custom-Text-color);
+  font-weight: 500;
 }
 
 .add_option_btn {
   background-color: azure;
-}
-
-.submit_btn {
-  background-color: #fafafa;
+  color: var(--custom-Text-color);
+  font-weight: 500;
 }
 
 .container label {
@@ -119,7 +118,7 @@
   cursor: pointer;
 }
 
-.container span {
+.submit_check span {
   color: rgb(255, 55, 55);
 }
 

@@ -7,7 +7,7 @@
   padding: 0.625rem;
   border: 0.125rem solid #ccc;
   border-radius: 0.3125rem;
-  background-color: var(--custom-bg-color);
+  background-color: var(--custom-main-color);
   box-shadow: var(--custom-box-shadow);
 }
 

@@ -5,6 +5,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import styles from '@/styles/Question.module.css';
 import { BiPlus } from 'react-icons/bi';
 import Link from 'next/link';
+import { Card } from '@nextui-org/react';
 
 function Quiz() {
   const { selectedSubject, setSelectedSubject } = useContext(AppContext);
@@ -43,7 +44,10 @@ function Quiz() {
           <>
             <div className="cardContainer">
               {subjects.map((subject) => (
-                <div
+                <Card
+                  isHoverable
+                  isPressable
+                  variant="bordered"
                   key={subject.name}
                   className="card"
                   onClick={() => handleSelectSubject(subject.name)}
@@ -52,7 +56,7 @@ function Quiz() {
                   <p>subject id: {subject.id}</p>
                   <p>Total questions: {subject.total_questions}</p>
                   <div></div>
-                </div>
+                </Card>
               ))}
               <Link href="/quiz/add-subject" passHref>
                 <div className={styles.addQConatiner}>

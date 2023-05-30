@@ -5,6 +5,7 @@ import styles from '@/styles/AddSubject.module.css';
 import { IoIosRemove } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
 import PrettyTextArea from '../PrettyTextArea';
+import { Button, Loading } from '@nextui-org/react';
 
 export default function AddSubject() {
   const supabase = useSupabaseClient();
@@ -278,10 +279,14 @@ export default function AddSubject() {
         </h2>
         <p>{message ? message : null}</p>
         <p>{successMessage ? successMessage : null}</p>
-        <button className={styles.submit_btn} type="submit">
-          {udpdating ? 'updating...' : 'submit'}
-        </button>
       </div>
+      <Button ghost className={styles.submit_btn} type="submit">
+        {udpdating ? (
+          <Loading type="points-opacity" color="currentColor" size="sm" />
+        ) : (
+          'submit'
+        )}
+      </Button>
     </form>
   );
 }

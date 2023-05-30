@@ -199,6 +199,7 @@ export default function Account() {
           onChange={(e) => setUsername(e.target.value)}
         />
         <Spacer y={0.5} />
+
         <Input
           label="fullname"
           color="default"

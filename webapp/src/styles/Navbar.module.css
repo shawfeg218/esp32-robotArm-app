@@ -3,14 +3,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--custom-main-color);
+  background-color: white;
   border-bottom: 0.0625rem solid #ececf1;
+  height: 5rem;
   padding: 0.03rem;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: var(--navbar-z-index);
 }
 
 .menuDiv {
