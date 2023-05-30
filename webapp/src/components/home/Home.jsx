@@ -7,6 +7,7 @@ import { TfiPanel } from 'react-icons/tfi';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import History from '../quiz/History';
+import { Card, Text } from '@nextui-org/react';
 
 export default function Home() {
   const [recentHistory, setRecentHistory] = useState([]);
@@ -57,81 +58,87 @@ export default function Home() {
     <div className={styles.container}>
       <div className="cardContainer">
         <Link href="/quiz" passHref>
-          <div className="card">
-            <p>Quiz</p>
+          <Card isHoverable isPressable variant="bordered" className="card">
+            <p>QUIZ</p>
             <div className="reactIconsDiv">
               <FaChalkboardTeacher className="reactIcons" size="5rem" />
             </div>
-          </div>
+          </Card>
         </Link>
 
         <Link href="/arm-control" passHref>
-          <div className="card">
+          <Card isHoverable isPressable variant="bordered" className="card">
             <p>操作手臂</p>
             <div className="reactIconsDiv">
               <TfiPanel className="reactIcons" size="5rem" />
             </div>
-          </div>
+          </Card>
         </Link>
 
         <Link href="/device" passHref>
-          <div className="card">
+          <Card isHoverable isPressable variant="bordered" className="card">
             <p>連線設定</p>
             <div className="reactIconsDiv">
               <GrConnect className="reactIcons" size="5rem" />
             </div>
-          </div>
+          </Card>
         </Link>
       </div>
       {loading ? (
         'Loading...'
       ) : (
-        <div className={styles.history_container}>
-          <h2>History</h2>
-          {recentHistory.length > 0 ? (
-            <table className="styled-table">
-              <thead>
-                <tr>
-                  <th>科目</th>
-                  <th>得分</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentHistory.map((entry, index) => (
-                  <tr key={index}>
-                    <td>{entry.subject_name}</td>
-                    <td>{entry.score}</td>
-                    <td>
-                      {new Date(entry.inserted_at).toLocaleDateString(
-                        undefined,
-                        {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                        }
-                      )}{' '}
-                      {new Date(entry.inserted_at).toLocaleTimeString(
-                        undefined,
-                        {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        }
-                      )}
-                    </td>
+        <Card isHoverable className={styles.history_container}>
+          <Card.Header>
+            <h3>History</h3>
+          </Card.Header>
+          <Card.Body>
+            {recentHistory.length > 0 ? (
+              <table className="styled-table">
+                <thead>
+                  <tr>
+                    <th>科目</th>
+                    <th>得分</th>
+                    <th>Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No history data available.</p>
-          )}
-          {recentHistory.length > 0 && (
-            <Link href="/history">
-              <button>更多</button>
-            </Link>
-          )}
-        </div>
+                </thead>
+                <tbody>
+                  {recentHistory.map((entry, index) => (
+                    <tr key={index}>
+                      <td>{entry.subject_name}</td>
+                      <td>{entry.score}</td>
+                      <td>
+                        {new Date(entry.inserted_at).toLocaleDateString(
+                          undefined,
+                          {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                          }
+                        )}{' '}
+                        {new Date(entry.inserted_at).toLocaleTimeString(
+                          undefined,
+                          {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          }
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No history data available.</p>
+            )}
+          </Card.Body>
+          <Card.Footer>
+            {recentHistory.length > 0 && (
+              <Link href="/history">
+                <button>更多</button>
+              </Link>
+            )}
+          </Card.Footer>
+        </Card>
       )}
     </div>
   );

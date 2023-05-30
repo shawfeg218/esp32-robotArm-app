@@ -117,17 +117,14 @@ button.primary,
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  margin-bottom: 1rem;
 }
 .card {
   width: 9.375rem;
   height: 12.5rem;
   background-color: var(--custom-main-color);
-  border-radius: var(--custom-border-radius);
   padding: 1rem;
   margin: 1rem;
-  box-shadow: var(--custom-box-shadow);
-  display: flex;
-  flex-direction: column;
 }
 
 .card:hover {
