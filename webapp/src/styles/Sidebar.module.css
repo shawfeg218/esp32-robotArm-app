@@ -1,8 +1,9 @@
 /* file: Sidebar.module.css */
 .container {
   position: fixed;
-  background-color: var(--custom-main-color);
+  background-color: white;
   border-right: 0.0625rem solid #ececf1;
+  margin-top: 5rem;
   width: 13rem;
   height: 100vh;
   z-index: var(--sidebar-z-index);

@@ -3,8 +3,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--custom-main-color);
+  background-color: white;
   border-bottom: 0.0625rem solid #ececf1;
+  height: 5rem;
   padding: 0.03rem;
   position: fixed;
   top: 0;

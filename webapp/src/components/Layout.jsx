@@ -5,13 +5,37 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import Sidebar from './Sidebar';
 import AppContext from '@/contexts/AppContext';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 function Overlay({ displaySidebar, setDisplaySidebar }) {
+  function preventScroll(e) {
+    e.preventDefault();
+  }
+
+  function noScroll() {
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+  }
+
+  function canScroll() {
+    window.removeEventListener('wheel', preventScroll);
+    window.removeEventListener('touchmove', preventScroll);
+  }
+
+  useEffect(() => {
+    if (displaySidebar) {
+      noScroll();
+    } else {
+      canScroll();
+    }
+  }, [displaySidebar]);
+
   return (
     <div
       className={`${styles.overlay} ${displaySidebar ? '' : styles.hide}`}
-      onClick={() => setDisplaySidebar(!displaySidebar)}
+      onClick={() => {
+        setDisplaySidebar(!displaySidebar);
+      }}
     ></div>
   );
 }
