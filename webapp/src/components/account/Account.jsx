@@ -6,6 +6,7 @@ import {
 } from '@supabase/auth-helpers-react';
 
 import styles from '@/styles/Account.module.css';
+import { Input, Button, Loading, Spacer } from '@nextui-org/react';
 
 export default function Account() {
   const supabase = useSupabaseClient();
@@ -16,6 +17,8 @@ export default function Account() {
   const [fullname, setFullname] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
   const [avatarFileUrl, setAvatarFileUrl] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [errMessage, setErrMessage] = useState(null);
 
   useEffect(() => {
     getProfile();
@@ -70,9 +73,9 @@ export default function Account() {
         .eq('id', user.id);
 
       if (error) throw error;
-      alert('Profile updated!');
+      setMessage('Profile updated!');
     } catch (error) {
-      alert('Error updating the data!');
+      setErrMessage('Error updating the data!');
       console.log(error);
     } finally {
       setLoading(false);
@@ -143,16 +146,27 @@ export default function Account() {
                 style={{ height: 150, width: 150 }}
               />
             )}
-            <label className={styles.avatarBtn} htmlFor="single">
-              {loading ? 'Loading ...' : 'Upload'}
-            </label>
-            <input
+            <Button htmlFor="upload" flat size="sm">
+              {loading ? (
+                <>
+                  <Loading
+                    type="points-opacity"
+                    color="currentColor"
+                    size="sm"
+                  />
+                </>
+              ) : (
+                'Upload'
+              )}
+            </Button>
+            <Input
               style={{
                 visibility: 'hidden',
                 position: 'absolute',
               }}
+              size="xs"
               type="file"
-              id="single"
+              id="upload"
               accept="image/*"
               onChange={uploadAvatar}
               disabled={loading}
@@ -162,40 +176,66 @@ export default function Account() {
             {/* <div>user name: {username}</div> */}
           </div>
         </div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={session.user.email} disabled />
+
+        <Input
+          label="Email"
+          color="default"
+          value={session.user.email}
+          readOnly
+          fullWidth
+        />
+        <Spacer y={0.5} />
       </div>
       <div>
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          type="text"
+        <Input
+          label="username"
+          color="default"
+          clearable
+          fullWidth
+          bordered
+          borderWeight="light"
+          placeholder="username"
           value={username || ''}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <label htmlFor="fullname">Fullname</label>
-        <input
-          id="fullname"
-          type="text"
+        <Spacer y={0.5} />
+        <Input
+          label="fullname"
+          color="default"
+          clearable
+          fullWidth
+          bordered
+          borderWeight="light"
+          placeholder="fullname"
           value={fullname || ''}
           onChange={(e) => setFullname(e.target.value)}
         />
       </div>
 
-      <div>
-        <button
-          className="button primary "
+      <div className={styles.button_group}>
+        <p className={styles.message}>{message}</p>
+        <p className={styles.errMes}>{errMessage}</p>
+        <Button
+          className={styles.btn}
           onClick={() => updateProfile(username, fullname, avatar_url)}
           disabled={loading}
         >
-          {loading ? 'Loading ...' : 'Update'}
-        </button>
-      </div>
-
-      <div>
-        <button className="button " onClick={() => supabase.auth.signOut()}>
+          {loading ? (
+            <>
+              <Loading type="points-opacity" color="currentColor" size="sm" />
+            </>
+          ) : (
+            'Update'
+          )}
+        </Button>
+        <Button
+          ghost
+          className={styles.btn}
+          onClick={() => supabase.auth.signOut()}
+        >
           Log Out
-        </button>
+        </Button>
+        <Spacer y={0.5} />
       </div>
     </div>
   );

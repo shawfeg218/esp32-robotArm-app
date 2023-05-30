@@ -15,19 +15,22 @@
   display: flex;
 }
 
-.avatarBtn {
-  color: rgb(255, 246, 238);
-  background-color: var(--custom-primary-color);
-  border: var(--custom-border);
-  border-radius: var(--custom-border-radius);
-  padding: 0.5rem 1rem;
-  margin-bottom: 1rem;
-  cursor: pointer;
-  text-align: center;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-}
-
 .profileData {
   width: 9rem;
+}
+
+.button_group {
+  margin-top: 1rem;
+}
+
+.btn {
+  width: 100%;
+}
+
+.message {
+  color: green;
+}
+
+.errMes {
+  color: red;
 }

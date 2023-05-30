@@ -1,6 +1,6 @@
-// file: webapp\src\components\account\ResetPassword.jsx
 import React, { useEffect, useState } from 'react';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { Input, Button, Spacer, Loading } from '@nextui-org/react';
 import styles from '@/styles/ResetPassword.module.css';
 
 export default function ResetPassword() {
@@ -8,61 +8,98 @@ export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState('');
   const [checkPassword, setCheckPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [cantSubmit, setCantSubmit] = useState(false);
   const [message, setMessage] = useState('');
+  const [errorMes, setErrorMes] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
   const [checkMessage, setCheckMessage] = useState('');
+  const [passwordStatus, setPasswordStatus] = useState('default');
+  const [checkStatus, setCheckStatus] = useState('default');
 
   useEffect(() => {
+    if (newPassword.length < 6) {
+      setPasswordMessage('Password should be at least 6 characters!');
+      setPasswordStatus('error');
+      setCantSubmit(true);
+    } else {
+      setPasswordMessage('');
+      setPasswordStatus('default');
+      setCantSubmit(false);
+    }
+
     if (newPassword !== checkPassword) {
       setCheckMessage('Passwords do not match!');
+      setCheckStatus('error');
+      setCantSubmit(true);
     } else {
       setCheckMessage('');
+      setCheckStatus('default');
+      if (newPassword.length >= 6) {
+        setCantSubmit(false);
+      }
     }
-  }, [checkPassword]);
+  }, [newPassword, checkPassword]);
 
   async function handlePasswordReset(e) {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
 
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
     });
 
     if (error) {
-      setMessage(error.message);
+      setPasswordStatus('error');
+      setErrorMes(error);
     } else {
       setMessage('Password updated successfully!');
     }
+
     setLoading(false);
   }
 
   return (
     <div className={styles.container}>
-      <h1>Reset Password</h1>
+      <h2>Reset Password</h2>
       <form onSubmit={handlePasswordReset}>
-        <label htmlFor="newPassword">new password</label>
-        <input
-          id="newPassword"
-          type="password"
-          placeholder="New password"
+        <Input.Password
+          clearable
+          fullWidth
+          status={passwordStatus}
+          helperText={passwordMessage}
+          helperColor={passwordStatus === 'error' ? 'error' : 'default'}
+          label="New password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
-        <label htmlFor="checkPassword">check password</label>
-        <input
-          id="checkPassword"
-          type="password"
-          placeholder="Check password"
+        <Spacer y={1} />
+        <Input.Password
+          clearable
+          fullWidth
+          status={checkStatus}
+          helperText={checkMessage}
+          helperColor={checkStatus === 'error' ? 'error' : 'default'}
+          label="Check password"
           value={checkPassword}
           onChange={(e) => setCheckPassword(e.target.value)}
         />
-        {checkMessage && <p className={styles.checkM}>{checkMessage}</p>}
-
-        <button className="buttton primary" type="submit" disabled={loading}>
-          {loading ? 'Loading...' : 'Reset Password'}
-        </button>
+        <Spacer y={1} />
+        <Button
+          className={styles.submitBtn}
+          type="submit"
+          disabled={cantSubmit || loading}
+        >
+          {loading ? (
+            <>
+              <Loading type="points-opacity" color="currentColor" size="sm" />
+            </>
+          ) : (
+            'Reset Password'
+          )}
+        </Button>
+        <p className={styles.message}>{message}</p>
+        <p className={styles.errMes}>{errorMes}</p>
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 }
