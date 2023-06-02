@@ -1,4 +1,4 @@
-import { wrongAct } from '@/controllers/esp32Controller';
+import { wrongAct } from '@/lib/esp32Function';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

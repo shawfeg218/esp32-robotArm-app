@@ -1,4 +1,4 @@
-import { getHeartbeat } from '@/controllers/esp32Controller';
+import { getHeartbeat } from '@/lib/esp32Function';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

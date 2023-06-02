@@ -1,6 +1,6 @@
 // file: webapp\src\pages\api\set-axis-angle.js
 
-import { setAxisAngle } from '@/controllers/esp32Controller.js';
+import { setAxisAngle } from '@/lib/esp32Function.js';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

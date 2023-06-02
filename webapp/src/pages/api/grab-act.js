@@ -1,6 +1,6 @@
 // file: webapp\src\pages\api\grab-act.js
 
-import { grabAct } from '@/controllers/esp32Controller';
+import { grabAct } from '@/lib/esp32Function';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

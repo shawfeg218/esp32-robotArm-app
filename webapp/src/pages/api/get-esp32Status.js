@@ -1,4 +1,4 @@
-import { getEsp32Status } from '@/controllers/esp32Controller';
+import { getEsp32Status } from '@/lib/esp32Function';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

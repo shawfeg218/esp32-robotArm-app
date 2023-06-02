@@ -1,4 +1,4 @@
-import { resetArm } from '@/controllers/esp32Controller';
+import { resetArm } from '@/lib/esp32Function';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

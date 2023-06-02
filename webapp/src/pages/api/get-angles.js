@@ -1,6 +1,6 @@
 // file: webapp\src\pages\api\get-angles.js
 
-import { getAngles } from '@/controllers/esp32Controller';
+import { getAngles } from '@/lib/esp32Function';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {

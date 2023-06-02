@@ -4,7 +4,8 @@ import {
   getCurrentEsp32Status,
   returnHeartbeat,
   subscribeToTopics,
-} from '@/utils/mqtt';
+} from '@/lib/mqtt';
+
 export const resetWifi = (req, res) => {
   const macAddress = req.body.connectedMacAddress;
 

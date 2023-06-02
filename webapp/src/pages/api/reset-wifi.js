@@ -1,4 +1,4 @@
-import { resetWifi } from '@/controllers/esp32Controller';
+import { resetWifi } from '@/lib/esp32Function';
 
 export default function handler(req, res) {
   if (req.method === 'POST') {
