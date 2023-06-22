@@ -7,7 +7,7 @@ import { TfiPanel } from 'react-icons/tfi';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import History from '../quiz/History';
-import { Card, Text } from '@nextui-org/react';
+import { Button, Card, Text } from '@nextui-org/react';
 
 export default function Home() {
   const [recentHistory, setRecentHistory] = useState([]);
@@ -107,21 +107,15 @@ export default function Home() {
                       <td>{entry.subject_name}</td>
                       <td>{entry.score}</td>
                       <td>
-                        {new Date(entry.inserted_at).toLocaleDateString(
-                          undefined,
-                          {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                          }
-                        )}{' '}
-                        {new Date(entry.inserted_at).toLocaleTimeString(
-                          undefined,
-                          {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          }
-                        )}
+                        {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                        })}{' '}
+                        {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </td>
                     </tr>
                   ))}
@@ -133,8 +127,8 @@ export default function Home() {
           </Card.Body>
           <Card.Footer>
             {recentHistory.length > 0 && (
-              <Link href="/history">
-                <button>更多</button>
+              <Link href="/history" passHref>
+                <button className="rounded-xl border bg-blue-600 w-full">更多</button>
               </Link>
             )}
           </Card.Footer>

@@ -1,7 +1,6 @@
 .container {
   width: 80%;
   padding: 1rem;
-  background-color: white;
   border-radius: 0.625rem;
   display: flex;
   flex-direction: column;
@@ -22,19 +21,4 @@
   flex-direction: column;
   align-items: center;
   background-color: antiquewhite;
-}
-
-.btnContainer {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-
-.btnContainer button {
-  width: 30%;
-  height: 2.5rem;
-  border-radius: 0.625rem;
-  border: none;
-  background-color: #4d6aea;
-  cursor: pointer;
 }

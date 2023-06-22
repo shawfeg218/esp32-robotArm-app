@@ -1,6 +1,7 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import React, { useEffect, useState } from 'react';
 import styles from '@/styles/History.module.css';
+import { Button } from '@nextui-org/react';
 
 export default function History() {
   const [recentHistory, setRecentHistory] = useState([]);
@@ -94,21 +95,15 @@ export default function History() {
                     <td>{entry.subject_name}</td>
                     <td>{entry.score}</td>
                     <td>
-                      {new Date(entry.inserted_at).toLocaleDateString(
-                        undefined,
-                        {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                        }
-                      )}{' '}
-                      {new Date(entry.inserted_at).toLocaleTimeString(
-                        undefined,
-                        {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        }
-                      )}
+                      {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      })}{' '}
+                      {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
                     </td>
                   </tr>
                 ))}
@@ -117,12 +112,17 @@ export default function History() {
           ) : (
             <p>No history data available.</p>
           )}
-          <div className={styles.btnContainer}>
-            <button onClick={handlePrevPage} disabled={page === 0}>
+          <div className="w-full flex justify-between items-center ">
+            <button
+              className="w-fit disabled:bg-gray-300 bg-gray-500"
+              onClick={handlePrevPage}
+              disabled={page === 0}
+            >
               Prev
             </button>
-            <p>{page + 1}</p>
+            <h2 className="mt-2">{page + 1}</h2>
             <button
+              className="w-fit disabled:bg-gray-300 bg-gray-500"
               onClick={handleNextPage}
               disabled={(page + 1) * itemsPerPage >= totalItems}
             >
