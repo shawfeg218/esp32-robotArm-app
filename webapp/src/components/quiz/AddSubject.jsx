@@ -253,7 +253,7 @@ export default function AddSubject() {
         <p>{message ? message : null}</p>
         <p>{successMessage ? successMessage : null}</p>
       </div>
-      <Button ghost className={styles.submit_btn} type="submit">
+      <Button ghost className="hover:bg-blue-600 w-full" type="submit">
         {udpdating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
       </Button>
     </form>

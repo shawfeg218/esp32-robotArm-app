@@ -16,8 +16,7 @@ export default function Esp32Devices() {
   const [editingDeviceIndex, setEditingDeviceIndex] = useState(null);
   const [editDeviceName, setEditDeviceName] = useState('');
   const [editMacAddress, setEditMacAddress] = useState('');
-  const { setConnectedMacAddress, setConnectedDeviceName } =
-    useContext(AppContext);
+  const { setConnectedMacAddress, setConnectedDeviceName } = useContext(AppContext);
 
   const handleConnect = (deviceName, macAddress) => {
     setConnectedDeviceName(deviceName);
@@ -85,18 +84,13 @@ export default function Esp32Devices() {
     try {
       setLoading(true);
 
-      const { error } = await supabase
-        .from('esp32_devices')
-        .delete()
-        .eq('id', deviceToDelete.id);
+      const { error } = await supabase.from('esp32_devices').delete().eq('id', deviceToDelete.id);
 
       if (error) {
         throw error;
       }
 
-      const updatedDevices = devices.filter(
-        (device) => device.id !== deviceToDelete.id
-      );
+      const updatedDevices = devices.filter((device) => device.id !== deviceToDelete.id);
       setDevices(updatedDevices);
       getDevices();
     } catch (error) {
@@ -165,11 +159,7 @@ export default function Esp32Devices() {
                       <div onClick={() => handleDeviceEdit(index)}>
                         <AiOutlineEdit className="reactIcons" size="1rem" />
                       </div>
-                      <div
-                        onClick={() =>
-                          handleConnect(device.device_name, device.mac_address)
-                        }
-                      >
+                      <div onClick={() => handleConnect(device.device_name, device.mac_address)}>
                         <GrConnect className="reactIcons" size="1rem" />
                       </div>
                     </div>
@@ -181,7 +171,7 @@ export default function Esp32Devices() {
             )}
           </ul>
         ) : (
-          <div className={styles.editDeviceForm}>
+          <div className="w-full pr-6">
             <label>Device Name</label>
             <input
               type="text"
@@ -198,14 +188,20 @@ export default function Esp32Devices() {
               value={editMacAddress}
               onChange={(e) => setEditMacAddress(e.target.value)}
             />
-            <div className={styles.editFormBtns}>
+            <div className="mt-2 flex justify-between">
               <button
-                className="button primary"
+                className="w-36 rounded-xl bg-blue-600"
                 onClick={() => handleDeviceUpdate(editingDeviceIndex)}
               >
                 Update
               </button>
-              <button onClick={() => handleDeviceEdit(null)}>Cancel</button>
+              <button
+                className="w-36 rounded-xl bg-blue-600"
+                bg-blue-600
+                onClick={() => handleDeviceEdit(null)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         )}
@@ -231,11 +227,7 @@ export default function Esp32Devices() {
           />
         </div>
         <div>
-          <button
-            className="button primary"
-            onClick={addDevice}
-            disabled={loading}
-          >
+          <button className="w-full rounded-xl bg-blue-600" onClick={addDevice} disabled={loading}>
             {loading ? 'Loading ...' : 'Add Device'}
           </button>
         </div>

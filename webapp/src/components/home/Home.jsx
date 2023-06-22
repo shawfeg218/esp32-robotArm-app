@@ -7,7 +7,7 @@ import { TfiPanel } from 'react-icons/tfi';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import History from '../quiz/History';
-import { Button, Card, Text } from '@nextui-org/react';
+import { Table, Button, Card, Text } from '@nextui-org/react';
 
 export default function Home() {
   const [recentHistory, setRecentHistory] = useState([]);
@@ -59,7 +59,7 @@ export default function Home() {
       <div className="cardContainer">
         <Link href="/quiz" passHref>
           <Card isHoverable isPressable variant="bordered" className="card">
-            <p>QUIZ</p>
+            <h3>QUIZ</h3>
             <div className="reactIconsDiv">
               <FaChalkboardTeacher className="reactIcons" size="5rem" />
             </div>
@@ -68,7 +68,7 @@ export default function Home() {
 
         <Link href="/arm-control" passHref>
           <Card isHoverable isPressable variant="bordered" className="card">
-            <p>操作手臂</p>
+            <h3>操作手臂</h3>
             <div className="reactIconsDiv">
               <TfiPanel className="reactIcons" size="5rem" />
             </div>
@@ -77,7 +77,7 @@ export default function Home() {
 
         <Link href="/device" passHref>
           <Card isHoverable isPressable variant="bordered" className="card">
-            <p>連線設定</p>
+            <h3>連線設定</h3>
             <div className="reactIconsDiv">
               <GrConnect className="reactIcons" size="5rem" />
             </div>
@@ -89,38 +89,48 @@ export default function Home() {
       ) : (
         <Card isHoverable className={styles.history_container}>
           <Card.Header>
-            <h3>History</h3>
+            <h3>HISTORY</h3>
           </Card.Header>
           <Card.Body>
             {recentHistory.length > 0 ? (
-              <table className="styled-table">
-                <thead>
-                  <tr>
-                    <th>科目</th>
-                    <th>得分</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table
+                lined
+                selectionMode="single"
+                containerCss={{ width: '100%', minWidth: 'fit-content' }}
+                css={{ height: 'auto', width: '100%' }}
+              >
+                <Table.Header>
+                  <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
+                    科目
+                  </Table.Column>
+                  <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
+                    得分
+                  </Table.Column>
+                  <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
+                    Date
+                  </Table.Column>
+                </Table.Header>
+                <Table.Body>
                   {recentHistory.map((entry, index) => (
-                    <tr key={index}>
-                      <td>{entry.subject_name}</td>
-                      <td>{entry.score}</td>
-                      <td>
+                    <Table.Row key={index}>
+                      <Table.Cell css={{ textAlign: 'center' }}>{entry.subject_name}</Table.Cell>
+                      <Table.Cell css={{ textAlign: 'center' }}>{entry.score}</Table.Cell>
+                      <Table.Cell css={{ textAlign: 'center' }}>
                         {new Date(entry.inserted_at).toLocaleDateString(undefined, {
                           year: 'numeric',
                           month: '2-digit',
                           day: '2-digit',
-                        })}{' '}
+                        })}
+
                         {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
                           hour: '2-digit',
                           minute: '2-digit',
                         })}
-                      </td>
-                    </tr>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             ) : (
               <p>No history data available.</p>
             )}
@@ -128,7 +138,7 @@ export default function Home() {
           <Card.Footer>
             {recentHistory.length > 0 && (
               <Link href="/history" passHref>
-                <button className="rounded-xl border bg-blue-600 w-full">更多</button>
+                <button className="mt-0 rounded-xl border bg-blue-600 w-full">更多</button>
               </Link>
             )}
           </Card.Footer>

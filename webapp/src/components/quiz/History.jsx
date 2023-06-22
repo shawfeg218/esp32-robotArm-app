@@ -54,17 +54,15 @@ export default function History() {
       ) : (
         <Table
           lined
-          bordered
           selectionMode="single"
-          shadow={false}
           color="primary"
           containerCss={{
-            width: '50%',
+            width: '70%',
             minWidth: 'fit-content',
           }}
           css={{
             height: 'auto',
-            minWidth: '100%',
+            width: '100%',
           }}
         >
           <Table.Header>
@@ -98,7 +96,7 @@ export default function History() {
             ))}
           </Table.Body>
           <Table.Pagination
-            css={{ fontSize: '$lg' }}
+            css={{ fontSize: '$md' }}
             shadow
             noMargin
             align="center"

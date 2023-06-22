@@ -84,19 +84,3 @@
 .addDeviceForm div {
   margin-top: 0.65rem;
 }
-
-.editDeviceForm {
-  width: fit-content;
-  height: fit-content;
-  padding: 0.625rem;
-}
-
-.editFormBtns {
-  margin-top: 0.65rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-.editFormBtns button {
-  width: fit-content;
-}
