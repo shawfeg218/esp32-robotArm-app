@@ -18,9 +18,7 @@ function Quiz() {
 
   async function fetchSubjects() {
     try {
-      const { data, error } = await supabase
-        .from('subjects')
-        .select('id, name, total_questions');
+      const { data, error } = await supabase.from('subjects').select('id, name, total_questions');
 
       if (error) {
         throw error;
@@ -42,7 +40,7 @@ function Quiz() {
       <>
         {selectedSubject ? null : (
           <>
-            <div className="cardContainer">
+            <div className="cardContainer mt-16">
               {subjects.map((subject) => (
                 <Card
                   isHoverable

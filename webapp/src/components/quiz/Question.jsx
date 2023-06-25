@@ -4,6 +4,7 @@ import QuestionView from './QuestionView';
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { Loading } from '@nextui-org/react';
 
 export default function Question() {
   // State
@@ -11,8 +12,7 @@ export default function Question() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState();
-  const { point, setPoint, selectedSubject, connectedMacAddress } =
-    useContext(AppContext);
+  const { point, setPoint, selectedSubject, connectedMacAddress } = useContext(AppContext);
 
   const [questions, setQuestions] = useState({});
   const supabase = useSupabaseClient();
@@ -147,11 +147,7 @@ export default function Question() {
         src="/audio/mixkit-correct-answer-reward-952.wav"
         preload="auto"
       />
-      <audio
-        ref={wrongSoundRef}
-        src="/audio/mixkit-cartoon-failure-piano-473.wav"
-        preload="auto"
-      />
+      <audio ref={wrongSoundRef} src="/audio/mixkit-cartoon-failure-piano-473.wav" preload="auto" />
 
       <QuestionView
         currentQuestionIndex={currentQuestionIndex}
@@ -164,6 +160,6 @@ export default function Question() {
       />
     </>
   ) : (
-    <div>Loading...</div>
+    <Loading color="primary" size="large" />
   );
 }

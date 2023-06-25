@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  useUser,
-  useSupabaseClient,
-  useSession,
-} from '@supabase/auth-helpers-react';
+import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
 
 import styles from '@/styles/Account.module.css';
 import { Input, Button, Loading, Spacer } from '@nextui-org/react';
@@ -67,10 +63,7 @@ export default function Account() {
         updated_at: new Date().toISOString(),
       };
 
-      let { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', user.id);
+      let { error } = await supabase.from('profiles').update(updates).eq('id', user.id);
 
       if (error) throw error;
       setMessage('Profile updated!');
@@ -115,9 +108,7 @@ export default function Account() {
 
   async function downloadImage(path) {
     try {
-      const { data, error } = await supabase.storage
-        .from('avatars')
-        .download(path);
+      const { data, error } = await supabase.storage.from('avatars').download(path);
       if (error) {
         throw error;
       }
@@ -141,30 +132,21 @@ export default function Account() {
                 style={{ height: 150, width: 150 }}
               />
             ) : (
-              <div
-                className="avatar no-image"
-                style={{ height: 150, width: 150 }}
-              />
+              <div className="avatar no-image" style={{ height: 150, width: 150 }} />
             )}
-            <Button htmlFor="upload" flat size="sm">
+            <Button disabled className="m-1 absolute text-blue-600 bg-blue-200" flat size="sm">
               {loading ? (
                 <>
-                  <Loading
-                    type="points-opacity"
-                    color="currentColor"
-                    size="sm"
-                  />
+                  <Loading type="points-opacity" color="currentColor" size="sm" />
                 </>
               ) : (
                 'Upload'
               )}
             </Button>
-            <Input
+            <input
               style={{
-                visibility: 'hidden',
-                position: 'absolute',
+                opacity: 0,
               }}
-              size="xs"
               type="file"
               id="upload"
               accept="image/*"
@@ -172,18 +154,10 @@ export default function Account() {
               disabled={loading}
             />
           </div>
-          <div className={styles.profileData}>
-            {/* <div>user name: {username}</div> */}
-          </div>
+          <div className={styles.profileData}>{/* <div>user name: {username}</div> */}</div>
         </div>
 
-        <Input
-          label="Email"
-          color="default"
-          value={session.user.email}
-          readOnly
-          fullWidth
-        />
+        <Input label="Email" color="default" value={session.user.email} readOnly fullWidth />
         <Spacer y={0.5} />
       </div>
       <div>
@@ -217,7 +191,7 @@ export default function Account() {
         <p className={styles.message}>{message}</p>
         <p className={styles.errMes}>{errMessage}</p>
         <Button
-          className={styles.btn}
+          className="mt-2 bg-blue-600 w-full"
           onClick={() => updateProfile(username, fullname, avatar_url)}
           disabled={loading}
         >
@@ -231,7 +205,7 @@ export default function Account() {
         </Button>
         <Button
           ghost
-          className={styles.btn}
+          className="hover:bg-blue-600 mt-2 w-full"
           onClick={() => supabase.auth.signOut()}
         >
           Log Out

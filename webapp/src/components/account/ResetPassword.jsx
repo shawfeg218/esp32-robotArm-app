@@ -85,7 +85,8 @@ export default function ResetPassword() {
         />
         <Spacer y={1} />
         <Button
-          className={styles.submitBtn}
+          ghost
+          className="hover:bg-blue-600 w-full"
           type="submit"
           disabled={cantSubmit || loading}
         >

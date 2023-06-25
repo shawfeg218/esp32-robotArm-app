@@ -49,8 +49,8 @@ export default function Layout({ children }) {
   return (
     <>
       {!session ? (
-        <div className={styles.auth_page}>
-          <div className={styles.authContainer}>
+        <div className="flex justify-center items-center w-full min-h-screen ">
+          <div className="w-80">
             <Auth
               supabaseClient={supabase}
               appearance={{ theme: ThemeSupa }}
@@ -62,11 +62,8 @@ export default function Layout({ children }) {
       ) : (
         <>
           <Navbar />
-          <Overlay
-            displaySidebar={displaySidebar}
-            setDisplaySidebar={setDisplaySidebar}
-          />
-          <div className={styles.flex}>
+          <Overlay displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
+          <div className="flex min-h-screen">
             <Sidebar />
             <div className={styles.container}>{children}</div>
           </div>
