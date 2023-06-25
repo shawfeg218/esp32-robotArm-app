@@ -187,7 +187,7 @@ export default function AudioChat() {
   }
 
   return (
-    <div className="flex justify-center text-black bg-red-300 w-full h-full mt-16">
+    <div className="flex justify-center text-black  w-full h-full mt-16">
       <div className="w-full h-full min-w-fit justify-center items-center p-5 text-center bg-white">
         <audio ref={ansAudioRef} src={ansAudioUrl} />
         <h1>Audio chat</h1>
@@ -197,7 +197,7 @@ export default function AudioChat() {
         <div className="w-full flex justify-center">
           {recording ? <div className="absolute top-80 z-0 spinner"></div> : null}
           <button
-            className="bg-transparent border-0 flex justify-center p-1 z-10"
+            className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
             onClick={recording ? stopRecording : startRecording}
           >
             <BsMicFill className=" w-16 h-16" />
@@ -207,7 +207,7 @@ export default function AudioChat() {
           {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
         </div>
         <h2>{text ? `${text}` : ''}</h2>
-        <div className="flex justify-center bg-red-300">
+        <div className="flex justify-center">
           {audioData && <audio controls src={URL.createObjectURL(audioData)} className="w-72" />}
         </div>
         <div>{loading ? 'Loading... ' : ''}</div>
