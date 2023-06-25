@@ -10,7 +10,7 @@ export default function AudioChat() {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   // const [type, setType] = useState(null);
   const [ansAudioUrl, setAnsAudioUrl] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [text, setText] = useState(null);
   const [ans, setAns] = useState(null);
@@ -192,7 +192,7 @@ export default function AudioChat() {
         <audio ref={ansAudioRef} src={ansAudioUrl} />
         <h1>Audio chat</h1>
         <div className="overflow-auto h-48 max-w-2xl my-4">
-          <h3 className="text-start">{ans ? ans : 'Start your recording'}</h3>
+          {ans ? <h3 className="text-start">{ans}</h3> : <h3>Start your recording</h3>}
         </div>
         <div className="w-full flex justify-center">
           {recording ? <div className="absolute top-80 z-0 spinner"></div> : null}
