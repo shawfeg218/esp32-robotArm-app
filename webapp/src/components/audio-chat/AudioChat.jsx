@@ -187,7 +187,7 @@ export default function AudioChat() {
   }
 
   return (
-    <div className="flex justify-center text-black bg-red-300 w-full h-full">
+    <div className="flex justify-center text-black bg-red-300 w-full h-full mt-16">
       <div className="w-full h-full min-w-fit justify-center items-center p-5 text-center bg-white">
         <audio ref={ansAudioRef} src={ansAudioUrl} />
         <h1>Audio chat</h1>
@@ -210,7 +210,7 @@ export default function AudioChat() {
         <div className="flex justify-center bg-red-300">
           {audioData && <audio controls src={URL.createObjectURL(audioData)} className="w-72" />}
         </div>
-        <p>{loading ? 'Loading... ' : ''}</p>
+        <div>{loading ? 'Loading... ' : ''}</div>
       </div>
     </div>
   );

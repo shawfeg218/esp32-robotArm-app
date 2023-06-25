@@ -5,6 +5,7 @@
   width: 20rem;
   height: fit-content;
   padding: 0.625rem;
+  margin-top: 4rem;
   border: 0.125rem solid #ccc;
   border-radius: 0.3125rem;
   background-color: var(--custom-main-color);

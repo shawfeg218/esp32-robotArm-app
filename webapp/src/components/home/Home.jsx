@@ -8,11 +8,11 @@ import { BsMicFill } from 'react-icons/bs';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import History from '../quiz/History';
-import { Table, Button, Card, Text } from '@nextui-org/react';
+import { Table, Loading, Button, Card, Text } from '@nextui-org/react';
 
 export default function Home() {
   const [recentHistory, setRecentHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
   const user = useUser();
 
@@ -56,7 +56,7 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="mt-16">
       <div className="cardContainer">
         <Link href="/quiz" passHref>
           <Card isHoverable isPressable variant="bordered" className="card">
@@ -94,66 +94,73 @@ export default function Home() {
           </Card>
         </Link>
       </div>
-      {loading ? (
-        'Loading...'
-      ) : (
-        <Card isHoverable className={styles.history_container}>
-          <Card.Header>
+      <div className="flex justify-center ">
+        {loading ? (
+          <Loading className="mt-16" color="primary" />
+        ) : (
+          <Card isHoverable className={styles.history_container}>
             <h3>HISTORY</h3>
-          </Card.Header>
-          <Card.Body>
-            {recentHistory.length > 0 ? (
-              <Table
-                lined
-                selectionMode="single"
-                containerCss={{ width: '100%', minWidth: 'fit-content' }}
-                css={{ height: 'auto', width: '100%' }}
-              >
-                <Table.Header>
-                  <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
-                    科目
-                  </Table.Column>
-                  <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
-                    得分
-                  </Table.Column>
-                  <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
-                    Date
-                  </Table.Column>
-                </Table.Header>
-                <Table.Body>
-                  {recentHistory.map((entry, index) => (
-                    <Table.Row key={index}>
-                      <Table.Cell css={{ textAlign: 'center' }}>{entry.subject_name}</Table.Cell>
-                      <Table.Cell css={{ textAlign: 'center' }}>{entry.score}</Table.Cell>
-                      <Table.Cell css={{ textAlign: 'center' }}>
-                        {new Date(entry.inserted_at).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                        })}
+            <div>
+              {recentHistory.length > 0 ? (
+                <>
+                  <Table
+                    lined
+                    shadow={false}
+                    selectionMode="single"
+                    containerCss={{ width: '100%', minWidth: 'fit-content' }}
+                    css={{ height: 'auto', width: '100%' }}
+                  >
+                    <Table.Header>
+                      <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
+                        科目
+                      </Table.Column>
+                      <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
+                        得分
+                      </Table.Column>
+                      <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
+                        Date
+                      </Table.Column>
+                    </Table.Header>
+                    <Table.Body>
+                      {recentHistory.map((entry, index) => (
+                        <Table.Row key={index}>
+                          <Table.Cell css={{ textAlign: 'center' }}>
+                            {entry.subject_name}
+                          </Table.Cell>
+                          <Table.Cell css={{ textAlign: 'center' }}>{entry.score}</Table.Cell>
+                          <Table.Cell css={{ textAlign: 'center' }}>
+                            {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                            })}
 
-                        {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            ) : (
-              <p>No history data available.</p>
-            )}
-          </Card.Body>
-          <Card.Footer>
-            {recentHistory.length > 0 && (
-              <Link href="/history" passHref>
-                <button className="mt-0 rounded-xl border bg-blue-600 w-full">更多</button>
-              </Link>
-            )}
-          </Card.Footer>
-        </Card>
-      )}
+                            {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </Table.Cell>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
+                  <div>
+                    {recentHistory.length > 0 && (
+                      <Link href="/history" passHref>
+                        <button className="mt-0 mb-4 rounded-xl border bg-blue-600 w-full">
+                          更多
+                        </button>
+                      </Link>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <p>No history data available.</p>
+              )}
+            </div>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
