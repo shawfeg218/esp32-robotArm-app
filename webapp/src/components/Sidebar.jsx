@@ -5,6 +5,8 @@ import { FaChalkboardTeacher } from 'react-icons/fa';
 import { AiOutlineHome } from 'react-icons/ai';
 import { TfiPanel } from 'react-icons/tfi';
 import { GrConnect } from 'react-icons/gr';
+import { BsMicFill } from 'react-icons/bs';
+
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
 import Avatar from './account/Avatar';
@@ -24,6 +26,19 @@ export default function Sidebar() {
             </div>
             <div>
               <p>HOME</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link href="/audio-chat" passHref>
+          <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
+            <div>
+              <div>
+                <BsMicFill className="reactIcons" size="2rem" />
+              </div>
+            </div>
+            <div>
+              <p>語音聊天</p>
             </div>
           </div>
         </Link>

@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FaChalkboardTeacher } from 'react-icons/fa';
 import { GrConnect } from 'react-icons/gr';
 import { TfiPanel } from 'react-icons/tfi';
+import { BsMicFill } from 'react-icons/bs';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import History from '../quiz/History';
@@ -80,6 +81,15 @@ export default function Home() {
             <h3>連線設定</h3>
             <div className="reactIconsDiv">
               <GrConnect className="reactIcons" size="5rem" />
+            </div>
+          </Card>
+        </Link>
+
+        <Link href="/audio-chat" passHref>
+          <Card isHoverable isPressable variant="bordered" className="card">
+            <h3>語音聊天</h3>
+            <div className="reactIconsDiv">
+              <BsMicFill className="reactIcons" size="5rem" />
             </div>
           </Card>
         </Link>

@@ -18,31 +18,12 @@
 }
 
 .container {
-  padding: 3rem 0.25rem;
   margin: 3rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* background-color: brown; */
+  background-color: brown;
   width: 80%;
-  height: 100%;
-}
-
-.auth_page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.authContainer {
-  width: 20rem;
-  /* background-color: aquamarine; */
-}
-
-.flex {
-  display: flex;
   min-height: 100vh;
 }

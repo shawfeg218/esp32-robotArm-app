@@ -134,7 +134,7 @@ export default function Account() {
             ) : (
               <div className="avatar no-image" style={{ height: 150, width: 150 }} />
             )}
-            <Button disabled className="absolute text-blue-600 bg-blue-200" flat size="sm">
+            <Button disabled className="m-1 absolute text-blue-600 bg-blue-200" flat size="sm">
               {loading ? (
                 <>
                   <Loading type="points-opacity" color="currentColor" size="sm" />
@@ -191,7 +191,7 @@ export default function Account() {
         <p className={styles.message}>{message}</p>
         <p className={styles.errMes}>{errMessage}</p>
         <Button
-          className="bg-blue-600 w-full"
+          className="mt-2 bg-blue-600 w-full"
           onClick={() => updateProfile(username, fullname, avatar_url)}
           disabled={loading}
         >
@@ -203,7 +203,11 @@ export default function Account() {
             'Update'
           )}
         </Button>
-        <Button ghost className="hover:bg-blue-600 w-full" onClick={() => supabase.auth.signOut()}>
+        <Button
+          ghost
+          className="hover:bg-blue-600 mt-2 w-full"
+          onClick={() => supabase.auth.signOut()}
+        >
           Log Out
         </Button>
         <Spacer y={0.5} />
