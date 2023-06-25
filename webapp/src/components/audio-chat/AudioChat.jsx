@@ -188,11 +188,11 @@ export default function AudioChat() {
 
   return (
     <div className="flex justify-center text-black  w-full h-full mt-16">
-      <div className="w-full h-full min-w-fit justify-center items-center p-5 text-center bg-white">
+      <div className="h-full min-w-fit justify-center items-center p-5 text-center bg-white">
         <audio ref={ansAudioRef} src={ansAudioUrl} />
         <h1>Audio chat</h1>
-        <div className="h-48 mt-4">
-          <h3>{ans ? ans : 'Start your recording'}</h3>
+        <div className="overflow-auto h-48 max-w-2xl my-4">
+          <h3 className="text-start">{ans ? ans : 'Start your recording'}</h3>
         </div>
         <div className="w-full flex justify-center">
           {recording ? <div className="absolute top-80 z-0 spinner"></div> : null}
