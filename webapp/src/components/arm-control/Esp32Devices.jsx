@@ -5,6 +5,7 @@ import styles from '@/styles/Esp32Devices.module.css';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { GrConnect } from 'react-icons/gr';
+import { Input, Spacer, Button } from '@nextui-org/react';
 
 export default function Esp32Devices() {
   const supabase = useSupabaseClient();
@@ -172,17 +173,27 @@ export default function Esp32Devices() {
           </ul>
         ) : (
           <div className="w-full pr-6">
-            <label>Device Name</label>
-            <input
-              type="text"
+            <Input
+              label="Device Name"
+              color="default"
+              clearable
+              fullWidth
+              bordered
+              borderWeight="light"
               name="editDeviceName"
               placeholder={devices[editingDeviceIndex].device_name}
               value={editDeviceName}
               onChange={(e) => setEditDeviceName(e.target.value)}
             />
-            <label>MAC Address</label>
-            <input
-              type="text"
+            <Spacer y={0.5} />
+
+            <Input
+              label="Mac Address"
+              color="default"
+              clearable
+              fullWidth
+              bordered
+              borderWeight="light"
               name="editMacAddress"
               placeholder={devices[editingDeviceIndex].mac_address}
               value={editMacAddress}
@@ -190,13 +201,13 @@ export default function Esp32Devices() {
             />
             <div className="mt-2 flex justify-between">
               <button
-                className="w-36 rounded-xl bg-blue-600"
+                className="border-0 w-36 rounded-xl bg-blue-600"
                 onClick={() => handleDeviceUpdate(editingDeviceIndex)}
               >
                 Update
               </button>
               <button
-                className="w-36 rounded-xl bg-blue-600"
+                className="border-0 w-36 rounded-xl bg-blue-600"
                 bg-blue-600
                 onClick={() => handleDeviceEdit(null)}
               >
@@ -208,28 +219,34 @@ export default function Esp32Devices() {
       </div>
       <div className={styles.addDeviceForm}>
         <h3>Add a new device</h3>
+        <Input
+          label="Device Name"
+          color="default"
+          clearable
+          fullWidth
+          bordered
+          id="deviceName"
+          value={addDeviceName}
+          onChange={(e) => setAddDeviceName(e.target.value)}
+        />
+        <Spacer y={0.5} />
+
+        <Input
+          label="Mac Address"
+          color="default"
+          clearable
+          fullWidth
+          bordered
+          id="macAddress"
+          value={addMacAddress}
+          onChange={(e) => setAddMacAddress(e.target.value)}
+        />
+        <Spacer y={0.5} />
+
         <div>
-          <label htmlFor="deviceName">Device Name</label>
-          <input
-            id="deviceName"
-            type="text"
-            value={addDeviceName}
-            onChange={(e) => setAddDeviceName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="macAddress">MAC Address</label>
-          <input
-            id="macAddress"
-            type="text"
-            value={addMacAddress}
-            onChange={(e) => setAddMacAddress(e.target.value)}
-          />
-        </div>
-        <div>
-          <button className="w-full rounded-xl bg-blue-600" onClick={addDevice} disabled={loading}>
+          <Button className="w-full" onClick={addDevice} disabled={loading}>
             {loading ? 'Loading ...' : 'Add Device'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
-
 import styles from '@/styles/Account.module.css';
 import { Input, Button, Loading, Spacer } from '@nextui-org/react';
+import Link from 'next/link';
 
 export default function Account() {
   const supabase = useSupabaseClient();
@@ -157,6 +157,7 @@ export default function Account() {
           <div className={styles.profileData}>{/* <div>user name: {username}</div> */}</div>
         </div>
 
+        <Spacer y={1} />
         <Input label="Email" color="default" value={session.user.email} readOnly fullWidth />
         <Spacer y={0.5} />
       </div>
@@ -210,6 +211,14 @@ export default function Account() {
         >
           Log Out
         </Button>
+        <Link href="/reset-password" passHref>
+          <button
+            type="button"
+            className="bg-white text-red-700 hover:text-white border-2 border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+          >
+            Reset Password
+          </button>
+        </Link>
         <Spacer y={0.5} />
       </div>
     </div>

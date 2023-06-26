@@ -2,6 +2,7 @@
 import React from 'react';
 import styles from '@/styles/ArmControl.module.css';
 import Link from 'next/link';
+import { Spacer } from '@nextui-org/react';
 
 export default function ArmControlView(props) {
   const {
@@ -27,7 +28,9 @@ export default function ArmControlView(props) {
           max="180"
           value={targetAngles.A}
           onChange={(e) => handleChange('A', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
+        <Spacer y={1} />
         <div>B軸角度：{targetAngles.B}°</div>
         <input
           type="range"
@@ -35,7 +38,9 @@ export default function ArmControlView(props) {
           max="180"
           value={targetAngles.B}
           onChange={(e) => handleChange('B', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
+        <Spacer y={1} />
         <div>C軸角度：{targetAngles.C}°</div>
         <input
           type="range"
@@ -43,7 +48,9 @@ export default function ArmControlView(props) {
           max="180"
           value={targetAngles.C}
           onChange={(e) => handleChange('C', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
+        <Spacer y={1} />
         <div>D軸角度：{targetAngles.D}°</div>
         <input
           type="range"
@@ -51,7 +58,9 @@ export default function ArmControlView(props) {
           max="180"
           value={targetAngles.D}
           onChange={(e) => handleChange('D', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
+        <Spacer y={1} />
         <div>E軸角度：{targetAngles.E}°</div>
         <input
           type="range"
@@ -59,7 +68,9 @@ export default function ArmControlView(props) {
           max="180"
           value={targetAngles.E}
           onChange={(e) => handleChange('E', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
+        <Spacer y={1} />
         <div>F軸角度：{targetAngles.F}°</div>
         <input
           type="range"
@@ -67,6 +78,7 @@ export default function ArmControlView(props) {
           max="180"
           value={targetAngles.F}
           onChange={(e) => handleChange('F', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
       </div>
 
@@ -92,7 +104,7 @@ export default function ArmControlView(props) {
             F軸-當前角度：{currentAngles.F}° - 目標角度：{targetAngles.F}°
           </div>
         </div>
-        
+
         <div className={styles.btnContainer}>
           <button className={styles.controlBtn} onClick={handleReset}>
             返回初始狀態
