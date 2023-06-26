@@ -9,7 +9,7 @@ export const AppContextProvider = ({ children }) => {
   const [point, setPoint] = useState(0);
   const [connectedDeviceName, setConnectedDeviceName] = useState('');
   const [connectedMacAddress, setConnectedMacAddress] = useState('');
-  const [connected, setConnected] = useState(false);
+  const [connecting, setConnecting] = useState(false);
 
   return (
     <AppContext.Provider
@@ -24,8 +24,8 @@ export const AppContextProvider = ({ children }) => {
         setConnectedDeviceName,
         connectedMacAddress,
         setConnectedMacAddress,
-        connected,
-        setConnected,
+        connecting,
+        setConnecting,
       }}
     >
       {children}

@@ -1,69 +1,65 @@
+// Esp32Status.jsx
 import React, { useContext, useEffect, useState } from 'react';
 import styles from '@/styles/ArmControl.module.css';
 import axios from 'axios';
 import AppContext from '@/contexts/AppContext';
+import { Switch } from '@nextui-org/react';
 
 export default function Esp32Status() {
-  const { connectedDeviceName, connectedMacAddress, connected, setConnected } =
-    useContext(AppContext);
+  const {
+    setConnectedDeviceName,
+    setConnectedMacAddress,
+    connectedDeviceName,
+    connectedMacAddress,
+    connecting,
+    setConnecting,
+  } = useContext(AppContext);
   const [esp32Status, setEsp32Status] = useState({});
-  // const [connected, setConnected] = useState(false);
-
-  function chooseDevice() {
-    if (connectedDeviceName === '') {
-      return 'choose a device to connect';
-    } else {
-      return `connecting to ${connectedDeviceName}...`;
-    }
-  }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      axios
-        .post('/api/get-esp32Status', {
-          connectedMacAddress,
-        })
-        .then((res) => {
-          setEsp32Status(res.data);
-          console.log(res.data);
-        });
-    }, 3000);
+    let interval;
+    if (connecting === true) {
+      interval = setInterval(() => {
+        axios
+          .post('/api/get-esp32Status', {
+            connectedMacAddress,
+          })
+          .then((res) => {
+            setEsp32Status(res.data);
+          });
+      }, 3000);
+    }
     return () => clearInterval(interval);
-  }, []);
+  }, [connecting, connectedDeviceName, connectedMacAddress]);
 
-  // const checkConnection = (lastHeartbeat) => {
-  //   const currentTime = Date.now();
-  //   if (currentTime - lastHeartbeat > 10000) {
-  //     setConnected(false);
-  //     // console.log('disconnected');
-  //   } else {
-  //     setConnected(true);
-  //     // console.log('connected');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     axios
-  //       .post('/api/get-heartbeat', {
-  //         connectedMacAddress,
-  //       })
-  //       .then((res) => {
-  //         checkConnection(res.data);
-  //         // console.log(res.data);
-  //       });
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  function changeConnectState() {
+    console.log('connecting: ', connecting);
+    connecting ? setConnecting(false) : setConnecting(true);
+    console.log('change to ', connecting);
+    if (connectedDeviceName !== '') {
+      setConnectedDeviceName('');
+      setConnectedMacAddress('');
+      setEsp32Status({});
+    }
+  }
 
   return (
     <div className={styles.statusContainer}>
       <h2>ESP32 Status</h2>
+      <div className="flex items-center">
+        <h3>連線</h3>
+        <Switch
+          checked={connecting}
+          onChange={() => {
+            changeConnectState();
+          }}
+          className="ml-3"
+        />
+      </div>
       <div>
-        {!connected ? (
-          <div>{chooseDevice()}</div>
-        ) : (
+        {connecting ? (
           <>
+            <div>Connecting device: {connectedDeviceName}</div>
             <div>macAddress: {esp32Status.macAddress}</div>
             <div>SSID: {esp32Status.ssid}</div>
             <div>Local IP: {esp32Status.localIP}</div>
@@ -76,6 +72,8 @@ export default function Esp32Status() {
             <div>Flash Size: {esp32Status.flashSize} bytes</div>
             <div>Hall Effect: {esp32Status.hallEffect}</div>
           </>
+        ) : (
+          <div>choose a device to connect</div>
         )}
       </div>
     </div>

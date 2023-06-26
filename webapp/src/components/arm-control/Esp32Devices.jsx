@@ -1,28 +1,29 @@
-import { useState, useEffect, useContext } from "react";
-import AppContext from "@/contexts/AppContext";
-import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
-import styles from "@/styles/Esp32Devices.module.css";
-import { AiOutlineDelete } from "react-icons/ai";
-import { AiOutlineEdit } from "react-icons/ai";
-import { GrConnect } from "react-icons/gr";
-import { Input, Spacer, Button } from "@nextui-org/react";
+// Esp32Devices.jsx
+import { useState, useEffect, useContext } from 'react';
+import AppContext from '@/contexts/AppContext';
+import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
+import styles from '@/styles/Esp32Devices.module.css';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { GrConnect } from 'react-icons/gr';
+import { Input, Spacer, Button } from '@nextui-org/react';
 
 export default function Esp32Devices() {
   const supabase = useSupabaseClient();
   const user = useUser();
   const [loading, setLoading] = useState(true);
   const [devices, setDevices] = useState([]);
-  const [addDeviceName, setAddDeviceName] = useState("");
-  const [addMacAddress, setAddMacAddress] = useState("");
+  const [addDeviceName, setAddDeviceName] = useState('');
+  const [addMacAddress, setAddMacAddress] = useState('');
   const [editingDeviceIndex, setEditingDeviceIndex] = useState(null);
-  const [editDeviceName, setEditDeviceName] = useState("");
-  const [editMacAddress, setEditMacAddress] = useState("");
-  const { setConnectedMacAddress, setConnectedDeviceName } =
-    useContext(AppContext);
+  const [editDeviceName, setEditDeviceName] = useState('');
+  const [editMacAddress, setEditMacAddress] = useState('');
+  const { setConnecting, setConnectedMacAddress, setConnectedDeviceName } = useContext(AppContext);
 
   const handleConnect = (deviceName, macAddress) => {
     setConnectedDeviceName(deviceName);
     setConnectedMacAddress(macAddress);
+    setConnecting(true);
   };
 
   useEffect(() => {
@@ -34,10 +35,10 @@ export default function Esp32Devices() {
       setLoading(true);
 
       const { data, error } = await supabase
-        .from("esp32_devices")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("inserted_at", { ascending: false });
+        .from('esp32_devices')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('inserted_at', { ascending: false });
 
       if (error) {
         throw error;
@@ -45,17 +46,16 @@ export default function Esp32Devices() {
 
       setDevices(data);
     } catch (error) {
-      alert("Error loading devices!");
+      alert('Error loading devices!');
       console.log(error);
     } finally {
-      console.log(devices);
       setLoading(false);
     }
   }
 
   async function addDevice() {
     if (!addDeviceName || !addMacAddress) {
-      alert("Please enter device name and address!");
+      alert('Please enter device name and address!');
       return;
     }
 
@@ -69,16 +69,16 @@ export default function Esp32Devices() {
         inserted_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("esp32_devices").insert(newDevice);
+      const { error } = await supabase.from('esp32_devices').insert(newDevice);
       if (error) {
         throw error;
       }
 
-      setAddDeviceName("");
-      setAddMacAddress("");
+      setAddDeviceName('');
+      setAddMacAddress('');
       getDevices();
     } catch (error) {
-      alert("Error adding device!");
+      alert('Error adding device!');
       console.log(error);
     } finally {
       setLoading(false);
@@ -91,22 +91,17 @@ export default function Esp32Devices() {
     try {
       setLoading(true);
 
-      const { error } = await supabase
-        .from("esp32_devices")
-        .delete()
-        .eq("id", deviceToDelete.id);
+      const { error } = await supabase.from('esp32_devices').delete().eq('id', deviceToDelete.id);
 
       if (error) {
         throw error;
       }
 
-      const updatedDevices = devices.filter(
-        (device) => device.id !== deviceToDelete.id
-      );
+      const updatedDevices = devices.filter((device) => device.id !== deviceToDelete.id);
       setDevices(updatedDevices);
       getDevices();
     } catch (error) {
-      alert("Error deleting device!");
+      alert('Error deleting device!');
       console.log(error);
     } finally {
       setLoading(false);
@@ -124,7 +119,7 @@ export default function Esp32Devices() {
   async function handleDeviceUpdate(index) {
     const deviceToUpdate = devices[index];
     if (!editDeviceName || !editMacAddress) {
-      alert("Please enter device name and address!");
+      alert('Please enter device name and address!');
       return;
     }
 
@@ -132,23 +127,23 @@ export default function Esp32Devices() {
       setLoading(true);
 
       const { error } = await supabase
-        .from("esp32_devices")
+        .from('esp32_devices')
         .update({
           device_name: editDeviceName,
           mac_address: editMacAddress,
         })
-        .eq("id", deviceToUpdate.id);
+        .eq('id', deviceToUpdate.id);
 
       if (error) {
         throw error;
       }
 
       setEditingDeviceIndex(null);
-      setEditDeviceName("");
-      setEditMacAddress("");
+      setEditDeviceName('');
+      setEditMacAddress('');
       getDevices();
     } catch (error) {
-      alert("Error updating device!");
+      alert('Error updating device!');
       console.log(error);
     } finally {
       setLoading(false);
@@ -175,11 +170,7 @@ export default function Esp32Devices() {
                       <div onClick={() => handleDeviceEdit(index)}>
                         <AiOutlineEdit className="reactIcons" size="1rem" />
                       </div>
-                      <div
-                        onClick={() =>
-                          handleConnect(device.device_name, device.mac_address)
-                        }
-                      >
+                      <div onClick={() => handleConnect(device.device_name, device.mac_address)}>
                         <GrConnect className="reactIcons" size="1rem" />
                       </div>
                     </div>
@@ -264,7 +255,7 @@ export default function Esp32Devices() {
 
         <div>
           <Button className="w-full" onClick={addDevice} disabled={loading}>
-            {loading ? "Loading ..." : "Add Device"}
+            {loading ? 'Loading ...' : 'Add Device'}
           </Button>
         </div>
       </div>
