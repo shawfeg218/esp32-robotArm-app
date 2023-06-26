@@ -116,6 +116,9 @@
   .avatarContainer {
     display: none;
   }
+  .logo {
+    display: none;
+  }
 }
 
 .resetWifiButton {

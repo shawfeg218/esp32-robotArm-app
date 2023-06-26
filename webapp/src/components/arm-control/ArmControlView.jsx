@@ -122,7 +122,7 @@ export default function ArmControlView(props) {
             重置wifi
           </button>
           <Link href="/device" passHref>
-            <button className={styles.controlBtn}>設置</button>
+            <button className={styles.controlBtn}>連線設置</button>
           </Link>
         </div>
       </div>

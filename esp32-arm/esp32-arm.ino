@@ -50,11 +50,10 @@ void heartbeat();
 void setup() {
   Serial.begin(115200); 
 
-  // 嘗試連接到已知的 WiFi 網絡，如果無法連接，開啟熱點
   setupWifiManager();
 
-  server.on("/", handleRoot);  // 新增這一行
-  server.on("/resetWifi", handleResetWifiWrapper);  // 新增這一行
+  server.on("/", handleRoot);
+  server.on("/resetWifi", handleResetWifiWrapper);
   
   server.begin(); 
   Serial.println("Web server started");
@@ -78,7 +77,7 @@ void loop() {
   delay(10);
 }
 
-// 新增這一段
+
 void handleRoot() {
   String html = R"(
     <html>
@@ -97,7 +96,6 @@ void handleRoot() {
   server.send(200, "text/html", html);
 }
 
-// 新增這一段
 void handleResetWifiWrapper() {
   handleResetWifi();
   server.send(200, "text/plain", "Wi-Fi reset");
