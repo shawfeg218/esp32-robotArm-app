@@ -121,9 +121,9 @@ p {
 
 button,
 .button {
-  color: var(--custom-color-secondary);
+  /* color: var(--custom-color-secondary); */
   border: var(--custom-border);
-  background-color: var(--custom-primary-color);
+  /* background-color: var(--custom-primary-color); */
   display: inline-block;
   text-align: center;
   border-radius: var(--custom-border-radius);
