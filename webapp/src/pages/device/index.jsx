@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function devicePage() {
   return (
-    <div className="flex-container">
+    <div className="mt-16 flex flex-wrap justify-center">
       <Esp32Devices />
       <Esp32Status />
     </div>
