@@ -56,6 +56,7 @@ export default function Layout({ children }) {
               appearance={{ theme: ThemeSupa }}
               theme="default"
               providers={[]}
+              className=""
             />
           </div>
         </div>

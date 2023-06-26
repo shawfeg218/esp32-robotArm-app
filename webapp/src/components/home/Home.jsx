@@ -147,7 +147,7 @@ export default function Home() {
                   <div>
                     {recentHistory.length > 0 && (
                       <Link href="/history" passHref>
-                        <button className="mt-0 mb-4 rounded-xl border bg-blue-600 w-full">
+                        <button className="mt-0 mb-4 rounded-xl border-0 bg-blue-600 w-full">
                           更多
                         </button>
                       </Link>

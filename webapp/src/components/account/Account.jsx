@@ -157,6 +157,7 @@ export default function Account() {
           <div className={styles.profileData}>{/* <div>user name: {username}</div> */}</div>
         </div>
 
+        <Spacer y={1} />
         <Input label="Email" color="default" value={session.user.email} readOnly fullWidth />
         <Spacer y={0.5} />
       </div>
