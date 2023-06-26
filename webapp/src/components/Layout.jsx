@@ -1,3 +1,4 @@
+// Layout.jsx
 import styles from '@/styles/Layout.module.css';
 import Navbar from './Navbar';
 import { Auth } from '@supabase/auth-ui-react';
@@ -5,31 +6,10 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import Sidebar from './Sidebar';
 import AppContext from '@/contexts/AppContext';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
+import { useEffect } from 'react';
 
 function Overlay({ displaySidebar, setDisplaySidebar }) {
-  function preventScroll(e) {
-    e.preventDefault();
-  }
-
-  function noScroll() {
-    window.addEventListener('wheel', preventScroll, { passive: false });
-    window.addEventListener('touchmove', preventScroll, { passive: false });
-  }
-
-  function canScroll() {
-    window.removeEventListener('wheel', preventScroll);
-    window.removeEventListener('touchmove', preventScroll);
-  }
-
-  useEffect(() => {
-    if (displaySidebar) {
-      noScroll();
-    } else {
-      canScroll();
-    }
-  }, [displaySidebar]);
-
   return (
     <div
       className={`${styles.overlay} ${displaySidebar ? '' : styles.hide}`}
@@ -46,6 +26,14 @@ export default function Layout({ children }) {
 
   const { displaySidebar, setDisplaySidebar } = useContext(AppContext);
 
+  useEffect(() => {
+    if (displaySidebar) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [displaySidebar]);
+
   return (
     <>
       {!session ? (
@@ -56,7 +44,6 @@ export default function Layout({ children }) {
               appearance={{ theme: ThemeSupa }}
               theme="default"
               providers={[]}
-              className=""
             />
           </div>
         </div>
