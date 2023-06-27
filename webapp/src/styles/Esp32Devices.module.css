@@ -13,7 +13,7 @@
   justify-content: center;
   width: 21.875rem;
   height: 18rem;
-  padding: 1rem 0 1rem 1.25rem;
+  padding: 0 1rem 1rem 1.25rem;
   border: 0.125rem solid #ccc;
   border-radius: 0.3125rem;
   background-color: var(--custom-bg-color);
