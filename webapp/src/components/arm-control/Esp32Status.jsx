@@ -33,9 +33,9 @@ export default function Esp32Status() {
   }, [connecting, connectedDeviceName, connectedMacAddress]);
 
   function changeConnectState() {
-    console.log('connecting: ', connecting);
+    // console.log('connecting: ', connecting);
     connecting ? setConnecting(false) : setConnecting(true);
-    console.log('change to ', connecting);
+    // console.log('change to ', connecting);
     if (connectedDeviceName !== '') {
       setConnectedDeviceName('');
       setConnectedMacAddress('');

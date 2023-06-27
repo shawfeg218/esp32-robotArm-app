@@ -6,7 +6,7 @@ import styles from '@/styles/Esp32Devices.module.css';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { GrConnect } from 'react-icons/gr';
-import { Input, Spacer, Button } from '@nextui-org/react';
+import { Input, Spacer, Modal, Button } from '@nextui-org/react';
 import Toast from '../Toast';
 
 export default function Esp32Devices() {
@@ -22,7 +22,23 @@ export default function Esp32Devices() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [modalHeader, setModalHeader] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deviceToDeleteIndex, setDeviceToDeleteIndex] = useState(null);
   const { setConnecting, setConnectedMacAddress, setConnectedDeviceName } = useContext(AppContext);
+
+  const onCloseToast = () => {
+    setShowToast(false);
+    setToastMessage('');
+    setToastType('');
+  };
+
+  const onCloseModal = () => {
+    setShowModal(false);
+    setModalMessage('');
+  };
 
   const handleConnect = (deviceName, macAddress) => {
     setConnectedDeviceName(deviceName);
@@ -30,12 +46,6 @@ export default function Esp32Devices() {
     setConnecting(true);
     setShowToast(true);
     setToastMessage(`Connecting to ${deviceName}...`);
-    setToastType('');
-  };
-
-  const onClose = () => {
-    setShowToast(false);
-    setToastMessage('');
     setToastType('');
   };
 
@@ -68,7 +78,9 @@ export default function Esp32Devices() {
 
   async function addDevice() {
     if (!addDeviceName || !addMacAddress) {
-      alert('Please enter device name and address!');
+      setShowModal(true);
+      setModalHeader('Add Device Failed!');
+      setModalMessage('Please enter device name and address!');
       return;
     }
 
@@ -119,6 +131,7 @@ export default function Esp32Devices() {
       setShowToast(true);
       setToastMessage(`${deviceToDelete.device_name} deleted!`);
       setToastType('warning');
+      setDeviceToDeleteIndex(null);
     } catch (error) {
       alert('Error deleting device!');
       console.log(error);
@@ -137,8 +150,11 @@ export default function Esp32Devices() {
 
   async function handleDeviceUpdate(index) {
     const deviceToUpdate = devices[index];
+
     if (!editDeviceName || !editMacAddress) {
-      alert('Please enter device name and address!');
+      setShowModal(true);
+      setModalHeader('Update Device Failed!');
+      setModalMessage('Please enter device name and address!');
       return;
     }
 
@@ -174,10 +190,50 @@ export default function Esp32Devices() {
 
   return (
     <>
-      {showToast && <Toast message={toastMessage} icon={toastType} onClose={onClose} />}
+      {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
+
       <div className={styles.container}>
         <div className={styles.esp32Devices}>
           <h2>Devices</h2>
+          <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+            <Spacer y={1} />
+            <Modal.Body>
+              <h1 className="text-3xl text-red-700">確定刪除?</h1>
+              <h1 className="text-xl">
+                Device:{' '}
+                {deviceToDeleteIndex !== null && devices[deviceToDeleteIndex]
+                  ? devices[deviceToDeleteIndex].device_name
+                  : ''}
+              </h1>
+              <h1 className="text-xl">
+                MacAddress:{' '}
+                {deviceToDeleteIndex !== null && devices[deviceToDeleteIndex]
+                  ? devices[deviceToDeleteIndex].mac_address
+                  : ''}
+              </h1>
+            </Modal.Body>
+            <Modal.Footer className="justify-center">
+              <div className="flex justify-around w-full">
+                <button
+                  className="text-white border-0 w-32 rounded-xl bg-blue-600"
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    handleDeviceDelete(deviceToDeleteIndex);
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  className="text-white border-0 w-32 rounded-xl bg-blue-600"
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                  }}
+                >
+                  No
+                </button>
+              </div>
+            </Modal.Footer>
+          </Modal>
           {editingDeviceIndex === null ? (
             <ul>
               {devices.length > 0 ? (
@@ -188,9 +244,15 @@ export default function Esp32Devices() {
                         {device.device_name}: <span>{device.mac_address}</span>
                       </p>
                       <div className={styles.editIcons}>
-                        <div onClick={() => handleDeviceDelete(index)}>
+                        <div
+                          onClick={() => {
+                            setShowDeleteModal(true);
+                            setDeviceToDeleteIndex(index);
+                          }}
+                        >
                           <AiOutlineDelete className="reactIcons" size="1rem" />
                         </div>
+
                         <div onClick={() => handleDeviceEdit(index)}>
                           <AiOutlineEdit className="reactIcons" size="1rem" />
                         </div>
@@ -285,6 +347,17 @@ export default function Esp32Devices() {
             >
               {loading ? 'Loading ...' : 'Add Device'}
             </button>
+            <Modal open={showModal} onClose={onCloseModal}>
+              <Modal.Header>
+                <h1 className="text-3xl text-red-700">{modalHeader}</h1>
+              </Modal.Header>
+              <Modal.Body>
+                <h1 className="text-xl text-center">{modalMessage}</h1>
+              </Modal.Body>
+              <Modal.Footer className="justify-center">
+                <Button onClick={onCloseModal}>Close</Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         </div>
       </div>
