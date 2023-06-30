@@ -59,51 +59,189 @@ export default function Home() {
   return (
     <div className="mt-16">
       <div className="cardContainer">
-        <Link href="/quiz" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <h3>QUIZ</h3>
-            <div className="reactIconsDiv">
-              <FaChalkboardTeacher className="reactIcons" size="5rem" />
+        <div className="flex flex-wrap flex justify-center">
+          <Link href="/quiz" passHref>
+            <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+              <a href="#">
+                <div className="imageContainer">
+                  <img
+                    class="rounded-t-lg "
+                    src="https://www.dokeos.com/wp-content/uploads/2021/02/Quiz.jpg"
+                    alt=""
+                  />
+                </div>
+              </a>
+              <div class="p-5">
+                <Link href="/quiz" passHref>
+                  <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      It's QUIZ time!
+                    </h5>
+                  </a>
+                </Link>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"></p>
+                <Link href="/quiz" passHref>
+                  <a
+                    href="#"
+                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Get start
+                    <svg
+                      aria-hidden="true"
+                      class="w-4 h-4 ml-2 -mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </a>
+                </Link>
+              </div>
             </div>
-          </Card>
-        </Link>
+          </Link>
 
-        <Link href="/arm-control" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <h3>操作手臂</h3>
-            <div className="reactIconsDiv">
-              <TfiPanel className="reactIcons" size="5rem" />
+          <Link href="/arm-control" passHref>
+            <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+              <a href="#">
+                <div className="imageContainer">
+                  <img
+                    class="rounded-t-lg"
+                    src="https://www.mikemooney.com/wp-content/uploads/2020/12/Control.jpg"
+                    alt=""
+                  />
+                </div>
+              </a>
+              <div class="p-5">
+                <Link href="/arm-control" passHref>
+                  <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      Let's control my arm!
+                    </h5>
+                  </a>
+                </Link>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"></p>
+                <Link href="/arm-control" passHref>
+                  <a
+                    href="#"
+                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Get start
+                    <svg
+                      aria-hidden="true"
+                      class="w-4 h-4 ml-2 -mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </a>
+                </Link>
+              </div>
             </div>
-          </Card>
-        </Link>
+          </Link>
 
-        <Link href="/device" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <h3>連線設定</h3>
-            <div className="reactIconsDiv">
-              <GrConnect className="reactIcons" size="5rem" />
+          <Link href="/device" passHref>
+            <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+              <a href="#">
+                <div className="imageContainer">
+                  <img
+                    class="rounded-t-lg"
+                    src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/202006/internet-3269652_1920_0.jpeg?size=690:388"
+                    alt=""
+                  />
+                </div>
+              </a>
+              <div class="p-5">
+                <Link href="/device" passHref>
+                  <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      Device setting
+                    </h5>
+                  </a>
+                </Link>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"></p>
+                <Link href="/device" passHref>
+                  <a
+                    href="#"
+                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Get start
+                    <svg
+                      aria-hidden="true"
+                      class="w-4 h-4 ml-2 -mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </a>
+                </Link>
+              </div>
             </div>
-          </Card>
-        </Link>
+          </Link>
 
-        <Link href="/audio-chat" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <h3>語音聊天</h3>
-            <div className="reactIconsDiv">
-              <BsMicFill className="reactIcons" size="5rem" />
+          <Link href="/audio-chat" passHref>
+            <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+              <a href="#">
+                <div className="imageContainer">
+                  <img
+                    class="rounded-t-lg"
+                    src="https://kinsta.com/wp-content/uploads/2017/07/error-establishing-a-database-connection-1-1024x512.jpg"
+                    alt=""
+                  />
+                </div>
+              </a>
+              <div class="p-5">
+                <Link href="/audio-chat" passHref>
+                  <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      Audio-chat
+                    </h5>
+                  </a>
+                </Link>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"></p>
+                <Link href="/audio-chat" passHref>
+                  <a
+                    href="#"
+                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Get start
+                    <svg
+                      aria-hidden="true"
+                      class="w-4 h-4 ml-2 -mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </a>
+                </Link>
+              </div>
             </div>
-          </Card>
-        </Link>
-
-        <Link href="/video-learning" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <h3>影片學習</h3>
-            <div className="reactIconsDiv">
-              <MdOutlineOndemandVideo className="reactIcons" size="5rem" />
-            </div>
-          </Card>
-        </Link>
+          </Link>
+        </div>
       </div>
+
       <div className="flex justify-center ">
         {loading ? (
           <Loading className="mt-16" color="primary" />
