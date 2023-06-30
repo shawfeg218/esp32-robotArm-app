@@ -1,7 +1,9 @@
-import { Input, Spacer, Button, Loading, Card, Container } from '@nextui-org/react';
+import { Input, Spacer, Button, Loading, Modal } from '@nextui-org/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { parseSubtitles } from '../../lib/parseSubtitles';
 import YouTube from 'react-youtube';
+import Toast from '../Toast';
+
 import { example } from '../../lib/example';
 
 export default function VideoLearning() {
@@ -11,15 +13,34 @@ export default function VideoLearning() {
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoId, setVideoId] = useState('');
   const [urlStatus, setUrlStatus] = useState('default');
+
   const [videoTranscription, setVideoTranscription] = useState([]);
   const [videoTranslation, setVideoTranslation] = useState([]);
+
   const [currentTime, setCurrentTime] = useState(0);
   const [currentSubtitle, setCurrentSubtitle] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [keyStatus, setKeyStatus] = useState('warning');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [modalHeader, setModalHeader] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
 
   const [player, setPlayer] = useState(null);
+
+  const onCloseToast = () => {
+    setShowToast(false);
+    setToastMessage('');
+    setToastType('');
+  };
+
+  const onCloseModal = () => {
+    setShowModal(false);
+    setModalMessage('');
+  };
 
   const updateTime = () => {
     if (player) {
@@ -113,6 +134,8 @@ export default function VideoLearning() {
 
         // check res of transcription and translation
         if (transcriptionSubtitles.length !== translationSubtitles.length) {
+          setShowToast(true);
+          setToastMessage('Subtitle length mismatch');
           throw {
             message:
               'Subtitle length mismatch. Transcription length: ' +
@@ -127,6 +150,9 @@ export default function VideoLearning() {
         setRes(JSON.stringify(responseJson, null, 2));
 
         setLoading(false);
+        setToastMessage('successfully');
+        setToastType('check');
+        setShowToast(true);
       }
     } catch (error) {
       console.log(error);
@@ -136,95 +162,101 @@ export default function VideoLearning() {
   }
 
   return (
-    <div className="w-full px-8 pb-10 ">
-      <section className="flex-col text-center ">
-        <h1>Audio Translate</h1>
-        <h2>whisper-1, gpt-3.5-turbo </h2>
-        <Spacer y={2} />
-        <Input
-          labelPlaceholder="openai key"
-          bordered
-          clearable
-          status={keyStatus}
-          onChange={(e) => setKey(e.target.value)}
-        />
-        <Spacer y={2} />
+    <div className="w-full mt-4 flex justify-center">
+      {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
+      <div>
+        <section className="flex-col text-center ">
+          <h1>Audio Translate</h1>
+          <h2>whisper-1, gpt-3.5-turbo </h2>
+          <Spacer y={2} />
+          <Input
+            labelPlaceholder="openai key"
+            bordered
+            clearable
+            status={keyStatus}
+            onChange={(e) => setKey(e.target.value)}
+          />
+          <Spacer y={2} />
 
-        <Input
-          clearable
-          bordered
-          labelPlaceholder="youtube video link"
-          status={urlStatus}
-          onChange={(e) => setVideoUrl(e.target.value)}
-        />
-        <Spacer y={0.5} />
-        <div className="mt-3 flex justify-center">
-          <Button bordered size="md" disabled={loading} onPress={transcribeAudioLink}>
-            Transcribe Audio
-          </Button>
-        </div>
-        <Spacer y={0.5} />
-        <div className="mt-3 flex justify-center">
-          <Button bordered size="md" disabled={loading} onPress={getVideoId}>
-            Find Video
-          </Button>
-        </div>
-      </section>
-
-      <section className="flex-col justify-center items-center w-full">
-        {loading ? (
-          <div className="flex justify-center mt-6">
-            <Loading />
+          <Input
+            clearable
+            bordered
+            labelPlaceholder="youtube video link"
+            status={urlStatus}
+            onChange={(e) => setVideoUrl(e.target.value)}
+          />
+          <Spacer y={0.5} />
+          <div className="mt-3 flex justify-center">
+            <Button bordered size="md" disabled={loading} onPress={transcribeAudioLink}>
+              Transcribe Audio
+            </Button>
           </div>
-        ) : (
-          <>
-            <div className="flex justify-center">
-              {res ? (
-                <div className="my-10 overflow-scroll max-w-xl bg-white p-2 max-h-80">
-                  <p className="text-black w-full">{res}</p>
-                </div>
-              ) : null}
-            </div>
-            <div className="flex justify-center">
-              {res && videoTranscription.length > 0 ? (
-                <div className="w-full h-fit max-w-xl bg-white p-4">
-                  <ul className="text-black overflow-auto w-full h-80">
-                    {videoTranscription.map((subtitle, index) => (
-                      <li className="border-b-2" key={index}>
-                        <p>{subtitle.number}</p>
-                        <p>{subtitle.content}</p>
-                        <p>{videoTranslation[index]?.content}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-            </div>
-          </>
-        )}
-      </section>
+          <Spacer y={0.5} />
+          <div className="mt-3 flex justify-center">
+            <Button bordered size="md" disabled={loading} onPress={getVideoId}>
+              Find Video
+            </Button>
+          </div>
+        </section>
 
-      <div className="mt-10 flex justify-center">
-        <YouTube
-          videoId={videoId === '' ? '' : videoId}
-          opts={{
-            playerVars: { autoplay: 0 },
-          }}
-          onReady={(event) => setPlayer(event.target)}
-        />
+        <section className="flex-col justify-center items-center w-full">
+          {loading ? (
+            <div className="flex justify-center mt-6">
+              <Loading />
+            </div>
+          ) : (
+            <>
+              <div className="flex justify-center">
+                {res ? (
+                  <div className="bg-slate-100 my-10 overflow-scroll max-w-2xl p-2 max-h-80">
+                    <p className="text-black w-full">{res}</p>
+                  </div>
+                ) : null}
+              </div>
+              <div className="flex justify-center">
+                {res && videoTranscription.length > 0 ? (
+                  <div className="w-full h-fit max-w-2xl bg-slate-100 p-4">
+                    <ul className="text-black overflow-auto w-full h-80">
+                      {videoTranscription.map((subtitle, index) => (
+                        <li
+                          className="border-solid border-x-0 border-t-0 border-b-slate-300"
+                          key={index}
+                        >
+                          <p>{subtitle.number}</p>
+                          <p>{subtitle.content}</p>
+                          <p>{videoTranslation[index]?.content}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            </>
+          )}
+        </section>
 
-        {res === null ? null : (
-          <div className="absolute bottom-11 inset-x-0 z-20 h-fit  flex justify-center mb-11 pr-5 -mr-5">
-            <div className=" h-fit w-fit">
-              <div className="flex justify-center p-1 bg-black bg-opacity-60 text-white">
-                <div>
-                  <p>{videoTranscription[currentSubtitle].content}</p>
-                  <p>{videoTranslation[currentSubtitle].content}</p>
+        <div className="mt-10 flex justify-center">
+          <YouTube
+            videoId={videoId === '' ? '' : videoId}
+            opts={{
+              playerVars: { autoplay: 0 },
+            }}
+            onReady={(event) => setPlayer(event.target)}
+          />
+
+          {res === null ? null : (
+            <div className="absolute bottom-11 inset-x-0 z-20 h-fit  flex justify-center mb-11 pr-5 -mr-5">
+              <div className=" h-fit w-fit">
+                <div className="flex justify-center p-1 bg-black bg-opacity-60 text-white">
+                  <div>
+                    <p>{videoTranscription[currentSubtitle].content}</p>
+                    <p>{videoTranslation[currentSubtitle].content}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
