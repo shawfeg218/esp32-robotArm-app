@@ -56,8 +56,7 @@ export default function Home() {
   return (
     <div className="flex justify-center w-full mt-16">
       <div>
-        <div className="flex flex-wrap justify-center">
-          <HomeCard img="/img/Quiz.jpg" title={"it's QUIZ time"} description="" link="/quiz" />
+        <div className="max-w-6xl flex flex-col sm:flex-row sm:flex-wrap justify-center">
           <HomeCard
             img="/img/Control.jpg"
             title={"Let's control my arm!"}
@@ -82,74 +81,92 @@ export default function Home() {
             description=""
             link="/video-learning"
           />
-        </div>
+          <HomeCard img="/img/Quiz.jpg" title={"it's QUIZ time"} description="" link="/quiz" />
 
-        <div className="mt-16 flex justify-center ">
-          {loading ? (
-            <Loading className="mt-16" color="primary" />
-          ) : (
-            <Card isHoverable className={styles.history_container}>
-              <h3>HISTORY</h3>
-              <div>
-                {recentHistory.length > 0 ? (
-                  <>
-                    <Table
-                      lined
-                      shadow={false}
-                      selectionMode="single"
-                      containerCss={{ width: '100%', minWidth: 'fit-content' }}
-                      css={{ height: 'auto', width: '100%' }}
-                    >
-                      <Table.Header>
-                        <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
-                          科目
-                        </Table.Column>
-                        <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
-                          得分
-                        </Table.Column>
-                        <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">
-                          Date
-                        </Table.Column>
-                      </Table.Header>
-                      <Table.Body>
-                        {recentHistory.map((entry, index) => (
-                          <Table.Row key={index}>
-                            <Table.Cell css={{ textAlign: 'center' }}>
-                              {entry.subject_name}
-                            </Table.Cell>
-                            <Table.Cell css={{ textAlign: 'center' }}>{entry.score}</Table.Cell>
-                            <Table.Cell css={{ textAlign: 'center' }}>
-                              {new Date(entry.inserted_at).toLocaleDateString(undefined, {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                              })}
+          <div className="w-96 flex justify-center ">
+            {loading ? (
+              <Card isHoverable className={styles.history_container}>
+                <div className="h-full flex items-center">
+                  <Loading size="lg" color="primary" />
+                </div>
+              </Card>
+            ) : (
+              <Card isHoverable className={styles.history_container}>
+                <div>
+                  {recentHistory.length > 0 ? (
+                    <>
+                      <h1 className="text-gray-900 text-center">HISTORY</h1>
+                      <Table
+                        lined
+                        shadow={false}
+                        selectionMode="single"
+                        containerCss={{ width: '100%', minWidth: 'fit-content' }}
+                        css={{ height: 'auto', width: '100%' }}
+                      >
+                        <Table.Header>
+                          <Table.Column
+                            css={{ fontWeight: 'bold', fontSize: '$sm' }}
+                            align="center"
+                          >
+                            科目
+                          </Table.Column>
+                          <Table.Column
+                            css={{ fontWeight: 'bold', fontSize: '$sm' }}
+                            align="center"
+                          >
+                            得分
+                          </Table.Column>
+                          <Table.Column
+                            css={{ fontWeight: 'bold', fontSize: '$sm' }}
+                            align="center"
+                          >
+                            Date
+                          </Table.Column>
+                        </Table.Header>
+                        <Table.Body>
+                          {recentHistory.map((entry, index) => (
+                            <Table.Row key={index}>
+                              <Table.Cell css={{ textAlign: 'center' }}>
+                                {entry.subject_name}
+                              </Table.Cell>
+                              <Table.Cell css={{ textAlign: 'center' }}>{entry.score}</Table.Cell>
+                              <Table.Cell css={{ textAlign: 'center' }}>
+                                {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                })}
 
-                              {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
-                            </Table.Cell>
-                          </Table.Row>
-                        ))}
-                      </Table.Body>
-                    </Table>
-                    <div>
-                      {recentHistory.length > 0 && (
-                        <Link href="/history" passHref>
-                          <button className="text-white mt-0 mb-4 rounded-xl border-0 bg-blue-600 w-full">
-                            更多
-                          </button>
-                        </Link>
-                      )}
+                                {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </Table.Cell>
+                            </Table.Row>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                      <div className="px-5">
+                        {recentHistory.length > 0 && (
+                          <Link href="/history" passHref>
+                            <button className="w-full inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                              SEE ALL
+                            </button>
+                          </Link>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="my-32 text-center">
+                      <h1 className="text-gray-900">HISTORY</h1>
+
+                      <h2>No history data available.</h2>
                     </div>
-                  </>
-                ) : (
-                  <p>No history data available.</p>
-                )}
-              </div>
-            </Card>
-          )}
+                  )}
+                </div>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
     </div>

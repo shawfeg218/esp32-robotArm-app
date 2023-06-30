@@ -223,12 +223,6 @@ button.primary,
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-.imageContainer {
-  width: 300px;
-  height: 200px;
-  overflow: hidden;
-}
-
 @media (max-width: 768px) {
   .cardContainer {
     width: 100%;
