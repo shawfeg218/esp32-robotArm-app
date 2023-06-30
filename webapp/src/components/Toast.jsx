@@ -65,12 +65,12 @@ function Icon({ icon }) {
 export default function Toast(props) {
   const { message, icon, onClose } = props;
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     onClose();
-  //   }, 5000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="z-30 fixed bottom-0 m-6 flex items-center w-full max-w-xs p-4 text-black bg-slate-100 rounded-lg shadow-md shadow-gray-400">

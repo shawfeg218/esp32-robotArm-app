@@ -134,13 +134,12 @@ export default function VideoLearning() {
 
         // check res of transcription and translation
         if (transcriptionSubtitles.length !== translationSubtitles.length) {
-          setShowToast(true);
-          setToastMessage('Subtitle length mismatch');
           throw {
+            name: 'Subtitle length mismatch',
             message:
-              'Subtitle length mismatch. Transcription length: ' +
+              'Transcription length: ' +
               transcriptionSubtitles.length +
-              '. Translation length: ' +
+              'Translation length: ' +
               translationSubtitles.length,
           };
         }
@@ -155,8 +154,13 @@ export default function VideoLearning() {
         setShowToast(true);
       }
     } catch (error) {
-      console.log(error);
-      window.alert(error.message);
+      setShowModal(true);
+      if (error.name) {
+        setModalHeader(error.name);
+      }
+      if (error.message) {
+        setModalMessage(error.message);
+      }
       setLoading(false);
     }
   }
@@ -164,10 +168,12 @@ export default function VideoLearning() {
   return (
     <div className="w-full mt-4 flex justify-center">
       {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
+
       <div>
         <section className="flex-col text-center ">
           <h1>Audio Translate</h1>
           <h2>whisper-1, gpt-3.5-turbo </h2>
+
           <Spacer y={2} />
           <Input
             labelPlaceholder="openai key"
@@ -197,6 +203,18 @@ export default function VideoLearning() {
               Find Video
             </Button>
           </div>
+
+          <Modal open={showModal} onClose={onCloseModal}>
+            <Modal.Header>
+              <h1 className="text-3xl text-red-700">{modalHeader}</h1>
+            </Modal.Header>
+            <Modal.Body>
+              <h1 className="text-xl">{modalMessage}</h1>
+            </Modal.Body>
+            <Modal.Footer className="justify-center">
+              <Button onClick={onCloseModal}>Close</Button>
+            </Modal.Footer>
+          </Modal>
         </section>
 
         <section className="flex-col justify-center items-center w-full">
