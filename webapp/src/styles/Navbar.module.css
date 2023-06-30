@@ -29,7 +29,7 @@
   background-color: #ccc;
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1800px) {
   .menuDiv {
     display: none;
   }

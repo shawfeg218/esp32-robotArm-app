@@ -6,6 +6,7 @@ import { AiOutlineHome } from 'react-icons/ai';
 import { TfiPanel } from 'react-icons/tfi';
 import { GrConnect } from 'react-icons/gr';
 import { BsMicFill } from 'react-icons/bs';
+import { MdOutlineOndemandVideo } from 'react-icons/md';
 
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
@@ -42,6 +43,20 @@ export default function Sidebar() {
             </div>
           </div>
         </Link>
+
+        <Link href="/video-learning" passHref>
+          <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
+            <div>
+              <div>
+                <MdOutlineOndemandVideo className="reactIcons" size="2rem" />
+              </div>
+            </div>
+            <div>
+              <p>影片學習</p>
+            </div>
+          </div>
+        </Link>
+
         <Link href="/quiz" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
@@ -54,6 +69,7 @@ export default function Sidebar() {
             </div>
           </div>
         </Link>
+
         <Link href="/arm-control" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
@@ -66,6 +82,7 @@ export default function Sidebar() {
             </div>
           </div>
         </Link>
+
         <Link href="/device" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
@@ -78,6 +95,7 @@ export default function Sidebar() {
             </div>
           </div>
         </Link>
+
         <Link href="/account" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>

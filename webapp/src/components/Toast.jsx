@@ -73,7 +73,7 @@ export default function Toast(props) {
   }, []);
 
   return (
-    <div className="fixed bottom-0 m-6 flex items-center w-full max-w-xs p-4 text-black bg-slate-100 rounded-lg shadow-md shadow-gray-400">
+    <div className="z-30 fixed bottom-0 m-6 flex items-center w-full max-w-xs p-4 text-black bg-slate-100 rounded-lg shadow-md shadow-gray-400">
       <Icon icon={icon} />
       <div className="ml-3  text-base font-bold ">{message}</div>
       <div className="flex items-center ml-auto space-x-2">

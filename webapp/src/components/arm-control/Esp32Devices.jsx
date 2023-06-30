@@ -19,6 +19,7 @@ export default function Esp32Devices() {
   const [editingDeviceIndex, setEditingDeviceIndex] = useState(null);
   const [editDeviceName, setEditDeviceName] = useState('');
   const [editMacAddress, setEditMacAddress] = useState('');
+
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('');
@@ -26,6 +27,7 @@ export default function Esp32Devices() {
   const [modalHeader, setModalHeader] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [deviceToDeleteIndex, setDeviceToDeleteIndex] = useState(null);
   const { setConnecting, setConnectedMacAddress, setConnectedDeviceName } = useContext(AppContext);
 
