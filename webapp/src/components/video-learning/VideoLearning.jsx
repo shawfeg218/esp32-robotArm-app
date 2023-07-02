@@ -132,6 +132,10 @@ export default function VideoLearning() {
         // setRes(JSON.stringify(exampleData, null, 2));
         // setLoading(false);
 
+        setVideoTranscription(transcriptionSubtitles);
+        setVideoTranslation(translationSubtitles);
+        setRes(JSON.stringify(responseJson, null, 2));
+
         // check res of transcription and translation
         if (transcriptionSubtitles.length !== translationSubtitles.length) {
           throw {
@@ -143,10 +147,6 @@ export default function VideoLearning() {
               translationSubtitles.length,
           };
         }
-
-        setVideoTranscription(transcriptionSubtitles);
-        setVideoTranslation(translationSubtitles);
-        setRes(JSON.stringify(responseJson, null, 2));
 
         setLoading(false);
         setToastMessage('successfully');
@@ -263,13 +263,11 @@ export default function VideoLearning() {
           />
 
           {res === null ? null : (
-            <div className="absolute bottom-11 inset-x-0 z-20 h-fit  flex justify-center mb-11 pr-5 -mr-5">
-              <div className=" h-fit w-fit">
-                <div className="flex justify-center p-1 bg-black bg-opacity-60 text-white">
-                  <div>
-                    <p>{videoTranscription[currentSubtitle].content}</p>
-                    <p>{videoTranslation[currentSubtitle].content}</p>
-                  </div>
+            <div className="absolute bottom-16 h-fit w-fit">
+              <div className="flex justify-center p-1 bg-black bg-opacity-60 text-white">
+                <div>
+                  <p>{videoTranscription[currentSubtitle].content}</p>
+                  <p>{videoTranslation[currentSubtitle].content}</p>
                 </div>
               </div>
             </div>
