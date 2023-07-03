@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
-import styles from '@/styles/Account.module.css';
 import { Input, Button, Loading, Spacer } from '@nextui-org/react';
 import Link from 'next/link';
 
@@ -120,106 +119,105 @@ export default function Account() {
   }
 
   return (
-    <div className={styles.formWidget}>
-      <div>
-        <div className={styles.profileContainer}>
-          <div>
-            {avatar_url ? (
-              <img
-                src={avatarFileUrl}
-                alt="Avatar"
-                className="avatar image"
-                style={{ height: 150, width: 150 }}
-              />
-            ) : (
-              <div className="avatar no-image" style={{ height: 150, width: 150 }} />
-            )}
-            <Button disabled className="m-1 absolute text-blue-600 bg-blue-200" flat size="sm">
-              {loading ? (
-                <>
-                  <Loading type="points-opacity" color="currentColor" size="sm" />
-                </>
+    <div className="flex justify-center w-full mt-16">
+      <div className="flex-col w-80 h-fit p-3 border border-solid border-slate-300 rounded-2xl">
+        <div>
+          <div className="flex">
+            <div>
+              {avatar_url ? (
+                <img
+                  src={avatarFileUrl}
+                  alt="Avatar"
+                  className="avatar image"
+                  style={{ height: 150, width: 150 }}
+                />
               ) : (
-                'Upload'
+                <div className="avatar no-image" style={{ height: 150, width: 150 }} />
               )}
-            </Button>
-            <input
-              style={{
-                opacity: 0,
-              }}
-              type="file"
-              id="upload"
-              accept="image/*"
-              onChange={uploadAvatar}
-              disabled={loading}
-            />
+              <Button disabled className="m-1 absolute text-blue-600 bg-blue-200" flat size="sm">
+                {loading ? (
+                  <>
+                    <Loading type="points-opacity" color="currentColor" size="sm" />
+                  </>
+                ) : (
+                  'Upload'
+                )}
+              </Button>
+              <input
+                style={{
+                  opacity: 0,
+                }}
+                type="file"
+                id="upload"
+                accept="image/*"
+                onChange={uploadAvatar}
+                disabled={loading}
+              />
+            </div>
+            <div className="w-36">{/* <div>user name: {username}</div> */}</div>
           </div>
-          <div className={styles.profileData}>{/* <div>user name: {username}</div> */}</div>
+
+          <Spacer y={1} />
+          <Input label="Email" color="default" value={session.user.email} readOnly fullWidth />
+          <Spacer y={0.5} />
+        </div>
+        <div>
+          <Input
+            label="username"
+            color="default"
+            clearable
+            fullWidth
+            bordered
+            borderWeight="light"
+            placeholder="username"
+            value={username || ''}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <Spacer y={0.5} />
+
+          <Input
+            label="fullname"
+            color="default"
+            clearable
+            fullWidth
+            bordered
+            borderWeight="light"
+            placeholder="fullname"
+            value={fullname || ''}
+            onChange={(e) => setFullname(e.target.value)}
+          />
         </div>
 
-        <Spacer y={1} />
-        <Input label="Email" color="default" value={session.user.email} readOnly fullWidth />
-        <Spacer y={0.5} />
-      </div>
-      <div>
-        <Input
-          label="username"
-          color="default"
-          clearable
-          fullWidth
-          bordered
-          borderWeight="light"
-          placeholder="username"
-          value={username || ''}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <Spacer y={0.5} />
-
-        <Input
-          label="fullname"
-          color="default"
-          clearable
-          fullWidth
-          bordered
-          borderWeight="light"
-          placeholder="fullname"
-          value={fullname || ''}
-          onChange={(e) => setFullname(e.target.value)}
-        />
-      </div>
-
-      <div className={styles.button_group}>
-        <p className={styles.message}>{message}</p>
-        <p className={styles.errMes}>{errMessage}</p>
-        <Button
-          className="mt-2 bg-blue-600 w-full"
-          onClick={() => updateProfile(username, fullname, avatar_url)}
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <Loading type="points-opacity" color="currentColor" size="sm" />
-            </>
-          ) : (
-            'Update'
-          )}
-        </Button>
-        <Button
-          ghost
-          className="hover:bg-blue-600 mt-2 w-full"
-          onClick={() => supabase.auth.signOut()}
-        >
-          Log Out
-        </Button>
-        <Link href="/reset-password" passHref>
-          <button
-            type="button"
-            className="bg-white text-red-700 hover:text-white border-2 border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+        <div className="mt-4">
+          <p className="text-green-600">{message}</p>
+          <p className="text-red-600">{errMessage}</p>
+          <Button
+            className="mt-2 bg-blue-600 w-full"
+            onClick={() => updateProfile(username, fullname, avatar_url)}
+            disabled={loading}
           >
-            Reset Password
-          </button>
-        </Link>
-        <Spacer y={0.5} />
+            {loading ? (
+              <>
+                <Loading type="points-opacity" color="currentColor" size="sm" />
+              </>
+            ) : (
+              'Update'
+            )}
+          </Button>
+          <Button
+            ghost
+            className="hover:bg-blue-600 mt-2 w-full"
+            onClick={() => supabase.auth.signOut()}
+          >
+            Log Out
+          </Button>
+          <Link href="/reset-password" passHref>
+            <button className="bg-white text-red-700 hover:text-white border-2 border-red-700 hover:bg-red-800 font-medium rounded-xl text-sm px-5 py-2.5 text-center mr-2 mb-2">
+              Reset Password
+            </button>
+          </Link>
+          <Spacer y={0.5} />
+        </div>
       </div>
     </div>
   );

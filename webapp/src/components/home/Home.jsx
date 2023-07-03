@@ -85,13 +85,13 @@ export default function Home() {
 
           <div className="w-96 flex justify-center ">
             {loading ? (
-              <Card isHoverable className={styles.history_container}>
+              <Card isHoverable className="w-full max-w-sm flex-col items-center">
                 <div className="h-full flex items-center">
                   <Loading size="lg" color="primary" />
                 </div>
               </Card>
             ) : (
-              <Card isHoverable className={styles.history_container}>
+              <Card isHoverable className="w-full max-w-sm flex-col items-center">
                 <div>
                   {recentHistory.length > 0 ? (
                     <>
@@ -146,14 +146,12 @@ export default function Home() {
                           ))}
                         </Table.Body>
                       </Table>
-                      <div className="px-5">
-                        {recentHistory.length > 0 && (
-                          <Link href="/history" passHref>
-                            <button className="w-full inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
-                              SEE ALL
-                            </button>
-                          </Link>
-                        )}
+                      <div className="px-5 my-8">
+                        <Link href="/history" passHref>
+                          <button className="w-full inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                            SEE ALL
+                          </button>
+                        </Link>
                       </div>
                     </>
                   ) : (

@@ -53,7 +53,7 @@ export default function Layout({ children }) {
           <Overlay displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
           <div className="flex min-h-screen">
             <Sidebar />
-            <div className={styles.container}>{children}</div>
+            <div className="py-16 flex-col items-center w-full min-h-screen">{children}</div>
           </div>
         </>
       )}
