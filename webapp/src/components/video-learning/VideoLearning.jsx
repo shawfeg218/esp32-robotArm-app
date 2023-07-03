@@ -1,6 +1,6 @@
 import { Input, Spacer, Button, Loading, Modal } from '@nextui-org/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { parseSubtitles } from '../../lib/parseSubtitles';
+import { parseTranscription, parseTranslation } from '../../lib/parseSubtitles';
 import YouTube from 'react-youtube';
 import Toast from '../Toast';
 
@@ -120,13 +120,13 @@ export default function VideoLearning() {
         };
       } else {
         const responseJson = await response.json();
-        const transcriptionSubtitles = parseSubtitles(responseJson.transcription);
-        const translationSubtitles = parseSubtitles(responseJson.translation);
+        const transcriptionSubtitles = parseTranscription(responseJson.transcription);
+        const translationSubtitles = parseTranslation(responseJson.translation);
 
         // const exampleData = example;
 
-        // const transcriptionSubtitles = parseSubtitles(exampleData.transcription);
-        // const translationSubtitles = parseSubtitles(exampleData.translation);
+        // const transcriptionSubtitles = parseTranscription(exampleData.transcription);
+        // const translationSubtitles = parseTranslation(exampleData.translation);
         // setVideoTranscription(transcriptionSubtitles);
         // setVideoTranslation(translationSubtitles);
         // setRes(JSON.stringify(exampleData, null, 2));
@@ -253,7 +253,7 @@ export default function VideoLearning() {
           )}
         </section>
 
-        <div className="mt-10 flex justify-center">
+        <div className="my-10 flex justify-center">
           <YouTube
             videoId={videoId === '' ? '' : videoId}
             opts={{
@@ -263,7 +263,7 @@ export default function VideoLearning() {
           />
 
           {res === null ? null : (
-            <div className="absolute bottom-16 h-fit w-fit">
+            <div className="absolute bottom-32 h-fit w-fit">
               <div className="flex justify-center p-1 bg-black bg-opacity-60 text-white">
                 <div>
                   <p>{videoTranscription[currentSubtitle].content}</p>
