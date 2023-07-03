@@ -8,7 +8,7 @@ export default function AudioChat() {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
-  // const [type, setType] = useState(null);
+
   const [ansAudioUrl, setAnsAudioUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 

@@ -1,14 +1,19 @@
 import { Input, Spacer, Button, Loading, Modal } from '@nextui-org/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { parseTranscription, parseTranslation } from '../../lib/parseSubtitles';
+import { parseTranscription, parseTranslation, generateContent } from '../../lib/parseSubtitles';
 import YouTube from 'react-youtube';
 import Toast from '../Toast';
-
 import { example } from '../../lib/example';
+import { base64ToBlob } from '../../lib/base64ToBlob';
 
 export default function VideoLearning() {
   const [key, setKey] = useState(null);
   const [res, setRes] = useState(null);
+
+  const [ans, setAns] = useState(null);
+  const ansAudioRef = useRef(null);
+  const [ansAudioUrl, setAnsAudioUrl] = useState(null);
+  const [learningLoading, setLearningLoading] = useState(false);
 
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoId, setVideoId] = useState('');
@@ -68,6 +73,7 @@ export default function VideoLearning() {
     }
   }, [key]);
 
+  // for update video playing time
   useEffect(() => {
     for (let i = 0; i < videoTranscription.length; i++) {
       if (
@@ -87,6 +93,21 @@ export default function VideoLearning() {
 
     return () => clearInterval(interval);
   }, [player]);
+
+  // for answer audio
+  useEffect(() => {
+    if (ansAudioUrl) {
+      ansAudioRef.current.load();
+    }
+  }, [ansAudioUrl]);
+
+  useEffect(() => {
+    if (ansAudioRef.current) {
+      ansAudioRef.current.oncanplaythrough = () => {
+        ansAudioRef.current.play();
+      };
+    }
+  }, []);
 
   async function transcribeAudioLink() {
     setLoading(true);
@@ -122,19 +143,17 @@ export default function VideoLearning() {
         const responseJson = await response.json();
         const transcriptionSubtitles = parseTranscription(responseJson.transcription);
         const translationSubtitles = parseTranslation(responseJson.translation);
+        setVideoTranscription(transcriptionSubtitles);
+        setVideoTranslation(translationSubtitles);
+        setRes(JSON.stringify(responseJson, null, 2));
 
         // const exampleData = example;
-
         // const transcriptionSubtitles = parseTranscription(exampleData.transcription);
         // const translationSubtitles = parseTranslation(exampleData.translation);
         // setVideoTranscription(transcriptionSubtitles);
         // setVideoTranslation(translationSubtitles);
         // setRes(JSON.stringify(exampleData, null, 2));
         // setLoading(false);
-
-        setVideoTranscription(transcriptionSubtitles);
-        setVideoTranslation(translationSubtitles);
-        setRes(JSON.stringify(responseJson, null, 2));
 
         // check res of transcription and translation
         if (transcriptionSubtitles.length !== translationSubtitles.length) {
@@ -165,10 +184,57 @@ export default function VideoLearning() {
     }
   }
 
+  async function contentLearning() {
+    setLearningLoading(true);
+    try {
+      const content = generateContent(videoTranscription);
+      // const response = await fetch(`http://localhost:5000/api/content-learning`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/content-learning`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          apiKey: key,
+          content: content,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        throw {
+          name: errorResponse.name,
+          message: errorResponse.message,
+        };
+      } else {
+        const responseJson = await response.json();
+        console.log('audioChat: ', responseJson);
+
+        const { answer, answerAudio } = responseJson;
+        setAns(answer);
+
+        const audioBlob = base64ToBlob(answerAudio, 'audio/mp3');
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setAnsAudioUrl(audioUrl);
+
+        setLearningLoading(false);
+      }
+    } catch (error) {
+      setShowModal(true);
+      if (error.name) {
+        setModalHeader(error.name);
+      }
+      if (error.message) {
+        setModalMessage(error.message);
+      }
+      setLearningLoading(false);
+    }
+  }
+
   return (
     <div className="w-full mt-4 flex justify-center overflow-x-scroll">
       {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
-
+      <audio ref={ansAudioRef} src={ansAudioUrl} />
       <div>
         <section className="flex-col text-center ">
           <h1>Audio Translate</h1>
@@ -191,6 +257,7 @@ export default function VideoLearning() {
             status={urlStatus}
             onChange={(e) => setVideoUrl(e.target.value)}
           />
+
           <Spacer y={0.5} />
           <div className="mt-3 flex justify-center">
             <Button bordered size="md" disabled={loading} onPress={transcribeAudioLink}>
@@ -251,6 +318,36 @@ export default function VideoLearning() {
               </div>
             </>
           )}
+          <>
+            {res && (
+              <>
+                <Spacer y={0.5} />
+                <div className="mt-3 flex justify-center">
+                  <Button bordered size="md" disabled={loading} onPress={contentLearning}>
+                    Learning
+                  </Button>
+                </div>
+              </>
+            )}
+          </>
+        </section>
+
+        <section className="flex-col justify-center items-center w-full">
+          {learningLoading ? (
+            <div className="flex justify-center mt-6">
+              <Loading />
+            </div>
+          ) : (
+            <>
+              <div className="flex justify-center">
+                {ans ? (
+                  <div className="bg-slate-100 my-10 overflow-scroll max-w-2xl p-2 max-h-80">
+                    <p className="text-black w-full">{ans}</p>
+                  </div>
+                ) : null}
+              </div>
+            </>
+          )}
         </section>
 
         <div className="my-10 flex justify-center">
@@ -263,7 +360,7 @@ export default function VideoLearning() {
           />
 
           {res === null ? null : (
-            <div className="absolute bottom-32 h-fit w-fit">
+            <div className="absolute bottom-48 h-fit w-fit">
               <div className="flex justify-center p-1 bg-black bg-opacity-60 text-white">
                 <div>
                   <p>{videoTranscription[currentSubtitle].content}</p>
