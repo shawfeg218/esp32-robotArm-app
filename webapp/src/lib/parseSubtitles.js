@@ -60,3 +60,30 @@ export function parseTranslation(subtitles) {
     throw error;
   }
 }
+
+export function generateContent(subtitles) {
+  try {
+    if (subtitles.length <= 10) {
+      let contents = subtitles.map((item) => {
+        let number = item.number;
+        let content = item.content;
+        return `${number}: ${content}`;
+      });
+      return contents.join('\n');
+    } else {
+      // random choose 10 subtitles
+      let contents = [];
+      while (contents.length < 10) {
+        let randomIndex = Math.floor(Math.random() * subtitles.length);
+        let randomContent = `${subtitles[randomIndex].number}: ${subtitles[randomIndex].content}`;
+        if (!contents.includes(randomContent)) {
+          contents.push(randomContent);
+        }
+      }
+      return contents.join('\n');
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

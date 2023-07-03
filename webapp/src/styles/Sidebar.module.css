@@ -5,7 +5,7 @@
   border-right: 0.0625rem solid #ececf1;
   margin-top: 1rem;
   width: 13rem;
-  min-height: 100vh;
+  height: 100%;
   z-index: var(--sidebar-z-index);
   overflow-y: scroll;
 
