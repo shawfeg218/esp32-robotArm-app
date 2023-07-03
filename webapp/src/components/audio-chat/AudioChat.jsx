@@ -73,10 +73,10 @@ export default function AudioChat() {
         'audio/wav',
         'audio/m4a',
         'audio/webm',
-        'audio/mpeg',
-        'audio/mpga',
-        'audio/mp3',
-        'audio/mp4',
+        // 'audio/mpeg',
+        // 'audio/mpga',
+        // 'audio/mp3',
+        // 'audio/mp4',
       ];
       let mimeType;
 
