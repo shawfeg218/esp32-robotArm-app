@@ -1,5 +1,6 @@
-export function parseSubtitles(subtitles) {
+export function parseTranscription(subtitles) {
   try {
+    subtitles = subtitles.replace(/\n\n\n/g, '\n\n');
     let subtitlesArray = subtitles.split('\n\n').filter((item) => item.trim() !== '');
 
     let subtitlesObjects = subtitlesArray.map((item) => {
@@ -33,6 +34,27 @@ function convertToSeconds(timestamp) {
     let minutes = parseInt(parts[1]);
     let seconds = parseFloat(parts[2].replace(',', '.'));
     return hours * 3600 + minutes * 60 + seconds;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export function parseTranslation(subtitles) {
+  try {
+    subtitles = subtitles.replace(/\n\n\n/g, '\n\n');
+    let subtitlesArray = subtitles.split('\n\n').filter((item) => item.trim() !== '');
+
+    let subtitlesObjects = subtitlesArray.map((item) => {
+      let parts = item.split('\n');
+
+      return {
+        numbers: parts[0],
+        content: parts[1],
+      };
+    });
+
+    return subtitlesObjects;
   } catch (error) {
     console.log(error);
     throw error;
