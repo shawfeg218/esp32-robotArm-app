@@ -166,7 +166,7 @@ export default function VideoLearning() {
   }
 
   return (
-    <div className="w-full mt-4 flex justify-center">
+    <div className="w-full mt-4 flex justify-center overflow-x-scroll">
       {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
 
       <div>

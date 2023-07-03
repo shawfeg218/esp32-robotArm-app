@@ -5,8 +5,8 @@
   left: 0;
   right: 0;
   z-index: var(--navbar-overlay-z-index);
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   transition: background-color 0.3s ease-in-out;
