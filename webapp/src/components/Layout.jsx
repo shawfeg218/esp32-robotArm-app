@@ -1,14 +1,13 @@
 // Layout.jsx
 import styles from '@/styles/Layout.module.css';
 import Navbar from './Navbar';
-import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import Sidebar from './Sidebar';
 import AppContext from '@/contexts/AppContext';
 import { useContext } from 'react';
 import { useEffect } from 'react';
-import MyAuth from './account/Auth';
+import Auth from './account/Auth';
 
 function Overlay({ displaySidebar, setDisplaySidebar }) {
   return (
@@ -23,7 +22,6 @@ function Overlay({ displaySidebar, setDisplaySidebar }) {
 
 export default function Layout({ children }) {
   const session = useSession();
-  const supabase = useSupabaseClient();
 
   const { displaySidebar, setDisplaySidebar } = useContext(AppContext);
 
@@ -39,15 +37,7 @@ export default function Layout({ children }) {
     <>
       {!session ? (
         <div className="flex justify-center items-center w-full min-h-screen ">
-          {/* <div className="w-80">
-            <Auth
-              supabaseClient={supabase}
-              appearance={{ theme: ThemeSupa }}
-              theme="default"
-              providers={[]}
-            />
-          </div> */}
-          <MyAuth />
+          <Auth />
         </div>
       ) : (
         <>

@@ -2,7 +2,7 @@ import { Button, Input, Spacer } from '@nextui-org/react';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
 
-export default function MyAuth() {
+export default function Auth() {
   const supabase = useSupabaseClient();
   const [signup, setSignup] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
@@ -192,7 +192,7 @@ export default function MyAuth() {
                 />
                 <Spacer y={0.5} />
 
-                <Input
+                <Input.Password
                   fullWidth
                   clearable
                   bordered
