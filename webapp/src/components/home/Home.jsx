@@ -76,7 +76,7 @@ export default function Home() {
             link="/audio-chat"
           />
           <HomeCard
-            img="/img/videoLearning.jpg"
+            img="/img/VideoLearning.jpg"
             title={'Video Learning'}
             description=""
             link="/video-learning"
