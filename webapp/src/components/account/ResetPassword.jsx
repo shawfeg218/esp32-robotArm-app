@@ -17,6 +17,7 @@ export default function ResetPassword() {
   const [checkStatus, setCheckStatus] = useState('default');
 
   useEffect(() => {
+    // check password length
     if (newPassword.length < 6) {
       setPasswordMessage('Password should be at least 6 characters!');
       setPasswordStatus('error');
@@ -27,6 +28,7 @@ export default function ResetPassword() {
       setCantSubmit(false);
     }
 
+    // check password match
     if (newPassword !== checkPassword) {
       setCheckMessage('Passwords do not match!');
       setCheckStatus('error');

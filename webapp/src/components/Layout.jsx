@@ -8,6 +8,7 @@ import Sidebar from './Sidebar';
 import AppContext from '@/contexts/AppContext';
 import { useContext } from 'react';
 import { useEffect } from 'react';
+import MyAuth from './account/Auth';
 
 function Overlay({ displaySidebar, setDisplaySidebar }) {
   return (
@@ -38,14 +39,15 @@ export default function Layout({ children }) {
     <>
       {!session ? (
         <div className="flex justify-center items-center w-full min-h-screen ">
-          <div className="w-80">
+          {/* <div className="w-80">
             <Auth
               supabaseClient={supabase}
               appearance={{ theme: ThemeSupa }}
               theme="default"
               providers={[]}
             />
-          </div>
+          </div> */}
+          <MyAuth />
         </div>
       ) : (
         <>
