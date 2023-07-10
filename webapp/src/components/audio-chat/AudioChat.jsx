@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Loading } from '@nextui-org/react';
+import { Loading, Input, Button } from '@nextui-org/react';
 import { BsMicFill } from 'react-icons/bs';
+import { IoSend } from 'react-icons/io5';
 import { base64ToBlob } from '../../lib/base64ToBlob';
+import PrettyTextArea from '../PrettyTextArea';
 
 export default function AudioChat() {
   const ansAudioRef = useRef(null);
@@ -13,7 +15,9 @@ export default function AudioChat() {
   const [loading, setLoading] = useState(false);
 
   const [text, setText] = useState(null);
+  const [enter, setEnter] = useState('');
   const [ans, setAns] = useState(null);
+  const [conversationHistory, setConversationHistory] = useState([]);
 
   useEffect(() => {
     let type;
@@ -151,18 +155,26 @@ export default function AudioChat() {
     } else {
       const { text } = await response.json();
       console.log('text: ', text);
+      const newUserMessage = { role: 'user', content: text };
+      let newConversationHistory = [...conversationHistory, newUserMessage];
+      if (newConversationHistory.length > 10) {
+        newConversationHistory = newConversationHistory.slice(-10);
+      }
+      setConversationHistory(newConversationHistory);
       setText(text);
     }
   }
 
   async function audioChat() {
+    setLoading(true);
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`, {
+      // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        question: text,
+        messages: conversationHistory,
       }),
     });
 
@@ -176,6 +188,12 @@ export default function AudioChat() {
       console.log('audioChat: ', responseJson);
 
       const { answer, answerAudio } = responseJson;
+      const newAssistantMessage = { role: 'assistant', content: answer };
+      let newConversationHistory = [...conversationHistory, newAssistantMessage];
+      if (newConversationHistory.length > 10) {
+        newConversationHistory = newConversationHistory.slice(-10);
+      }
+      setConversationHistory(newConversationHistory);
       setAns(answer);
 
       const audioBlob = base64ToBlob(answerAudio, 'audio/mp3');
@@ -183,33 +201,67 @@ export default function AudioChat() {
       setAnsAudioUrl(audioUrl);
 
       setLoading(false);
+      console.log('conversationHistory: ', conversationHistory);
     }
   }
 
   return (
-    <div className="flex justify-center text-black  w-full h-full mt-16">
-      <div className="h-full min-w-fit justify-center items-center p-5 text-center bg-white">
+    <div className="flex justify-center text-black w-full h-full mt-16">
+      <div className="h-full w-96 max-w-2xl justify-center items-center text-center">
         <audio ref={ansAudioRef} src={ansAudioUrl} />
-        <h1>Audio chat</h1>
-        <div className="overflow-auto h-48 max-w-2xl my-4">
-          {ans ? <h3 className="text-start">{ans}</h3> : <h3>Start your recording</h3>}
-        </div>
-        <div className="w-full flex justify-center">
-          {recording ? <div className="absolute top-80 z-0 spinner"></div> : null}
-          <button
-            className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
-            onClick={recording ? stopRecording : startRecording}
-          >
-            <BsMicFill className=" w-16 h-16" />
-          </button>
-        </div>
-        <div className="flex justify-center items-center m-8">
-          {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
-        </div>
-        <h2>{text ? `${text}` : ''}</h2>
-        <div className="flex justify-center">
-          {audioData && <audio controls src={URL.createObjectURL(audioData)} className="w-72" />}
-        </div>
+        <section>
+          <h1>Audio chat</h1>
+          <div className="overflow-auto h-32 my-4">
+            {ans ? <h3>{ans}</h3> : <h3>Start your recording</h3>}
+          </div>
+          <div className="w-full flex justify-center">
+            {recording ? <div className="absolute top-80 z-0 spinner"></div> : null}
+            <button
+              className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
+              onClick={recording ? stopRecording : startRecording}
+            >
+              <BsMicFill className=" w-16 h-16" />
+            </button>
+          </div>
+          <div className="flex justify-center items-center m-8">
+            {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
+          </div>
+          <h2 className="h-40 overflow-x-scroll">{text ? `${text}` : ''}</h2>
+        </section>
+        <section>
+          <div className="relative mt-16">
+            <div className="flex absolute bottom-0">
+              <div className="flex w-80">
+                <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
+              </div>
+              <div className="flex flex-col justify-end">
+                <button
+                  className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
+                  disabled={loading}
+                  onClick={() => {
+                    if (enter) {
+                      const newUserMessage = { role: 'user', content: enter };
+                      let newConversationHistory = [...conversationHistory, newUserMessage];
+                      if (newConversationHistory.length > 10) {
+                        newConversationHistory = newConversationHistory.slice(-10);
+                      }
+                      setConversationHistory(newConversationHistory);
+                      setText(enter);
+                      setEnter('');
+                    }
+                  }}
+                >
+                  <IoSend />
+                </button>
+              </div>
+            </div>
+            <div>
+              {audioData && (
+                <audio controls src={URL.createObjectURL(audioData)} className="w-72" />
+              )}
+            </div>
+          </div>
+        </section>
         <div>{loading ? 'Loading... ' : ''}</div>
       </div>
     </div>
