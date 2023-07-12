@@ -61,48 +61,50 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className={styles.container}>
-      <h2>Reset Password</h2>
-      <form onSubmit={handlePasswordReset}>
-        <Input.Password
-          clearable
-          fullWidth
-          status={passwordStatus}
-          helperText={passwordMessage}
-          helperColor={passwordStatus === 'error' ? 'error' : 'default'}
-          label="New password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <Spacer y={1} />
-        <Input.Password
-          clearable
-          fullWidth
-          status={checkStatus}
-          helperText={checkMessage}
-          helperColor={checkStatus === 'error' ? 'error' : 'default'}
-          label="Check password"
-          value={checkPassword}
-          onChange={(e) => setCheckPassword(e.target.value)}
-        />
-        <Spacer y={1} />
-        <Button
-          ghost
-          className="hover:bg-blue-600 w-full"
-          type="submit"
-          disabled={cantSubmit || loading}
-        >
-          {loading ? (
-            <>
-              <Loading type="points-opacity" color="currentColor" size="sm" />
-            </>
-          ) : (
-            'Reset Password'
-          )}
-        </Button>
-        <p className={styles.message}>{message}</p>
-        <p className={styles.errMes}>{errorMes}</p>
-      </form>
+    <div className="w-full flex justify-center">
+      <div className="w-full mt-16 max-w-xs">
+        <h2>Reset Password</h2>
+        <form onSubmit={handlePasswordReset}>
+          <Input.Password
+            clearable
+            fullWidth
+            status={passwordStatus}
+            helperText={passwordMessage}
+            helperColor={passwordStatus === 'error' ? 'error' : 'default'}
+            label="New password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <Spacer y={1} />
+          <Input.Password
+            clearable
+            fullWidth
+            status={checkStatus}
+            helperText={checkMessage}
+            helperColor={checkStatus === 'error' ? 'error' : 'default'}
+            label="Check password"
+            value={checkPassword}
+            onChange={(e) => setCheckPassword(e.target.value)}
+          />
+          <Spacer y={1} />
+          <Button
+            ghost
+            className="hover:bg-blue-600 w-full"
+            type="submit"
+            disabled={cantSubmit || loading}
+          >
+            {loading ? (
+              <>
+                <Loading type="points-opacity" color="currentColor" size="sm" />
+              </>
+            ) : (
+              'Reset Password'
+            )}
+          </Button>
+          <p className={styles.message}>{message}</p>
+          <p className={styles.errMes}>{errorMes}</p>
+        </form>
+      </div>
     </div>
   );
 }
