@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
-import { Input, Button, Loading, Spacer } from '@nextui-org/react';
+import { Input, Button, Loading, Spacer, Tooltip } from '@nextui-org/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function Account() {
+  const router = useRouter();
   const supabase = useSupabaseClient();
   const user = useUser();
   const session = useSession();
@@ -122,6 +124,9 @@ export default function Account() {
     <div className="flex justify-center w-full mt-16">
       <div className="flex-col w-80 h-fit p-3 border border-solid border-slate-300 rounded-2xl">
         <div>
+          <h1 className="text-2xl font-bold">
+            {user.user_metadata.role === 'teacher' ? '教師帳號' : '學生帳號'}
+          </h1>
           <div className="flex">
             <div>
               {avatar_url ? (
@@ -191,33 +196,68 @@ export default function Account() {
         <div className="mt-4">
           <p className="text-green-600">{message}</p>
           <p className="text-red-600">{errMessage}</p>
-          <Button
-            className="mt-2 bg-blue-600 w-full"
-            onClick={() => updateProfile(username, fullname, avatar_url)}
-            disabled={loading}
+          <Tooltip
+            className="w-full"
+            placement="bottom"
+            color="invert"
+            hideArrow
+            content={'更新使用者資料'}
           >
-            {loading ? (
-              <>
-                <Loading type="points-opacity" color="currentColor" size="sm" />
-              </>
-            ) : (
-              'Update'
-            )}
-          </Button>
+            <Button
+              className="mt-2 bg-blue-600 w-full"
+              onClick={() => updateProfile(username, fullname, avatar_url)}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loading type="points-opacity" color="currentColor" size="sm" />
+                </>
+              ) : (
+                'Update'
+              )}
+            </Button>
+          </Tooltip>
+        </div>
+        <Spacer y={1} />
+
+        <div className="w-full flex pt-3 border-t-2 border-solid border-x-0 border-b-0 border-slate-300">
+          <Link href="/reset-password" passHref>
+            <button className="w-1/2 bg-white text-red-700 hover:text-white border-2 border-red-700 hover:bg-red-700 font-medium rounded-xl text-sm px-5 py-2.5 text-center mr-2 mb-2">
+              密碼重設
+            </button>
+          </Link>
+          <Tooltip
+            className="w-1/2"
+            placement="bottom"
+            color="invert"
+            hideArrow
+            isDisabled={user.user_metadata.role === 'teacher'}
+            content={'升級為教師帳號'}
+          >
+            <Link href="/update-role" passHref>
+              <button
+                disabled={user.user_metadata.role === 'teacher'}
+                className="bg-white text-purple-700 hover:text-white border-2 border-purple-700 hover:bg-purple-700 disabled:cursor-default disabled:text-slate-300 disabled:border-slate-300 disabled:hover:bg-white font-medium rounded-xl text-sm px-5 py-2.5 text-center mb-2"
+              >
+                升級帳號
+              </button>
+            </Link>
+          </Tooltip>
+        </div>
+        <Spacer y={0.5} />
+        <div className="pt-3 border-t-2 border-solid border-x-0 border-b-0 border-slate-300">
           <Button
             ghost
             className="hover:bg-blue-600 mt-2 w-full"
-            onClick={() => supabase.auth.signOut()}
+            onClick={() => {
+              supabase.auth.signOut();
+              router.push('/');
+            }}
           >
             Log Out
           </Button>
-          <Link href="/reset-password" passHref>
-            <button className="bg-white text-red-700 hover:text-white border-2 border-red-700 hover:bg-red-800 font-medium rounded-xl text-sm px-5 py-2.5 text-center mr-2 mb-2">
-              Reset Password
-            </button>
-          </Link>
-          <Spacer y={0.5} />
         </div>
+        <Spacer y={0.5} />
       </div>
     </div>
   );
