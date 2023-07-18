@@ -21,7 +21,7 @@ export default function Navbar() {
       </div>
       <Link href="/" passHref>
         <div className={styles.logo}>
-          <h1>Esp32App</h1>
+          <h1>MEMEbot</h1>
         </div>
       </Link>
 

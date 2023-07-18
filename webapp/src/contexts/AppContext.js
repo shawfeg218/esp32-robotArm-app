@@ -3,7 +3,7 @@ import { createContext, useState } from 'react';
 
 const AppContext = createContext();
 
-export const AppContextProvider = ({ children }) => {
+export const AppContextProvider = ({ children, socket }) => {
   const [displaySidebar, setDisplaySidebar] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState('');
   const [point, setPoint] = useState(0);
@@ -14,6 +14,7 @@ export const AppContextProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
+        socket,
         displaySidebar,
         setDisplaySidebar,
         selectedSubject,
