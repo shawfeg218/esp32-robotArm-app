@@ -8,6 +8,8 @@ import { useEffect, useContext } from 'react';
 import Auth from './account/Auth';
 import TeacherPanel from './TeacherPanel';
 import { useRouter } from 'next/router';
+import io from 'socket.io-client';
+let socketIO;
 
 function Overlay({ displaySidebar, setDisplaySidebar }) {
   return (
@@ -28,23 +30,34 @@ export default function Layout({ children }) {
 
   const router = useRouter();
 
-  const { socket, displaySidebar, setDisplaySidebar } = useContext(AppContext);
+  const { setSocket, setTeacherPath, displaySidebar, setDisplaySidebar } = useContext(AppContext);
 
-  // socket
   useEffect(() => {
-    if (session && role !== 'teacher') {
-      socket?.on('lock_page_student', (path) => {
-        console.log('locked: ', path);
-        if (path !== router.asPath) {
-          router.push(path);
-        }
-      });
-    }
+    socketInitializer();
 
     return () => {
-      socket?.off('lock_page_student');
+      socketIO?.disconnect();
     };
-  }, [socket]);
+  }, []);
+
+  const socketInitializer = async () => {
+    await fetch('/api/socket');
+    socketIO = io();
+
+    setSocket(socketIO);
+
+    socketIO.on('connect', () => {
+      console.log('socket connected');
+    });
+
+    if (role !== 'teacher') {
+      socketIO.on('lock_page_student', (path) => {
+        console.log('locked: ', path);
+        setTeacherPath(path);
+        router.push(path);
+      });
+    }
+  };
 
   // sidebar
   useEffect(() => {
