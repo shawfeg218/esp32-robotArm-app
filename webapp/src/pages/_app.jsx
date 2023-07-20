@@ -1,3 +1,4 @@
+// pages/_app.js
 import '@/styles/globals.css';
 import Layout from '@/components/Layout';
 import { AppContextProvider } from '@/contexts/AppContext';
@@ -5,7 +6,7 @@ import nc from 'next-connect';
 import cors from 'cors';
 import { useState } from 'react';
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { SessionContextProvider, useUser } from '@supabase/auth-helpers-react';
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { NextUIProvider } from '@nextui-org/react';
 
 function App({ Component, pageProps }) {

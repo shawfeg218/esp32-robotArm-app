@@ -20,7 +20,7 @@ export default function Esp32Devices() {
   const [editDeviceName, setEditDeviceName] = useState('');
   const [editMacAddress, setEditMacAddress] = useState('');
 
-  const [showToast, setShowToast] = useState(false);
+  const [showToast, setShowToast] = useState(true);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('');
   const [showModal, setShowModal] = useState(false);

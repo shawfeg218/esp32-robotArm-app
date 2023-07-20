@@ -35,25 +35,6 @@
   }
 }
 
-.logo {
-  margin-left: 1.5rem;
-  display: flex;
-  align-items: center;
-  /* background-color: #4caf50; */
-}
-
-.logo span {
-  margin-left: 1.5rem;
-  color: rgb(0, 0, 0);
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 1.25rem;
-}
-
-.logo :hover {
-  cursor: pointer;
-}
-
 .navbarList {
   margin-right: 1rem;
   display: flex;

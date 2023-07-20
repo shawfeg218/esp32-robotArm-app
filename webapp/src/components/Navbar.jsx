@@ -20,8 +20,8 @@ export default function Navbar() {
         <RxHamburgerMenu className="reactIcons" size="1.8rem" />
       </div>
       <Link href="/" passHref>
-        <div className={styles.logo}>
-          <h1>Esp32App</h1>
+        <div className="hover:cursor-pointer">
+          <h1 className="text-center">MEMEbot</h1>
         </div>
       </Link>
 
