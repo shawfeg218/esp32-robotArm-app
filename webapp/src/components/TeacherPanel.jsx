@@ -30,6 +30,13 @@ export default function TeacherPanel() {
     setToastType('check');
   };
 
+  const unlockPage = () => {
+    socket?.emit('unlock_page');
+    setShowToast(true);
+    setToastMessage('解除鎖定');
+    setToastType('check');
+  };
+
   return (
     <>
       {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
@@ -37,7 +44,7 @@ export default function TeacherPanel() {
         <Collapse title="Teacher Panel" bordered className="fixed right-0 p-2 mt-20 z-50 text-lg">
           <Button onClick={lockPage}>鎖定頁面</Button>
           <Spacer y={0.5} />
-          <Button>解除鎖定</Button>
+          <Button onClick={unlockPage}>解除鎖定</Button>
         </Collapse>
       ) : null}
     </>

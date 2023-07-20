@@ -23,6 +23,11 @@ export default function handler(req, res) {
       socket.broadcast.emit('lock_page_student', path);
     });
 
+    socket.on('unlock_page', () => {
+      console.log('unlock_page event received');
+      socket.broadcast.emit('unlock_page_student');
+    });
+
     socket.on('disconnect', () => {
       clientsCount--;
       console.log('Number of clients connected: ', clientsCount);

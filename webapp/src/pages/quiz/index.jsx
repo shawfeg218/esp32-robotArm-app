@@ -14,7 +14,9 @@ export default function QuizPage() {
     if (role === 'teacher') {
       return;
     }
-
+    if (teacherPath === null) {
+      return;
+    }
     if (router.asPath !== teacherPath) {
       router.push(teacherPath);
     }

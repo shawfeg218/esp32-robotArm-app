@@ -56,6 +56,11 @@ export default function Layout({ children }) {
         setTeacherPath(path);
         router.push(path);
       });
+
+      socketIO.on('unlock_page_student', () => {
+        console.log('unlocked');
+        setTeacherPath(null);
+      });
     }
   };
 
