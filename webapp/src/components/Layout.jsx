@@ -52,13 +52,13 @@ export default function Layout({ children }) {
 
     if (role !== 'teacher') {
       socketIO.on('lock_page_student', (path) => {
-        console.log('locked: ', path);
+        // console.log('locked: ', path);
         setTeacherPath(path);
         router.push(path);
       });
 
       socketIO.on('unlock_page_student', () => {
-        console.log('unlocked');
+        // console.log('unlocked');
         setTeacherPath(null);
       });
     }

@@ -41,7 +41,11 @@ export default function TeacherPanel() {
     <>
       {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
       {role === 'teacher' ? (
-        <Collapse title="Teacher Panel" bordered className="fixed right-0 p-2 mt-20 z-50 text-lg">
+        <Collapse
+          title="Teacher Panel"
+          bordered
+          className="fixed right-0 p-2 mt-20 z-50 text-lg bg-white"
+        >
           <Button onClick={lockPage}>鎖定頁面</Button>
           <Spacer y={0.5} />
           <Button onClick={unlockPage}>解除鎖定</Button>
