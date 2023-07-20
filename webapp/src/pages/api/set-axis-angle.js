@@ -3,10 +3,14 @@
 import { setAxisAngle } from '@/lib/esp32Function.js';
 
 export default function handler(req, res) {
-  if (req.method === 'POST') {
-    setAxisAngle(req, res);
-    console.log('setAxisAngle');
-  } else {
-    res.status(405).json({ message: 'Method not allowed' });
+  try {
+    if (req.method === 'POST') {
+      setAxisAngle(req, res);
+      // console.log('setAxisAngle');
+    } else {
+      throw new Error('Method not allowed');
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 }

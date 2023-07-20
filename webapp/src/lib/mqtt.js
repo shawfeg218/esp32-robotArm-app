@@ -7,12 +7,12 @@ const mqttClient = mqtt.connect(`mqtt://${MQTT_SERVER_IP}:${MQTT_SERVER_PORT}`);
 
 const currentAnglesMap = new Map();
 const currentEsp32StatusMap = new Map();
-const lastHeartbeatMap = new Map();
+// const lastHeartbeatMap = new Map();
 
 const subscribeToTopics = (macAddress) => {
   mqttClient.subscribe(`esp32/${macAddress}/angles`);
   mqttClient.subscribe(`esp32/${macAddress}/esp32Status`);
-  mqttClient.subscribe(`esp32/${macAddress}/heartbeat`);
+  // mqttClient.subscribe(`esp32/${macAddress}/heartbeat`);
 };
 
 mqttClient.on('connect', () => {
@@ -26,20 +26,20 @@ mqttClient.on('message', (topic, message) => {
     currentAnglesMap.set(macAddress, JSON.parse(message.toString()));
   } else if (topic.endsWith('esp32Status')) {
     currentEsp32StatusMap.set(macAddress, JSON.parse(message.toString()));
-  } else if (topic.endsWith('heartbeat')) {
-    lastHeartbeatMap.set(macAddress, Date.now());
   }
+  // else if (topic.endsWith('heartbeat')) {
+  //   lastHeartbeatMap.set(macAddress, Date.now());
+  // }
 });
 
 const getCurrentAngles = (macAddress) => currentAnglesMap.get(macAddress) || {};
-const getCurrentEsp32Status = (macAddress) =>
-  currentEsp32StatusMap.get(macAddress) || {};
-const returnHeartbeat = (macAddress) => lastHeartbeatMap.get(macAddress) || 0;
+const getCurrentEsp32Status = (macAddress) => currentEsp32StatusMap.get(macAddress) || {};
+// const returnHeartbeat = (macAddress) => lastHeartbeatMap.get(macAddress) || 0;
 
 export {
   mqttClient,
   subscribeToTopics,
   getCurrentAngles,
   getCurrentEsp32Status,
-  returnHeartbeat,
+  // returnHeartbeat,
 };
