@@ -56,7 +56,7 @@ export default function TeacherPanel() {
             <Button onClick={unlockPage}>解除鎖定</Button>
           </div>
           <>
-            {router.asPath === '/arm-control' ? (
+            {router.asPath === '/arm-control' || router.asPath === '/device' ? (
               <div className="mt-4 pl-1 pt-3 border border-x-0 border-b-0 border-solid border-slate-300">
                 <Radio.Group
                   label="連線方式"
@@ -70,7 +70,7 @@ export default function TeacherPanel() {
                 >
                   <Radio value="single">單一裝置</Radio>
                   <Radio value="multi-singleRoute">多裝置單一路由</Radio>
-                  <Radio value="multi-multiRoute">多裝置多路由</Radio>
+                  {/* <Radio value="multi-multiRoute">多裝置多路由</Radio> */}
                 </Radio.Group>
               </div>
             ) : null}

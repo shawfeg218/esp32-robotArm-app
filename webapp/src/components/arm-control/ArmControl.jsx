@@ -4,7 +4,7 @@ import ArmControlView from './ArmControlView';
 import AppContext from '@/contexts/AppContext';
 
 export default function ArmControl() {
-  const { connectedMacAddress } = useContext(AppContext);
+  const { controlMode, connectedMacAddress } = useContext(AppContext);
 
   const [targetAngles, setTargetAngles] = useState({
     A: 0,
@@ -29,13 +29,13 @@ export default function ArmControl() {
   };
 
   useEffect(() => {
-    if (connectedMacAddress === '') return;
-
-    axios.post('/api/set-axis-angle', {
-      targetAngles,
-      connectedMacAddress,
-    });
-    // console.log(targetAngles);
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      axios.post('/api/set-axis-angle', {
+        targetAngles,
+        connectedMacAddress,
+      });
+      // console.log(targetAngles);
+    }
   }, [targetAngles]);
 
   const handleReset = () => {
@@ -48,7 +48,7 @@ export default function ArmControl() {
       F: 18,
     });
 
-    if (connectedMacAddress !== '') {
+    if (controlMode === 'single' && connectedMacAddress !== '') {
       // console.log('reset arm');
       axios.post('/api/reset-arm', {
         connectedMacAddress,
@@ -57,56 +57,56 @@ export default function ArmControl() {
   };
 
   const handleCorrectAction = () => {
-    if (connectedMacAddress === '') return;
-
-    // console.log('correct action');
-    axios.post('/api/correct-act', {
-      connectedMacAddress,
-    });
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      // console.log('correct action');
+      axios.post('/api/correct-act', {
+        connectedMacAddress,
+      });
+    }
   };
 
   const handleWrongAction = () => {
-    if (connectedMacAddress === '') return;
-
-    // console.log('wrong action');
-    axios.post('/api/wrong-act', {
-      connectedMacAddress,
-    });
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      // console.log('wrong action');
+      axios.post('/api/wrong-act', {
+        connectedMacAddress,
+      });
+    }
   };
 
   const handleGrabAction = () => {
-    if (connectedMacAddress === '') return;
-
-    // console.log('grab action');
-    axios.post('/api/grab-act', {
-      connectedMacAddress,
-    });
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      // console.log('grab action');
+      axios.post('/api/grab-act', {
+        connectedMacAddress,
+      });
+    }
   };
 
   const handleResetWifi = () => {
-    if (connectedMacAddress === '') return;
-
-    // console.log('reset wifi');
-    axios.post('/api/reset-wifi', {
-      connectedMacAddress,
-    });
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      // console.log('reset wifi');
+      axios.post('/api/reset-wifi', {
+        connectedMacAddress,
+      });
+    }
   };
 
   useEffect(() => {
-    if (connectedMacAddress === '') return;
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      const interval = setInterval(() => {
+        axios
+          .post('/api/get-angles', {
+            connectedMacAddress,
+          })
+          .then((res) => {
+            setCurrentAngles(res.data);
+            // console.log(res.data);
+          });
+      }, 1000);
 
-    const interval = setInterval(() => {
-      axios
-        .post('/api/get-angles', {
-          connectedMacAddress,
-        })
-        .then((res) => {
-          setCurrentAngles(res.data);
-          // console.log(res.data);
-        });
-    }, 1000);
-
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   return (
