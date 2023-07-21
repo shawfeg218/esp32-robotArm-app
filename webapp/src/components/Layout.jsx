@@ -41,10 +41,18 @@ export default function Layout({ children }) {
   }, []);
 
   const socketInitializer = async () => {
-    await fetch('/api/socket');
-    socketIO = io();
+    // socketIO = io('http://localhost:5000');
+    socketIO = io(process.env.NEXT_PUBLIC_API_URL);
 
     setSocket(socketIO);
+
+    socketIO.on('connect_error', (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+
+    socketIO.on('connect_timeout', (timeout) => {
+      console.log('Connection Timeout', timeout);
+    });
 
     socketIO.on('connect', () => {
       console.log('socket connected');
