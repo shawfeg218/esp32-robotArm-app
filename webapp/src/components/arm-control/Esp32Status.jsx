@@ -14,9 +14,12 @@ export default function Esp32Status() {
     connecting,
     setConnecting,
   } = useContext(AppContext);
+
   const [esp32Status, setEsp32Status] = useState({});
 
   useEffect(() => {
+    if (connectedMacAddress === '') return;
+
     let interval;
     if (connecting === true) {
       interval = setInterval(() => {
@@ -29,6 +32,7 @@ export default function Esp32Status() {
           });
       }, 3000);
     }
+
     return () => clearInterval(interval);
   }, [connecting, connectedDeviceName, connectedMacAddress]);
 
@@ -47,14 +51,18 @@ export default function Esp32Status() {
     <div className={styles.statusContainer}>
       <h2>ESP32 Status</h2>
       <div className="flex items-center">
-        <h3>連線</h3>
-        <Switch
-          checked={connecting}
-          onChange={() => {
-            changeConnectState();
-          }}
-          className="ml-3"
-        />
+        {connectedDeviceName === '' ? null : (
+          <>
+            <h3>連線</h3>
+            <Switch
+              checked={connecting}
+              onChange={() => {
+                changeConnectState();
+              }}
+              className="ml-3"
+            />
+          </>
+        )}
       </div>
       <div>
         {connecting ? (

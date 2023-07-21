@@ -29,11 +29,13 @@ export default function ArmControl() {
   };
 
   useEffect(() => {
+    if (connectedMacAddress === '') return;
+
     axios.post('/api/set-axis-angle', {
       targetAngles,
       connectedMacAddress,
     });
-    console.log(targetAngles);
+    // console.log(targetAngles);
   }, [targetAngles]);
 
   const handleReset = () => {
@@ -46,36 +48,53 @@ export default function ArmControl() {
       F: 18,
     });
 
-    axios.post('/api/reset-arm', {
-      connectedMacAddress,
-    });
+    if (connectedMacAddress !== '') {
+      // console.log('reset arm');
+      axios.post('/api/reset-arm', {
+        connectedMacAddress,
+      });
+    }
   };
 
   const handleCorrectAction = () => {
+    if (connectedMacAddress === '') return;
+
+    // console.log('correct action');
     axios.post('/api/correct-act', {
       connectedMacAddress,
     });
   };
 
   const handleWrongAction = () => {
+    if (connectedMacAddress === '') return;
+
+    // console.log('wrong action');
     axios.post('/api/wrong-act', {
       connectedMacAddress,
     });
   };
 
   const handleGrabAction = () => {
+    if (connectedMacAddress === '') return;
+
+    // console.log('grab action');
     axios.post('/api/grab-act', {
       connectedMacAddress,
     });
   };
 
   const handleResetWifi = () => {
+    if (connectedMacAddress === '') return;
+
+    // console.log('reset wifi');
     axios.post('/api/reset-wifi', {
       connectedMacAddress,
     });
   };
 
   useEffect(() => {
+    if (connectedMacAddress === '') return;
+
     const interval = setInterval(() => {
       axios
         .post('/api/get-angles', {
@@ -86,6 +105,7 @@ export default function ArmControl() {
           // console.log(res.data);
         });
     }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
