@@ -40,11 +40,15 @@ export default function Esp32Status() {
     }
   }, [connectedMacAddress]);
 
-  function handleDisFetchStatus() {
+  const handleDisFetchStatus = () => {
+    axios.post('/api/unsubscribe-topic', {
+      connectedMacAddress,
+    });
+
     setConnectedDeviceName('');
     setConnectedMacAddress('');
     setEsp32Status({});
-  }
+  };
 
   return (
     <div className={styles.statusContainer}>

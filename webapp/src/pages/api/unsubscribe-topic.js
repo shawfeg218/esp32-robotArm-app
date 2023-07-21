@@ -1,10 +1,12 @@
-import { resetWifi } from '@/lib/esp32Function';
+// file: webapp\src\pages\api\unsubscribe-topic.js
+
+import { unsubscribeTopic } from '@/lib/esp32Function.js';
 
 export default function handler(req, res) {
   try {
     if (req.method === 'POST') {
-      resetWifi(req, res);
-      // console.log('resetWifi');
+      unsubscribeTopic(req, res);
+      // console.log('unsubscribeTopic');
     } else {
       throw new Error('Method not allowed');
     }

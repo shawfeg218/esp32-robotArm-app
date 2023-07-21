@@ -2,6 +2,7 @@
 
 import {
   mqttClient,
+  subscribedTopics,
   getCurrentAngles,
   getCurrentEsp32Status,
   // returnHeartbeat,
@@ -81,14 +82,41 @@ export const resetArm = (req, res) => {
 };
 
 // -- get eap32 -- //
+
+export const unsubscribeTopic = (req, res) => {
+  try {
+    const macAddress = req.body.connectedMacAddress;
+
+    const anglesTopic = `esp32/${macAddress}/angles`;
+    const statusTopic = `esp32/${macAddress}/esp32Status`;
+
+    if (subscribedTopics.has(anglesTopic)) {
+      mqttClient.unsubscribe(anglesTopic);
+      subscribedTopics.delete(anglesTopic);
+      console.log('unsubscribeTopic: ', anglesTopic);
+    }
+    if (subscribedTopics.has(statusTopic)) {
+      mqttClient.unsubscribe(statusTopic);
+      subscribedTopics.delete(statusTopic);
+      console.log('unsubscribeTopic: ', statusTopic);
+    }
+
+    console.log('Topics: ', subscribedTopics.size);
+    res.status(204).send();
+  } catch (error) {
+    let errorMessage = error.message ? error.message : 'An unknown error occurred';
+    throw new Error(`Error in unsubscribeTopic: ${errorMessage}`);
+  }
+};
+
 export const getAngles = (req, res) => {
   try {
     const macAddress = req.body.connectedMacAddress;
 
-    const AnglesTopic = `esp32/${macAddress}/angles`;
-    if (!subscribedTopics.has(AnglesTopic)) {
-      mqttClient.subscribe(AnglesTopic);
-      subscribedTopics.add(AnglesTopic);
+    const anglesTopic = `esp32/${macAddress}/angles`;
+    if (!subscribedTopics.has(anglesTopic)) {
+      mqttClient.subscribe(anglesTopic);
+      subscribedTopics.add(anglesTopic);
     }
 
     mqttClient.publish(`esp32/${macAddress}/control/get-angles`, '');
