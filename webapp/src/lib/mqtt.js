@@ -9,13 +9,10 @@ const currentAnglesMap = new Map();
 const currentEsp32StatusMap = new Map();
 // const lastHeartbeatMap = new Map();
 
-const subscribeToTopics = (macAddress) => {
-  mqttClient.subscribe(`esp32/${macAddress}/angles`);
-  mqttClient.subscribe(`esp32/${macAddress}/esp32Status`);
-  // mqttClient.subscribe(`esp32/${macAddress}/heartbeat`);
-};
+const subscribedTopics = new Set();
 
 mqttClient.on('connect', () => {
+  console.log('MQTT client connected');
   // Do nothing here; we'll subscribe to topics after setting the macAddress
 });
 
@@ -38,7 +35,7 @@ const getCurrentEsp32Status = (macAddress) => currentEsp32StatusMap.get(macAddre
 
 export {
   mqttClient,
-  subscribeToTopics,
+  subscribedTopics,
   getCurrentAngles,
   getCurrentEsp32Status,
   // returnHeartbeat,

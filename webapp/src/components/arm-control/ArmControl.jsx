@@ -93,8 +93,11 @@ export default function ArmControl() {
   };
 
   useEffect(() => {
-    if (controlMode === 'single' && connectedMacAddress !== '') {
+    if (connectedMacAddress === '') return;
+
+    if (connectedMacAddress !== '') {
       const interval = setInterval(() => {
+        console.log('get angles');
         axios
           .post('/api/get-angles', {
             connectedMacAddress,
@@ -107,7 +110,7 @@ export default function ArmControl() {
 
       return () => clearInterval(interval);
     }
-  }, []);
+  }, [connectedMacAddress]);
 
   return (
     <ArmControlView

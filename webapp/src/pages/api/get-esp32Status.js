@@ -1,3 +1,5 @@
+// file: webapp\src\pages\api\get-esp32Status.js
+
 import { getEsp32Status } from '@/lib/esp32Function';
 
 export default function handler(req, res) {

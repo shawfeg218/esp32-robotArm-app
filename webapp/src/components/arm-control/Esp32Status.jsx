@@ -3,9 +3,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import styles from '@/styles/ArmControl.module.css';
 import axios from 'axios';
 import AppContext from '@/contexts/AppContext';
-import { Switch } from '@nextui-org/react';
+import { Switch, Button, Spacer } from '@nextui-org/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function Esp32Status() {
+  const router = useRouter();
+
   const {
     setConnectedDeviceName,
     setConnectedMacAddress,
@@ -20,9 +24,9 @@ export default function Esp32Status() {
   useEffect(() => {
     if (connectedMacAddress === '') return;
 
-    let interval;
-    if (connecting === true) {
-      interval = setInterval(() => {
+    if (connectedMacAddress !== '') {
+      const interval = setInterval(() => {
+        console.log('fetching esp32 status');
         axios
           .post('/api/get-esp32Status', {
             connectedMacAddress,
@@ -31,41 +35,22 @@ export default function Esp32Status() {
             setEsp32Status(res.data);
           });
       }, 3000);
-    }
 
-    return () => clearInterval(interval);
-  }, [connecting, connectedDeviceName, connectedMacAddress]);
-
-  function changeConnectState() {
-    // console.log('connecting: ', connecting);
-    connecting ? setConnecting(false) : setConnecting(true);
-    // console.log('change to ', connecting);
-    if (connectedDeviceName !== '') {
-      setConnectedDeviceName('');
-      setConnectedMacAddress('');
-      setEsp32Status({});
+      return () => clearInterval(interval);
     }
+  }, [connectedMacAddress]);
+
+  function handleDisFetchStatus() {
+    setConnectedDeviceName('');
+    setConnectedMacAddress('');
+    setEsp32Status({});
   }
 
   return (
     <div className={styles.statusContainer}>
       <h2>ESP32 Status</h2>
-      <div className="flex items-center">
-        {connectedDeviceName === '' ? null : (
-          <>
-            <h3>連線</h3>
-            <Switch
-              checked={connecting}
-              onChange={() => {
-                changeConnectState();
-              }}
-              className="ml-3"
-            />
-          </>
-        )}
-      </div>
       <div>
-        {connecting ? (
+        {connectedMacAddress !== '' ? (
           <>
             <div>Connecting device: {connectedDeviceName}</div>
             <div>macAddress: {esp32Status.macAddress}</div>
@@ -81,7 +66,39 @@ export default function Esp32Status() {
             <div>Hall Effect: {esp32Status.hallEffect}</div>
           </>
         ) : (
-          <div>choose a device to connect</div>
+          <Link href="/device" passHref>
+            <h3 className="hover:cursor-pointer text-blue-600">choose a device to get status 🔗</h3>
+          </Link>
+        )}
+      </div>
+
+      <div className="">
+        {connectedDeviceName === '' ? null : (
+          <>
+            <Button
+              ghost
+              onClick={() => {
+                handleDisFetchStatus();
+              }}
+              className="w-full text-red-600 font-bold hover:bg-red-600 hover:text-white border-red-600"
+            >
+              停止更新狀態
+            </Button>
+
+            {router.asPath !== '/arm-control' ? (
+              <>
+                <Spacer y={0.5} />
+                <Button
+                  onClick={() => {
+                    router.push('/arm-control');
+                  }}
+                  className="w-full"
+                >
+                  手臂控制
+                </Button>
+              </>
+            ) : null}
+          </>
         )}
       </div>
     </div>

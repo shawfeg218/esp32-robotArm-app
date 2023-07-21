@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 
 export default function ArmControlPage() {
-  const { controlMode, teacherPath } = useContext(AppContext);
+  const { connectedMacAddress, controlMode, teacherPath } = useContext(AppContext);
   const router = useRouter();
   const user = useUser();
   const role = user?.user_metadata?.role;
@@ -25,17 +25,8 @@ export default function ArmControlPage() {
 
   return (
     <div className="mt-16 flex flex-wrap justify-center">
-      {role === 'teacher' ? (
-        <>
-          <ArmControl />
-          {controlMode === 'single' ? <Esp32Status /> : null}
-        </>
-      ) : (
-        <>
-          <ArmControl />
-          <Esp32Status />
-        </>
-      )}
+      <ArmControl />
+      <Esp32Status />
     </div>
   );
 }

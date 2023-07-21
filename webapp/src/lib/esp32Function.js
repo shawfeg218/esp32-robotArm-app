@@ -5,7 +5,6 @@ import {
   getCurrentAngles,
   getCurrentEsp32Status,
   // returnHeartbeat,
-  subscribeToTopics,
 } from '@/lib/mqtt';
 
 export const resetWifi = (req, res) => {
@@ -81,10 +80,16 @@ export const resetArm = (req, res) => {
   }
 };
 
+// -- get eap32 -- //
 export const getAngles = (req, res) => {
   try {
     const macAddress = req.body.connectedMacAddress;
-    subscribeToTopics(macAddress);
+
+    const AnglesTopic = `esp32/${macAddress}/angles`;
+    if (!subscribedTopics.has(AnglesTopic)) {
+      mqttClient.subscribe(AnglesTopic);
+      subscribedTopics.add(AnglesTopic);
+    }
 
     mqttClient.publish(`esp32/${macAddress}/control/get-angles`, '');
     res.status(200).send(getCurrentAngles(macAddress));
@@ -98,7 +103,12 @@ export const getAngles = (req, res) => {
 export const getEsp32Status = (req, res) => {
   try {
     const macAddress = req.body.connectedMacAddress;
-    subscribeToTopics(macAddress);
+
+    const statusTopic = `esp32/${macAddress}/esp32Status`;
+    if (!subscribedTopics.has(statusTopic)) {
+      mqttClient.subscribe(statusTopic);
+      subscribedTopics.add(statusTopic);
+    }
 
     mqttClient.publish(`esp32/${macAddress}/control/get-esp32Status`, '');
     res.status(200).send(getCurrentEsp32Status(macAddress));

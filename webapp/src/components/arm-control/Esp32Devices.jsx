@@ -252,14 +252,14 @@ export default function Esp32Devices() {
                             setDeviceToDeleteIndex(index);
                           }}
                         >
-                          <AiOutlineDelete className="reactIcons" size="1rem" />
+                          <AiOutlineDelete className="reactIcons" size="1.3rem" />
                         </div>
 
                         <div onClick={() => handleDeviceEdit(index)}>
-                          <AiOutlineEdit className="reactIcons" size="1rem" />
+                          <AiOutlineEdit className="reactIcons" size="1.3rem" />
                         </div>
                         <div onClick={() => handleConnect(device.device_name, device.mac_address)}>
-                          <GrConnect className="reactIcons" size="1rem" />
+                          <GrConnect className="reactIcons" size="1.3rem" />
                         </div>
                       </div>
                     </div>
@@ -298,19 +298,12 @@ export default function Esp32Devices() {
                 onChange={(e) => setEditMacAddress(e.target.value)}
               />
               <div className="mt-2 flex justify-between">
-                <button
-                  className="text-white border-0 w-32 rounded-xl bg-blue-600"
-                  onClick={() => handleDeviceUpdate(editingDeviceIndex)}
-                >
-                  Update
-                </button>
-                <button
-                  className="text-white border-0 w-32 rounded-xl bg-blue-600"
-                  bg-blue-600
-                  onClick={() => handleDeviceEdit(null)}
-                >
-                  Cancel
-                </button>
+                <Button size="sm" onClick={() => handleDeviceUpdate(editingDeviceIndex)}>
+                  更新
+                </Button>
+                <Button size="sm" bg-blue-600 onClick={() => handleDeviceEdit(null)}>
+                  取消
+                </Button>
               </div>
             </div>
           )}
@@ -342,13 +335,9 @@ export default function Esp32Devices() {
           <Spacer y={0.5} />
 
           <div>
-            <button
-              className="text-white border-0 w-full rounded-xl bg-blue-600"
-              onClick={addDevice}
-              disabled={loading}
-            >
+            <Button className="w-full" onClick={addDevice} disabled={loading}>
               {loading ? 'Loading ...' : 'Add Device'}
-            </button>
+            </Button>
             <Modal open={showModal} onClose={onCloseModal}>
               <Modal.Header>
                 <h1 className="text-3xl text-red-700">{modalHeader}</h1>
