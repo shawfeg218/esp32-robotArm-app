@@ -92,7 +92,7 @@
   cursor: pointer;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 640px) {
   .avatarContainer {
     display: none;
   }
