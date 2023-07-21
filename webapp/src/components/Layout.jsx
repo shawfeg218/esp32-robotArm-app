@@ -42,7 +42,7 @@ export default function Layout({ children }) {
 
   const socketInitializer = async () => {
     // socketIO = io('http://localhost:5000');
-    const url = process.env.NEXT_PUBLIC_API_URL;
+    const url = process.env.NEXT_PUBLIC_SERVER_URL;
     console.log('url: ', url);
     socketIO = io(url);
 
