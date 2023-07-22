@@ -2,10 +2,10 @@
 
 import {
   mqttClient,
+  subscribedTopics,
   getCurrentAngles,
   getCurrentEsp32Status,
   // returnHeartbeat,
-  subscribeToTopics,
 } from '@/lib/mqtt';
 
 export const resetWifi = (req, res) => {
@@ -81,10 +81,43 @@ export const resetArm = (req, res) => {
   }
 };
 
+// -- get eap32 -- //
+
+export const unsubscribeTopic = (req, res) => {
+  try {
+    const macAddress = req.body.connectedMacAddress;
+
+    const anglesTopic = `esp32/${macAddress}/angles`;
+    const statusTopic = `esp32/${macAddress}/esp32Status`;
+
+    if (subscribedTopics.has(anglesTopic)) {
+      mqttClient.unsubscribe(anglesTopic);
+      subscribedTopics.delete(anglesTopic);
+      console.log('unsubscribeTopic: ', anglesTopic);
+    }
+    if (subscribedTopics.has(statusTopic)) {
+      mqttClient.unsubscribe(statusTopic);
+      subscribedTopics.delete(statusTopic);
+      console.log('unsubscribeTopic: ', statusTopic);
+    }
+
+    console.log('Topics: ', subscribedTopics.size);
+    res.status(204).send();
+  } catch (error) {
+    let errorMessage = error.message ? error.message : 'An unknown error occurred';
+    throw new Error(`Error in unsubscribeTopic: ${errorMessage}`);
+  }
+};
+
 export const getAngles = (req, res) => {
   try {
     const macAddress = req.body.connectedMacAddress;
-    subscribeToTopics(macAddress);
+
+    const anglesTopic = `esp32/${macAddress}/angles`;
+    if (!subscribedTopics.has(anglesTopic)) {
+      mqttClient.subscribe(anglesTopic);
+      subscribedTopics.add(anglesTopic);
+    }
 
     mqttClient.publish(`esp32/${macAddress}/control/get-angles`, '');
     res.status(200).send(getCurrentAngles(macAddress));
@@ -98,7 +131,12 @@ export const getAngles = (req, res) => {
 export const getEsp32Status = (req, res) => {
   try {
     const macAddress = req.body.connectedMacAddress;
-    subscribeToTopics(macAddress);
+
+    const statusTopic = `esp32/${macAddress}/esp32Status`;
+    if (!subscribedTopics.has(statusTopic)) {
+      mqttClient.subscribe(statusTopic);
+      subscribedTopics.add(statusTopic);
+    }
 
     mqttClient.publish(`esp32/${macAddress}/control/get-esp32Status`, '');
     res.status(200).send(getCurrentEsp32Status(macAddress));

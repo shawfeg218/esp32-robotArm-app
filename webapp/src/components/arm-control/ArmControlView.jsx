@@ -12,7 +12,6 @@ export default function ArmControlView(props) {
     handleReset,
     handleCorrectAction,
     handleWrongAction,
-
     handleGrabAction,
     handleResetWifi,
   } = props;

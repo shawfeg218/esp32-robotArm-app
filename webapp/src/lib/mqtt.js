@@ -1,4 +1,4 @@
-// file: webapp\src\utils\mqttMiddleware.js
+// file: webapp\src\lib\mqtt.js
 import mqtt from 'mqtt';
 
 const MQTT_SERVER_IP = process.env.MQTT_SERVER_IP;
@@ -9,14 +9,22 @@ const currentAnglesMap = new Map();
 const currentEsp32StatusMap = new Map();
 // const lastHeartbeatMap = new Map();
 
-const subscribeToTopics = (macAddress) => {
-  mqttClient.subscribe(`esp32/${macAddress}/angles`);
-  mqttClient.subscribe(`esp32/${macAddress}/esp32Status`);
-  // mqttClient.subscribe(`esp32/${macAddress}/heartbeat`);
-};
+const subscribedTopics = new Set();
+
+let mqttClientCounter = 0;
 
 mqttClient.on('connect', () => {
+  console.log('MQTT client connected');
+  mqttClientCounter++;
+  console.log('MQTT client counter:', mqttClientCounter);
+
   // Do nothing here; we'll subscribe to topics after setting the macAddress
+});
+
+mqttClient.on('disconnect', () => {
+  console.log('MQTT client disconnected');
+  mqttClientCounter--;
+  console.log('MQTT client counter:', mqttClientCounter);
 });
 
 mqttClient.on('message', (topic, message) => {
@@ -38,7 +46,7 @@ const getCurrentEsp32Status = (macAddress) => currentEsp32StatusMap.get(macAddre
 
 export {
   mqttClient,
-  subscribeToTopics,
+  subscribedTopics,
   getCurrentAngles,
   getCurrentEsp32Status,
   // returnHeartbeat,

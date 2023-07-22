@@ -17,6 +17,7 @@ export const AppContextProvider = ({ children }) => {
 
   const [socket, setSocket] = useState(null);
   const [teacherPath, setTeacherPath] = useState(null);
+  const [controlMode, setControlMode] = useState('single');
 
   return (
     <AppContext.Provider
@@ -43,6 +44,8 @@ export const AppContextProvider = ({ children }) => {
         setConnectedMacAddress,
         connecting,
         setConnecting,
+        controlMode,
+        setControlMode,
       }}
     >
       {children}

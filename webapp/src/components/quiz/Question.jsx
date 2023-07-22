@@ -102,16 +102,20 @@ export default function Question() {
   };
 
   useEffect(() => {
-    if (correct === true) {
+    if (correct === true && connectedMacAddress !== '') {
       axios.post('/api/correct-act', {
         connectedMacAddress,
       });
-      setPoint((prev) => prev + 1);
-      playSound(correctSoundRef);
-    } else if (correct === false) {
+    } else if (correct === false && connectedMacAddress !== '') {
       axios.post('/api/wrong-act', {
         connectedMacAddress,
       });
+    }
+
+    if (correct === true) {
+      setPoint((prev) => prev + 1);
+      playSound(correctSoundRef);
+    } else if (correct === false) {
       playSound(wrongSoundRef);
     }
   }, [correct]);

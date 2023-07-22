@@ -1,11 +1,12 @@
-// file: webapp\src\pages\api\get-esp32Status.js
+// file: webapp\src\pages\api\unsubscribe-topic.js
 
-import { getEsp32Status } from '@/lib/esp32Function';
+import { unsubscribeTopic } from '@/lib/esp32Function.js';
 
 export default function handler(req, res) {
   try {
     if (req.method === 'POST') {
-      getEsp32Status(req, res);
+      unsubscribeTopic(req, res);
+      // console.log('unsubscribeTopic');
     } else {
       throw new Error('Method not allowed');
     }

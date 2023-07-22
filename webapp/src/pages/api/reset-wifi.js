@@ -4,7 +4,7 @@ export default function handler(req, res) {
   try {
     if (req.method === 'POST') {
       resetWifi(req, res);
-      console.log('resetWifi');
+      // console.log('resetWifi');
     } else {
       throw new Error('Method not allowed');
     }

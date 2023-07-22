@@ -6,7 +6,7 @@
   background-color: white;
   border-bottom: 0.0625rem solid #ececf1;
   height: 5rem;
-  padding: 0.03rem;
+  padding: 0.03rem 1rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -15,7 +15,6 @@
 }
 
 .menuDiv {
-  margin-left: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,7 +92,7 @@
   cursor: pointer;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 640px) {
   .avatarContainer {
     display: none;
   }
