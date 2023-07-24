@@ -12,7 +12,8 @@ export default function Question() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState();
-  const { point, setPoint, selectedSubject, connectedMacAddress } = useContext(AppContext);
+  const { controlMode, point, setPoint, selectedSubject, connectedMacAddress } =
+    useContext(AppContext);
 
   const [questions, setQuestions] = useState({});
   const supabase = useSupabaseClient();
@@ -102,14 +103,20 @@ export default function Question() {
   };
 
   useEffect(() => {
-    if (correct === true && connectedMacAddress !== '') {
+    if (controlMode === 'single' && correct === true && connectedMacAddress !== '') {
       axios.post('/api/correct-act', {
         connectedMacAddress,
       });
-    } else if (correct === false && connectedMacAddress !== '') {
+    } else if (controlMode === 'single' && correct === false && connectedMacAddress !== '') {
       axios.post('/api/wrong-act', {
         connectedMacAddress,
       });
+    }
+
+    if (controlMode === 'multi-singleRoute' && correct === true) {
+      axios.post('/api/T-correct-act');
+    } else if (controlMode === 'multi-singleRoute' && correct === false) {
+      axios.post('/api/T-wrong-act');
     }
 
     if (correct === true) {

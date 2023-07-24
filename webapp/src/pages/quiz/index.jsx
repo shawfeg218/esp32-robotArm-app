@@ -22,5 +22,9 @@ export default function QuizPage() {
     }
   }, []);
 
-  return <Quiz />;
+  return (
+    <div className="mt-16 flex flex-wrap justify-center">
+      <Quiz />
+    </div>
+  );
 }

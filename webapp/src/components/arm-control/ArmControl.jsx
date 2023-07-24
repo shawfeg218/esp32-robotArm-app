@@ -36,6 +36,13 @@ export default function ArmControl() {
       });
       // console.log(targetAngles);
     }
+
+    if (controlMode === 'multi-singleRoute') {
+      axios.post('/api/T-set-axis-angle', {
+        targetAngles,
+      });
+      // console.log('All target: ', targetAngles);
+    }
   }, [targetAngles]);
 
   const handleReset = () => {
@@ -54,6 +61,11 @@ export default function ArmControl() {
         connectedMacAddress,
       });
     }
+
+    if (controlMode === 'multi-singleRoute') {
+      axios.post('/api/T-reset-arm');
+      console.log('All reset arm');
+    }
   };
 
   const handleCorrectAction = () => {
@@ -62,6 +74,11 @@ export default function ArmControl() {
       axios.post('/api/correct-act', {
         connectedMacAddress,
       });
+    }
+
+    if (controlMode === 'multi-singleRoute') {
+      axios.post('/api/T-correct-act');
+      console.log('All correct action');
     }
   };
 
@@ -72,6 +89,11 @@ export default function ArmControl() {
         connectedMacAddress,
       });
     }
+
+    if (controlMode === 'multi-singleRoute') {
+      axios.post('/api/T-wrong-act');
+      console.log('All wrong action');
+    }
   };
 
   const handleGrabAction = () => {
@@ -80,6 +102,11 @@ export default function ArmControl() {
       axios.post('/api/grab-act', {
         connectedMacAddress,
       });
+    }
+
+    if (controlMode === 'multi-singleRoute') {
+      axios.post('/api/T-grab-act');
+      console.log('All grab action');
     }
   };
 
@@ -114,6 +141,7 @@ export default function ArmControl() {
 
   return (
     <ArmControlView
+      controlMode={controlMode}
       targetAngles={targetAngles}
       currentAngles={currentAngles}
       handleChange={handleChange}

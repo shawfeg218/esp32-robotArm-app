@@ -30,7 +30,8 @@ export default function Layout({ children }) {
 
   const router = useRouter();
 
-  const { setSocket, setTeacherPath, displaySidebar, setDisplaySidebar } = useContext(AppContext);
+  const { setSocket, setControlMode, setTeacherPath, displaySidebar, setDisplaySidebar } =
+    useContext(AppContext);
 
   useEffect(() => {
     socketInitializer();
@@ -70,6 +71,11 @@ export default function Layout({ children }) {
       socketIO.on('unlock_page_student', () => {
         // console.log('unlocked');
         setTeacherPath(null);
+      });
+
+      socketIO.on('set_controlMode_student', (mode) => {
+        console.log('mode: ', mode);
+        setControlMode(mode);
       });
     }
   };

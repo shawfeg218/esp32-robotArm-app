@@ -27,6 +27,7 @@
 }
 
 .controlPanel {
+  position: relative;
   width: 21.875rem;
   border: 0.125rem solid #ccc;
   box-shadow: 0 0 0.625rem #ccc;
@@ -57,6 +58,7 @@
 }
 
 .btnContainer {
+  position: relative;
   width: 21.875rem;
   border: 0.125rem solid #ccc;
   box-shadow: 0 0 0.625rem #ccc;

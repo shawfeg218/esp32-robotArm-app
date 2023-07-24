@@ -35,7 +35,7 @@ export default function QuestionView(props) {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="w-full max-w-xs sm:max-w-xl">
       <div className={styles.leaveDiv} onClick={handleLeave}>
         <GrFormPrevious className="reactIcons" size="2rem" />
         <span>leave</span>
