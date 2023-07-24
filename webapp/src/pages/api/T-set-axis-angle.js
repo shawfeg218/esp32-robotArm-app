@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   const url = process.env.NEXT_PUBLIC_SERVER_URL;
   try {
     if (req.method === 'POST') {
-      const serverResponse = await fetch(`${url}/api/set-axis-angle`, {
+      const serverResponse = await fetch(`${url}/api/T-set-axis-angle`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
