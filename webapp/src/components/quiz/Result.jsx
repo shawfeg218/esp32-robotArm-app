@@ -20,7 +20,9 @@ function Result() {
       <div>
         <h2>Subject: {selectedSubject}</h2>
         <h2>Your score: {point}</h2>
-        <Button onClick={handleReturnHome}>Return to Home</Button>
+        <Button className="z-0" onClick={handleReturnHome}>
+          Return to Home
+        </Button>
       </div>
     </div>
   );
