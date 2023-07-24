@@ -97,7 +97,7 @@ export default function ArmControl() {
 
     if (connectedMacAddress !== '') {
       const interval = setInterval(() => {
-        console.log('get angles');
+        // console.log('get angles');
         axios
           .post('/api/get-angles', {
             connectedMacAddress,
