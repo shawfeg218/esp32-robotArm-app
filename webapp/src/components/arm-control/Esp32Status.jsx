@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styles from '@/styles/ArmControl.module.css';
 import axios from 'axios';
 import AppContext from '@/contexts/AppContext';
-import { Switch, Button, Spacer } from '@nextui-org/react';
+import { Button, Spacer } from '@nextui-org/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -15,8 +15,6 @@ export default function Esp32Status() {
     setConnectedMacAddress,
     connectedDeviceName,
     connectedMacAddress,
-    connecting,
-    setConnecting,
   } = useContext(AppContext);
 
   const [esp32Status, setEsp32Status] = useState({});
@@ -26,7 +24,7 @@ export default function Esp32Status() {
 
     if (connectedMacAddress !== '') {
       const interval = setInterval(() => {
-        console.log('fetching esp32 status');
+        // console.log('fetching esp32 status');
         axios
           .post('/api/get-esp32Status', {
             connectedMacAddress,
