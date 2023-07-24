@@ -1,13 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
 import Question from './Question';
 import AppContext from '@/contexts/AppContext';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import styles from '@/styles/Question.module.css';
 import { BiPlus } from 'react-icons/bi';
 import Link from 'next/link';
 import { Card } from '@nextui-org/react';
 
 function Quiz() {
+  const user = useUser();
+  const role = user?.user_metadata?.role;
   const { selectedSubject, setSelectedSubject } = useContext(AppContext);
   const [subjects, setSubjects] = useState([]);
   const supabase = useSupabaseClient();
@@ -56,15 +58,20 @@ function Quiz() {
                   <div></div>
                 </Card>
               ))}
-              <Link href="/quiz/add-subject" passHref>
-                <div className={styles.addQConatiner}>
-                  <div className={styles.addCard}>
-                    <div className="reactIcon">
-                      <BiPlus size="3rem" />
+
+              <>
+                {role === 'teacher' ? (
+                  <Link href="/quiz/add-subject" passHref>
+                    <div className={styles.addQConatiner}>
+                      <div className={styles.addCard}>
+                        <div className="reactIcon">
+                          <BiPlus size="3rem" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </Link>
+                  </Link>
+                ) : null}
+              </>
             </div>
           </>
         )}
