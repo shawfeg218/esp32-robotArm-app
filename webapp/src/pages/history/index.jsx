@@ -5,10 +5,8 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 
 export default function historyPage() {
-  const { teacherPath } = useContext(AppContext);
+  const { role, teacherPath } = useContext(AppContext);
   const router = useRouter();
-  const user = useUser();
-  const role = user?.user_metadata?.role;
 
   useEffect(() => {
     if (role === 'teacher') {
