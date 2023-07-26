@@ -11,7 +11,6 @@ extern "C"
     uint8_t temprature_sens_read();
 }
 
-
 WebServer server(80);
 
 WiFiManager wifiManager;
@@ -22,6 +21,7 @@ PubSubClient mqttClient(espClient);
 Servo servoA, servoB, servoC, servoD, servoE, servoF; 
 
 const String baseTopic = "esp32/" + WiFi.macAddress();
+const String teacherTopic = "esp32/Teacher";
 
 const int init_angleA = 0; 
 const int init_angleB = 0; 
@@ -38,21 +38,23 @@ int angleE;
 int angleF;
 
 void handleResetWifi();
+void handleResetWifiWrapper();
+void handleRoot();
 void correctAct();
-void wrongAct();
 void grabAct();
 void resetArm();
-void handleSetAxisAngle();
+void handleSetAxisAngle(String message);
 void handleGetAngles();
 void handleGetEsp32Status();
-void heartbeat();
 
 void setup() {
   Serial.begin(115200); 
 
-  // 嘗試連接到已知的 WiFi 網絡，如果無法連接，開啟熱點
   setupWifiManager();
 
+  server.on("/", handleRoot);
+  server.on("/resetWifi", handleResetWifiWrapper);
+  
   server.begin(); 
   Serial.println("Web server started");
 
@@ -75,10 +77,34 @@ void loop() {
   delay(10);
 }
 
+
+void handleRoot() {
+  String html = R"(
+    <html>
+    <body>
+    <h1>Hello, world!</h1>
+    <p>MAC Address: )" + WiFi.macAddress() + R"(</p>
+    <button id="resetButton">Reset Wi-Fi</button>
+    <script>
+    document.getElementById('resetButton').addEventListener('click', function() {
+      fetch('/resetWifi');
+    });
+    </script>
+    </body>
+    </html>
+  )";
+  server.send(200, "text/html", html);
+}
+
+void handleResetWifiWrapper() {
+  handleResetWifi();
+  server.send(200, "text/plain", "Wi-Fi reset");
+}
+
 void setupWifiManager() {
   wifiManager.setConfigPortalTimeout(180);
 
-  if (!wifiManager.autoConnect("ESP32_AP", "")) {
+  if (!wifiManager.autoConnect(("ESP32_AP"+  WiFi.macAddress()).c_str(), "")) {
     Serial.println("無法連接到WiFi，請重新設置");
     ESP.restart();
   }
@@ -145,27 +171,25 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   if(String(topic) == (baseTopic + "/control/reset-wifi")) {
     Serial.println("topic: " + String(topic));
     handleResetWifi();
-  } else if(String(topic) == (baseTopic + "/control/set-axis-angle")) {
+  } else if(String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle")) {
     Serial.println("topic: " + String(topic));
     handleSetAxisAngle(message);
-  } else if(String(topic) == (baseTopic + "/control/correct-act")) {
+  } else if(String(topic) == (baseTopic + "/control/correct-act") || String(topic) == (teacherTopic + "/control/correct-act")) {
     Serial.println("topic: " + String(topic));
     correctAct();
-  } else if(String(topic) == (baseTopic + "/control/wrong-act")) {
+  } else if(String(topic) == (baseTopic + "/control/wrong-act") || String(topic) == (teacherTopic + "/control/wrong-act")) {
     Serial.println("topic: " + String(topic));
     wrongAct();
-  } else if(String(topic) == (baseTopic + "/control/grab-act")) {
+  } else if(String(topic) == (baseTopic + "/control/grab-act") || String(topic) == (teacherTopic + "/control/grab-act")) {
     Serial.println("topic: " + String(topic));
     grabAct();
-  } else if(String(topic) == (baseTopic + "/control/reset-arm")) {
+  } else if(String(topic) == (baseTopic + "/control/reset-arm") || String(topic) == (teacherTopic + "/control/reset-arm")) {
     Serial.println("topic: " + String(topic));
     resetArm();
   } else if(String(topic) == (baseTopic + "/control/get-angles")) {
     handleGetAngles();
   } else if(String(topic) == (baseTopic + "/control/get-esp32Status")) {
     handleGetEsp32Status();    
-  } else if(String(topic) == (baseTopic + "/control/get-heartbeat")) {
-    heartbeat();
   }
 
 
@@ -298,9 +322,6 @@ void handleGetAngles() {
   mqttClient.publish((baseTopic + "/angles").c_str(), angles.c_str());
 }
 
-void heartbeat(){
-  mqttClient.publish((baseTopic + "/heartbeat").c_str(), "");
-}
 
 void handleGetEsp32Status() {
 

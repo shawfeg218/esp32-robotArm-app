@@ -3,37 +3,47 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
-  box-shadow: rgb(130, 130, 130) 0px 0px 5px 0px;
-  padding: 0.03rem;
+  background-color: white;
+  border-bottom: 0.0625rem solid #ececf1;
+  height: 5rem;
+  padding: 0.03rem 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--navbar-z-index);
 }
 
-.logo {
-  margin-left: 0.5rem;
+.menuDiv {
   display: flex;
+  justify-content: center;
   align-items: center;
+  width: 3rem;
+  height: 3rem;
 }
 
-.logo span {
-  color: rgb(0, 0, 0);
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 1.25rem;
+.menuDiv:hover {
+  border-radius: 50%;
+  background-color: var(--bar-shadow-color);
+  background-color: #ccc;
 }
 
-.logo :hover {
-  cursor: pointer;
+@media (min-width: 1800px) {
+  .menuDiv {
+    display: none;
+  }
 }
 
 .navbarList {
+  margin-right: 1rem;
   display: flex;
   align-items: center;
   list-style: none;
-  margin: 0.5rem;
 }
 
 .navbarItem {
   margin-right: 1rem;
+  margin-bottom: 0;
 }
 
 .navbarItem p {
@@ -42,13 +52,53 @@
   text-decoration: none;
 }
 
-.navbarItem p:hover {
+.conBtn {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  border: 0.1rem solid #bebebe;
+  border-radius: 0.5rem;
+  /* background-color: #4caf50; */
+}
+
+.conBtn:hover {
   cursor: pointer;
-  color: rgb(61, 132, 255);
+  background-color: #ececf1;
+}
+
+.conBtn p {
+  margin-left: 0.45rem;
+}
+
+.red {
+  display: flex;
+  align-items: center;
+}
+
+.red svg {
+  fill: #f44336;
+}
+
+.green {
+  display: flex;
+  align-items: center;
+}
+
+.green svg {
+  fill: #4caf50;
 }
 
 .avatarContainer:hover {
   cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .avatarContainer {
+    display: none;
+  }
+  .logo {
+    display: none;
+  }
 }
 
 .resetWifiButton {
@@ -57,7 +107,7 @@
   border: none;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
   margin-top: 0;
 }
 
@@ -68,5 +118,5 @@
   border-radius: 10%;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
 }

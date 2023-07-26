@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
-import {
-  useUser,
-  useSupabaseClient,
-  useSession,
-} from '@supabase/auth-helpers-react';
-
-import styles from '@/styles/Account.module.css';
+import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
+import { Input, Button, Loading, Spacer, Tooltip } from '@nextui-org/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function Account() {
+  const router = useRouter();
   const supabase = useSupabaseClient();
   const user = useUser();
   const session = useSession();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
+  const [fullname, setFullname] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
   const [avatarFileUrl, setAvatarFileUrl] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [errMessage, setErrMessage] = useState(null);
 
   useEffect(() => {
     getProfile();
@@ -30,7 +31,7 @@ export default function Account() {
 
       let { data, error, status } = await supabase
         .from('profiles')
-        .select(`username, arm_id, avatar_url`)
+        .select(`username, full_name, avatar_url`)
         .eq('id', user.id)
         .single();
 
@@ -40,6 +41,7 @@ export default function Account() {
 
       if (data) {
         setUsername(data.username);
+        setFullname(data.full_name);
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
@@ -50,23 +52,24 @@ export default function Account() {
     }
   }
 
-  async function updateProfile({ username, arm_id, avatar_url }) {
+  async function updateProfile(username, fullname, avatar_url) {
     try {
       setLoading(true);
 
       const updates = {
         id: user.id,
-        username,
-        arm_id,
-        avatar_url,
+        username: username,
+        full_name: fullname,
+        avatar_url: avatar_url,
         updated_at: new Date().toISOString(),
       };
 
-      let { error } = await supabase.from('profiles').upsert(updates);
+      let { error } = await supabase.from('profiles').update(updates).eq('id', user.id);
+
       if (error) throw error;
-      alert('Profile updated!');
+      setMessage('Profile updated!');
     } catch (error) {
-      alert('Error updating the data!');
+      setErrMessage('Error updating the data!');
       console.log(error);
     } finally {
       setLoading(false);
@@ -95,7 +98,7 @@ export default function Account() {
       }
 
       setAvatarUrl(filePath);
-      updateProfile({ username, arm_id, avatar_url: filePath });
+      updateProfile({ username, avatar_url: filePath });
     } catch (error) {
       alert('Error uploading avatar!');
       console.log(error);
@@ -106,9 +109,7 @@ export default function Account() {
 
   async function downloadImage(path) {
     try {
-      const { data, error } = await supabase.storage
-        .from('avatars')
-        .download(path);
+      const { data, error } = await supabase.storage.from('avatars').download(path);
       if (error) {
         throw error;
       }
@@ -120,70 +121,143 @@ export default function Account() {
   }
 
   return (
-    <div className={styles.formWidget}>
-      <div>
-        <div className={styles.profileContainer}>
-          <div>
-            {avatar_url ? (
-              <img
-                src={avatarFileUrl}
-                alt="Avatar"
-                className="avatar image"
-                style={{ height: 150, width: 150 }}
+    <div className="flex justify-center w-full mt-16">
+      <div className="flex-col w-80 h-fit p-3 border border-solid border-slate-300 rounded-2xl">
+        <div>
+          <h1 className="text-2xl font-bold">
+            {user.user_metadata.role === 'teacher' ? '教師帳號' : '學生帳號'}
+          </h1>
+          <div className="flex">
+            <div>
+              {avatar_url ? (
+                <img
+                  src={avatarFileUrl}
+                  alt="Avatar"
+                  className="avatar image"
+                  style={{ height: 150, width: 150 }}
+                />
+              ) : (
+                <div className="avatar no-image" style={{ height: 150, width: 150 }} />
+              )}
+              <Button disabled className="m-1 absolute text-blue-600 bg-blue-200" flat size="sm">
+                {loading ? (
+                  <>
+                    <Loading type="points-opacity" color="currentColor" size="sm" />
+                  </>
+                ) : (
+                  'Upload'
+                )}
+              </Button>
+              <input
+                style={{
+                  opacity: 0,
+                }}
+                type="file"
+                id="upload"
+                accept="image/*"
+                onChange={uploadAvatar}
+                disabled={loading}
               />
-            ) : (
-              <div
-                className="avatar no-image"
-                style={{ height: 150, width: 150 }}
-              />
-            )}
-            <label className={styles.avatarBtn} htmlFor="single">
-              {loading ? 'Loading ...' : 'Upload'}
-            </label>
-            <input
-              style={{
-                visibility: 'hidden',
-                position: 'absolute',
-              }}
-              type="file"
-              id="single"
-              accept="image/*"
-              onChange={uploadAvatar}
-              disabled={loading}
-            />
+            </div>
+            <div className="w-36">{/* <div>user name: {username}</div> */}</div>
           </div>
-          <div className={styles.profileData}>
-            {/* <div>user name: {username}</div> */}
-            {/* <div>{arm_id ? arm_id : 'no arm-id'}</div> */}
-          </div>
+
+          <Spacer y={1} />
+          <Input label="Email" color="default" value={session.user.email} readOnly fullWidth />
+          <Spacer y={0.5} />
         </div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={session.user.email} disabled />
-      </div>
-      <div>
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          value={username || ''}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
+        <div>
+          <Input
+            label="username"
+            color="default"
+            clearable
+            fullWidth
+            bordered
+            borderWeight="light"
+            placeholder="username"
+            value={username || ''}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <Spacer y={0.5} />
 
-      <div>
-        <button
-          className="button primary "
-          onClick={() => updateProfile({ username, arm_id, avatar_url })}
-          disabled={loading}
-        >
-          {loading ? 'Loading ...' : 'Update'}
-        </button>
-      </div>
+          <Input
+            label="fullname"
+            color="default"
+            clearable
+            fullWidth
+            bordered
+            borderWeight="light"
+            placeholder="fullname"
+            value={fullname || ''}
+            onChange={(e) => setFullname(e.target.value)}
+          />
+        </div>
 
-      <div>
-        <button className="button " onClick={() => supabase.auth.signOut()}>
-          Sign Out
-        </button>
+        <div className="mt-4">
+          <p className="text-green-600">{message}</p>
+          <p className="text-red-600">{errMessage}</p>
+          <Tooltip
+            className="w-full"
+            placement="bottom"
+            color="invert"
+            hideArrow
+            content={'更新使用者資料'}
+          >
+            <Button
+              className="mt-2 bg-blue-600 w-full"
+              onClick={() => updateProfile(username, fullname, avatar_url)}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loading type="points-opacity" color="currentColor" size="sm" />
+                </>
+              ) : (
+                'Update'
+              )}
+            </Button>
+          </Tooltip>
+        </div>
+        <Spacer y={1} />
+
+        <div className="w-full flex pt-3 border-t-2 border-solid border-x-0 border-b-0 border-slate-300">
+          <Link href="/reset-password" passHref>
+            <button className="w-1/2 bg-white text-red-700 hover:text-white border-2 border-red-700 hover:bg-red-700 font-medium rounded-xl text-sm px-5 py-2.5 text-center mr-2 mb-2">
+              密碼重設
+            </button>
+          </Link>
+          <Tooltip
+            className="w-1/2"
+            placement="bottom"
+            color="invert"
+            hideArrow
+            isDisabled={user.user_metadata.role === 'teacher'}
+            content={'升級為教師帳號'}
+          >
+            <Link href="/update-role" passHref>
+              <button
+                disabled={user.user_metadata.role === 'teacher'}
+                className="bg-white text-purple-700 hover:text-white border-2 border-purple-700 hover:bg-purple-700 disabled:cursor-default disabled:text-slate-300 disabled:border-slate-300 disabled:hover:bg-white font-medium rounded-xl text-sm px-5 py-2.5 text-center mb-2"
+              >
+                升級帳號
+              </button>
+            </Link>
+          </Tooltip>
+        </div>
+        <Spacer y={0.5} />
+        <div className="pt-3 border-t-2 border-solid border-x-0 border-b-0 border-slate-300">
+          <Button
+            ghost
+            className="hover:bg-blue-600 mt-2 w-full"
+            onClick={() => {
+              supabase.auth.signOut();
+              router.push('/');
+            }}
+          >
+            Log Out
+          </Button>
+        </div>
+        <Spacer y={0.5} />
       </div>
     </div>
   );

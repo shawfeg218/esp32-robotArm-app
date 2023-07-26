@@ -1,0 +1,24 @@
+.container {
+  width: 80%;
+  padding: 1rem;
+  border-radius: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.history_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.history_container ul {
+  width: 60%;
+  height: 29rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: antiquewhite;
+}

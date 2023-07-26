@@ -1,5 +1,7 @@
-import React from 'react';
+import AppContext from '@/contexts/AppContext';
+import { useContext } from 'react';
 import styles from '@/styles/Question.module.css';
+import { GrFormPrevious } from 'react-icons/gr';
 import Link from 'next/link';
 
 export default function QuestionView(props) {
@@ -13,11 +15,13 @@ export default function QuestionView(props) {
     handleNextClick,
   } = props;
 
+  const { setSelectedSubject } = useContext(AppContext);
+
   const getOptionClassName = (index) => {
     if (!isAnswered) {
       return styles.option;
     }
-    if (index === currentQuestion.correctOptionIndex) {
+    if (currentQuestion.options[index].is_correct) {
       return `${styles.option} ${styles.disabled} ${styles.correct}`;
     }
     if (index === selectedOptionIndex) {
@@ -26,35 +30,45 @@ export default function QuestionView(props) {
     return `${styles.option} ${styles.disabled}`;
   };
 
+  const handleLeave = () => {
+    setSelectedSubject('');
+  };
+
   return (
-    <div className={styles.questionContainer}>
-      <div className={styles.questionText}>{currentQuestion.text}</div>
-      <div className={styles.optionsContainer}>
-        {currentQuestion.options.map((optionText, index) => (
-          <div
-            key={index}
-            className={getOptionClassName(index)}
-            onClick={() => handleOptionClick(index)}
-          >
-            {optionText}
-          </div>
-        ))}
+    <div className="w-full max-w-xs sm:max-w-xl">
+      <div className={styles.leaveDiv} onClick={handleLeave}>
+        <GrFormPrevious className="reactIcons" size="2rem" />
+        <span>leave</span>
       </div>
-      {isAnswered && (
-        <>
-          {currentQuestionIndex < selectedQuestions.length - 1 ? (
-            <button className={styles.nextButton} onClick={handleNextClick}>
-              Next
-            </button>
-          ) : (
-            <Link href="/quiz/result" passHref>
+      <div className={styles.questionContainer}>
+        <div className={styles.questionText}>{currentQuestion.text}</div>
+        <div className={styles.optionsContainer}>
+          {currentQuestion.options.map((option, index) => (
+            <div
+              key={index}
+              className={getOptionClassName(index)}
+              onClick={() => handleOptionClick(index)}
+            >
+              {option.text}
+            </div>
+          ))}
+        </div>
+        {isAnswered && (
+          <>
+            {currentQuestionIndex < selectedQuestions.length - 1 ? (
               <button className={styles.nextButton} onClick={handleNextClick}>
-                Finish
+                Next
               </button>
-            </Link>
-          )}
-        </>
-      )}
+            ) : (
+              <Link href="/quiz/result" passHref>
+                <button className={styles.nextButton} onClick={handleNextClick}>
+                  Finish
+                </button>
+              </Link>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

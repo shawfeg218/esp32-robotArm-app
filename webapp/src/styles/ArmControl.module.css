@@ -2,78 +2,84 @@
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
+  justify-content: center;
+  width: fit-content;
 }
 
 .columnContainer {
   display: flex;
   flex-direction: column;
   /* background-color: rgb(116, 135, 135); */
-  justify-content: space-between;
+  /* justify-content: space-around; */
 }
 
 .statusContainer {
-  width: 300px;
-  border: 2px solid #ccc;
-  box-shadow: 0 0 10px #ccc;
-  padding: 0px 20px 20px 20px;
-  border-radius: 5px;
+  width: 21.875rem;
+  border: 0.125rem solid #ccc;
+  box-shadow: 0 0 0.625rem #ccc;
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  border-radius: 0.3125rem;
 }
 
 .statusContainer div {
-  margin-bottom: 10px;
-  font-size: 16px;
+  margin-bottom: 0.625rem;
+  font-size: 1rem;
 }
 
 .controlPanel {
-  width: 300px;
-  border: 2px solid #ccc;
-  box-shadow: 0 0 10px #ccc;
-  padding: 0px 20px 20px 20px;
-  border-radius: 5px;
+  position: relative;
+  width: 21.875rem;
+  border: 0.125rem solid #ccc;
+  box-shadow: 0 0 0.625rem #ccc;
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  border-radius: 0.3125rem;
 }
 
 .controlPanel div {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .controlPanel input[type='range'] {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
   width: 100%;
 }
 
 .servoState {
-  width: 350px;
-  border: 2px solid #ccc;
-  box-shadow: 0 0 10px #ccc;
-  padding: 0px 10px 10px 20px;
-  border-radius: 5px;
+  width: 21.875rem;
+  border: 0.125rem solid #ccc;
+  box-shadow: 0 0 0.625rem #ccc;
+  padding: 0 0.625rem 0.625rem 1.25rem;
+  border-radius: 0.3125rem;
 }
 
 .servoState div {
-  margin-bottom: 10px;
-  font-size: 16px;
+  margin-bottom: 0.625rem;
+  font-size: 1rem;
 }
 
 .btnContainer {
-  width: 350px;
-  border: 2px solid #ccc;
-  box-shadow: 0 0 10px #ccc;
-  padding: 20px;
-  border-radius: 5px;
+  position: relative;
+  width: 21.875rem;
+  border: 0.125rem solid #ccc;
+  box-shadow: 0 0 0.625rem #ccc;
+  padding: 4rem 1rem;
+  border-radius: 0.3125rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  /* background-color: rgb(110, 151, 151); */
 }
 
 .controlBtn {
   width: 46%;
+  margin-top: 1rem;
   background-color: #ccc;
   color: #222;
   border: none;
-  box-shadow: 0 0 10px #ccc;
-  border-radius: 5px;
+  box-shadow: 0 0 0.625rem #ccc;
+  border-radius: 0.3125rem;
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
 }

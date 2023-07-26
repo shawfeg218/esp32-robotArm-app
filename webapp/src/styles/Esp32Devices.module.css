@@ -1,35 +1,45 @@
 .container {
-  width: 410px;
+  width: fit-content;
 }
 
 .container h3 {
   margin: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 .esp32Devices {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 250px;
-  padding: 10px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
+  justify-content: center;
+  width: 21.875rem;
+  height: 18rem;
+  padding: 0 0 1rem 1.25rem;
+  border: 0.125rem solid #ccc;
+  border-radius: 0.3125rem;
   background-color: var(--custom-bg-color);
   box-shadow: var(--custom-box-shadow);
 }
+
 .esp32Devices ul {
+  /* background-color: aqua; */
+  overflow-y: scroll;
   margin: 0;
-  padding: 0 20px;
+  padding: 0;
+  height: 100%;
 }
+
 .esp32Devices li {
   list-style: none;
 }
 
 .listItems {
+  padding: 0.5rem 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  align-items: center;
+  margin-top: 0.625rem;
+  border-bottom: #d6dee1 0.0625rem solid;
 }
 
 .listItems p {
@@ -43,15 +53,17 @@
 
 .editIcons {
   display: flex;
-  margin-left: 20px;
+  /* margin-left: 1.25rem; */
 }
 
 .editIcons div {
-  margin-left: 10px;
+  height: fit-content;
+  padding: 0.25rem;
+  margin-left: 0.625rem;
   display: flex;
   align-items: center;
-  border: 1.5px solid;
-  border-radius: 5px;
+  border: 0.09375rem solid;
+  border-radius: 0.3125rem;
   border-color: #ccc;
 }
 
@@ -63,22 +75,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
-  padding: 10px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  background-color: var(--custom-bg-color-light);
+  width: 21.875rem;
+  padding: 1rem 1.25rem 3rem 1.25rem;
+  border: 0.125rem solid #ccc;
+  border-radius: 0.3125rem;
   box-shadow: var(--custom-box-shadow);
-}
-
-.editDeviceForm {
-  width: fit-content;
-  height: fit-content;
-  background-color: var(--custom-bg-color);
-  padding: 10px;
-}
-
-.editFormBtns {
-  display: flex;
-  justify-content: space-between;
 }

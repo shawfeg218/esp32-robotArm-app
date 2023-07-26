@@ -1,47 +1,56 @@
+.leaveDiv {
+  display: flex;
+  height: fit-content;
+  margin-right: 4.375rem;
+  align-items: center;
+  margin-bottom: 1.875rem;
+}
+.leaveDiv :hover {
+  cursor: pointer;
+}
+
 .questionContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-height: 100vh;
-  overflow: auto;
+  width: 100%;
 }
 
 .questionText {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 .optionsContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
-  max-width: 500px;
-  width: 100%;
+  margin-top: 1.25rem;
+  width: 80%;
+  max-width: 16rem;
   overflow: auto;
 }
 
 .option {
   background-color: #f0f0f0;
   border: none;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  font-size: 16px;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
   font-weight: bold;
-  max-width: 50%;
   width: 100%;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease-in-out;
 }
 
 .option:not(.disabled):hover {
   background-color: #e0e0e0;
-  transform: translateY(-5px);
+  transform: translateY(-0.3125rem);
 }
 
 .option.disabled {
@@ -57,47 +66,52 @@
 }
 
 .nextButton {
-  margin-top: 20px;
-  padding: 10px 20px;
+  width: 5.625rem;
+  margin-top: 1rem;
+  padding: 0.625rem 1.25rem;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 0.625rem;
+  font-size: 1rem;
   font-weight: bold;
   background-color: #3f51b5;
   color: white;
   cursor: pointer;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease-in-out;
 }
 
 .nextButton:hover {
   background-color: #2c3e50;
-  transform: translateY(-5px);
+  transform: translateY(-0.3125rem);
 }
 
-@media only screen and (min-width: 320px) {
-  .optionsContainer {
-    max-width: 90%;
-  }
-  .option {
-    max-width: 80%;
-  }
+.addQConatiner {
+  /* border-left: rgb(200, 200, 200) 0.16rem solid;  */
+  padding: 0 1.25rem;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media only screen and (min-width: 375px) {
-  .optionsContainer {
-    max-width: 80%;
-  }
+.addCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 9.375rem;
+  height: 12.5rem;
+  border: black 0.2rem dashed;
+  border-radius: 0.625rem;
+  transition: all 0.3s ease-in-out;
 }
 
-@media only screen and (min-width: 768px) {
-  .optionsContainer {
-    max-width: 70%;
-  }
+.addCard:hover {
+  cursor: pointer;
+  transform: translateY(-0.3125rem);
+  background-color: beige;
 }
 
-@media only screen and (min-width: 1024px) {
-  .optionsContainer {
-    max-width: 50%;
-  }
+.addCard path {
+  fill: black;
 }

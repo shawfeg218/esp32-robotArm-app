@@ -1,0 +1,127 @@
+.container {
+  margin-top: 4rem;
+  background-color: #fafafa;
+  padding: 0 0.5rem 3rem 0.5rem;
+  width: 100%;
+  max-width: 48.75rem;
+}
+
+.add_question_btn {
+  background-color: rgb(208, 244, 232);
+  color: var(--custom-Text-color);
+  font-weight: 500;
+}
+
+.add_option_btn {
+  background-color: azure;
+  color: var(--custom-Text-color);
+  font-weight: 500;
+}
+
+.container label {
+  color: var(--custom-Text-color);
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.container h2 {
+  margin-top: 0;
+}
+
+.subjectForm {
+  padding: 1rem 0.25rem;
+  border-bottom: var(--custom-border);
+  /* background-color: rgb(208, 244, 232); */
+}
+
+.questionForm {
+  margin-bottom: 2rem;
+  padding: 1rem 0.25rem;
+  padding-bottom: 3rem;
+  /* background-color: rgb(208, 244, 232); */
+  border-bottom: var(--custom-border);
+}
+
+.question_bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.questionItem {
+  margin-top: 1rem;
+  padding: 1rem;
+  padding-bottom: 2rem;
+  margin-bottom: 1rem;
+  background-color: rgb(208, 244, 232);
+
+  border: var(--custom-border);
+}
+
+.optionForm {
+  padding: 0.5rem 0;
+  /* background-color: rgb(242, 244, 208); */
+}
+
+.optionItemContainer {
+  /* background-color: rgb(187, 187, 255); */
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.optionContainer {
+  width: 100%;
+  padding: 1rem;
+  /* background-color: aliceblue; */
+  /* border-top: var(--custom-border); */
+  background-color: rgb(218, 255, 255);
+}
+
+.option_bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.option_bar button {
+  margin: 0;
+  width: fit-content;
+}
+
+.correctDiv {
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  background-color: azure;
+}
+
+.correctDiv input {
+  width: fit-content;
+}
+
+.correctDiv h4 {
+  margin: 0.5rem 0;
+}
+
+.removeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: aqua; */
+  cursor: pointer;
+}
+
+.submit_check span {
+  color: rgb(255, 55, 55);
+}
+
+.submit_check {
+  word-wrap: break-word;
+}
+
+.submit_check p {
+  color: rgb(255, 0, 0);
+}

@@ -1,3 +1,4 @@
+// Esp32Devices.jsx
 import { useState, useEffect, useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
@@ -5,6 +6,8 @@ import styles from '@/styles/Esp32Devices.module.css';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { GrConnect } from 'react-icons/gr';
+import { Input, Spacer, Modal, Button } from '@nextui-org/react';
+import Toast from '../Toast';
 
 export default function Esp32Devices() {
   const supabase = useSupabaseClient();
@@ -16,12 +19,36 @@ export default function Esp32Devices() {
   const [editingDeviceIndex, setEditingDeviceIndex] = useState(null);
   const [editDeviceName, setEditDeviceName] = useState('');
   const [editMacAddress, setEditMacAddress] = useState('');
-  const { setConnectedMacAddress, setConnectedDeviceName } =
-    useContext(AppContext);
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [modalHeader, setModalHeader] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [deviceToDeleteIndex, setDeviceToDeleteIndex] = useState(null);
+  const { setConnecting, setConnectedMacAddress, setConnectedDeviceName } = useContext(AppContext);
+
+  const onCloseToast = () => {
+    setShowToast(false);
+    setToastMessage('');
+    setToastType('');
+  };
+
+  const onCloseModal = () => {
+    setShowModal(false);
+    setModalMessage('');
+  };
 
   const handleConnect = (deviceName, macAddress) => {
     setConnectedDeviceName(deviceName);
     setConnectedMacAddress(macAddress);
+    setConnecting(true);
+    setShowToast(true);
+    setToastMessage(`Connecting to ${deviceName}...`);
+    setToastType('');
   };
 
   useEffect(() => {
@@ -35,7 +62,8 @@ export default function Esp32Devices() {
       const { data, error } = await supabase
         .from('esp32_devices')
         .select('*')
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .order('inserted_at', { ascending: false });
 
       if (error) {
         throw error;
@@ -51,6 +79,13 @@ export default function Esp32Devices() {
   }
 
   async function addDevice() {
+    if (!addDeviceName || !addMacAddress) {
+      setShowModal(true);
+      setModalHeader('Add Device Failed!');
+      setModalMessage('Please enter device name and address!');
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -66,9 +101,12 @@ export default function Esp32Devices() {
         throw error;
       }
 
-      setDevices([...devices, newDevice]);
       setAddDeviceName('');
       setAddMacAddress('');
+      getDevices();
+      setShowToast(true);
+      setToastMessage(`${addDeviceName} added!`);
+      setToastType('check');
     } catch (error) {
       alert('Error adding device!');
       console.log(error);
@@ -83,19 +121,19 @@ export default function Esp32Devices() {
     try {
       setLoading(true);
 
-      const { error } = await supabase
-        .from('esp32_devices')
-        .delete()
-        .eq('id', deviceToDelete.id);
+      const { error } = await supabase.from('esp32_devices').delete().eq('id', deviceToDelete.id);
 
       if (error) {
         throw error;
       }
 
-      const updatedDevices = devices.filter(
-        (device) => device.id !== deviceToDelete.id
-      );
+      const updatedDevices = devices.filter((device) => device.id !== deviceToDelete.id);
       setDevices(updatedDevices);
+      getDevices();
+      setShowToast(true);
+      setToastMessage(`${deviceToDelete.device_name} deleted!`);
+      setToastType('warning');
+      setDeviceToDeleteIndex(null);
     } catch (error) {
       alert('Error deleting device!');
       console.log(error);
@@ -115,6 +153,13 @@ export default function Esp32Devices() {
   async function handleDeviceUpdate(index) {
     const deviceToUpdate = devices[index];
 
+    if (!editDeviceName || !editMacAddress) {
+      setShowModal(true);
+      setModalHeader('Update Device Failed!');
+      setModalMessage('Please enter device name and address!');
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -130,11 +175,13 @@ export default function Esp32Devices() {
         throw error;
       }
 
-      const updatedDevices = [...devices];
-      updatedDevices[index].device_name = editDeviceName;
-      updatedDevices[index].mac_address = editMacAddress;
-      setDevices(updatedDevices);
       setEditingDeviceIndex(null);
+      setEditDeviceName('');
+      setEditMacAddress('');
+      getDevices();
+      setShowToast(true);
+      setToastMessage(`${editDeviceName} updated!`);
+      setToastType('check');
     } catch (error) {
       alert('Error updating device!');
       console.log(error);
@@ -144,100 +191,167 @@ export default function Esp32Devices() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.esp32Devices}>
-        <h3>Devices</h3>
-        {editingDeviceIndex === null ? (
-          <ul>
-            {devices.length > 0 ? (
-              devices.map((device, index) => (
-                <li key={index}>
-                  <div className={styles.listItems}>
-                    <p>
-                      {device.device_name}: <span>{device.mac_address}</span>
-                    </p>
-                    <div className={styles.editIcons}>
-                      <div onClick={() => handleDeviceDelete(index)}>
-                        <AiOutlineDelete className="reactIcons" size="1rem" />
-                      </div>
-                      <div onClick={() => handleDeviceEdit(index)}>
-                        <AiOutlineEdit className="reactIcons" size="1rem" />
-                      </div>
-                      <div
-                        onClick={() =>
-                          handleConnect(device.device_name, device.mac_address)
-                        }
-                      >
-                        <GrConnect className="reactIcons" size="1rem" />
+    <>
+      {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
+
+      <div className={styles.container}>
+        <div className={styles.esp32Devices}>
+          <h2>Devices</h2>
+          <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+            <Spacer y={1} />
+            <Modal.Body>
+              <h1 className="text-3xl text-red-700">確定刪除?</h1>
+              <h1 className="text-xl">
+                Device:{' '}
+                {deviceToDeleteIndex !== null && devices[deviceToDeleteIndex]
+                  ? devices[deviceToDeleteIndex].device_name
+                  : ''}
+              </h1>
+              <h1 className="text-xl">
+                MacAddress:{' '}
+                {deviceToDeleteIndex !== null && devices[deviceToDeleteIndex]
+                  ? devices[deviceToDeleteIndex].mac_address
+                  : ''}
+              </h1>
+            </Modal.Body>
+            <Modal.Footer className="justify-center">
+              <div className="flex justify-around w-full">
+                <button
+                  className="text-white border-0 w-32 rounded-xl bg-blue-600"
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    handleDeviceDelete(deviceToDeleteIndex);
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  className="text-white border-0 w-32 rounded-xl bg-blue-600"
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                  }}
+                >
+                  No
+                </button>
+              </div>
+            </Modal.Footer>
+          </Modal>
+          {editingDeviceIndex === null ? (
+            <ul>
+              {devices.length > 0 ? (
+                devices.map((device, index) => (
+                  <li key={index}>
+                    <div className={styles.listItems}>
+                      <p>
+                        {device.device_name}: <span>{device.mac_address}</span>
+                      </p>
+                      <div className={styles.editIcons}>
+                        <div
+                          onClick={() => {
+                            setShowDeleteModal(true);
+                            setDeviceToDeleteIndex(index);
+                          }}
+                        >
+                          <AiOutlineDelete className="reactIcons" size="1.3rem" />
+                        </div>
+
+                        <div onClick={() => handleDeviceEdit(index)}>
+                          <AiOutlineEdit className="reactIcons" size="1.3rem" />
+                        </div>
+                        <div onClick={() => handleConnect(device.device_name, device.mac_address)}>
+                          <GrConnect className="reactIcons" size="1.3rem" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <p>No devices added yet.</p>
-            )}
-          </ul>
-        ) : (
-          <div className={styles.editDeviceForm}>
-            <label>Device Name</label>
-            <input
-              type="text"
-              name="editDeviceName"
-              placeholder={devices[editingDeviceIndex].device_name}
-              value={editDeviceName}
-              onChange={(e) => setEditDeviceName(e.target.value)}
-            />
-            <label>MAC Address</label>
-            <input
-              type="text"
-              name="editMacAddress"
-              placeholder={devices[editingDeviceIndex].mac_address}
-              value={editMacAddress}
-              onChange={(e) => setEditMacAddress(e.target.value)}
-            />
-            <div className={styles.editFormBtns}>
-              <button
-                className="button primary"
-                onClick={() => handleDeviceUpdate(editingDeviceIndex)}
-              >
-                Update
-              </button>
-              <button onClick={() => handleDeviceEdit(null)}>Cancel</button>
+                  </li>
+                ))
+              ) : (
+                <p>No devices added yet.</p>
+              )}
+            </ul>
+          ) : (
+            <div className="w-full pr-6">
+              <Input
+                label="Device Name"
+                color="default"
+                clearable
+                fullWidth
+                bordered
+                borderWeight="light"
+                name="editDeviceName"
+                placeholder={devices[editingDeviceIndex].device_name}
+                value={editDeviceName}
+                onChange={(e) => setEditDeviceName(e.target.value)}
+              />
+              <Spacer y={0.5} />
+
+              <Input
+                label="Mac Address"
+                color="default"
+                clearable
+                fullWidth
+                bordered
+                borderWeight="light"
+                name="editMacAddress"
+                placeholder={devices[editingDeviceIndex].mac_address}
+                value={editMacAddress}
+                onChange={(e) => setEditMacAddress(e.target.value)}
+              />
+              <div className="mt-2 flex justify-between">
+                <Button size="sm" onClick={() => handleDeviceUpdate(editingDeviceIndex)}>
+                  更新
+                </Button>
+                <Button size="sm" bg-blue-600 onClick={() => handleDeviceEdit(null)}>
+                  取消
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-      <div className={styles.addDeviceForm}>
-        <h3>Add a new device</h3>
-        <div>
-          <label htmlFor="deviceName">Device Name</label>
-          <input
+          )}
+        </div>
+        <div className={styles.addDeviceForm}>
+          <h2>Add a new device</h2>
+          <Input
+            label="Device Name"
+            color="default"
+            clearable
+            fullWidth
+            bordered
             id="deviceName"
-            type="text"
             value={addDeviceName}
             onChange={(e) => setAddDeviceName(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="macAddress">MAC Address</label>
-          <input
+          <Spacer y={0.5} />
+
+          <Input
+            label="Mac Address"
+            color="default"
+            clearable
+            fullWidth
+            bordered
             id="macAddress"
-            type="text"
             value={addMacAddress}
             onChange={(e) => setAddMacAddress(e.target.value)}
           />
-        </div>
-        <div>
-          <button
-            className="button primary"
-            onClick={addDevice}
-            disabled={loading}
-          >
-            {loading ? 'Loading ...' : 'Add Device'}
-          </button>
+          <Spacer y={0.5} />
+
+          <div>
+            <Button className="w-full" onClick={addDevice} disabled={loading}>
+              {loading ? 'Loading ...' : 'Add Device'}
+            </Button>
+            <Modal open={showModal} onClose={onCloseModal}>
+              <Modal.Header>
+                <h1 className="text-3xl text-red-700">{modalHeader}</h1>
+              </Modal.Header>
+              <Modal.Body>
+                <h1 className="text-xl text-center">{modalMessage}</h1>
+              </Modal.Body>
+              <Modal.Footer className="justify-center">
+                <Button onClick={onCloseModal}>Close</Button>
+              </Modal.Footer>
+            </Modal>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

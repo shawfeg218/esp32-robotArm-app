@@ -1,42 +1,35 @@
+// file: Navbar.jsx
 import Link from 'next/link';
 import styles from '@/styles/Navbar.module.css';
 import Avatar from './account/Avatar';
-import { BsBook } from 'react-icons/bs';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { useContext } from 'react';
+import AppContext from '@/contexts/AppContext';
 
-const Navbar = () => {
+export default function Navbar() {
+  const { displaySidebar, setDisplaySidebar } = useContext(AppContext);
+
+  const showSidebar = () => {
+    setDisplaySidebar(!displaySidebar);
+    // console.log('showSidebar: ' + displaySidebar);
+  };
+
   return (
     <nav className={styles.navbar}>
+      <div className={styles.menuDiv} onClick={showSidebar}>
+        <RxHamburgerMenu className="reactIcons" size="1.8rem" />
+      </div>
       <Link href="/" passHref>
-        <div className={styles.logo}>
-          <BsBook className="reactIcons" size="2rem" />
-          <span>Esp32App</span>
+        <div className="hover:cursor-pointer hidden sm:block">
+          <h1 className="text-center">MEMEbot</h1>
         </div>
       </Link>
 
-      <ul className={styles.navbarList}>
-        <li className={styles.navbarItem}>
-          <Link href="/quiz">
-            <p>Quiz</p>
-          </Link>
-        </li>
-        <li className={styles.navbarItem}>
-          <Link href="/arm-control">
-            <p>ArmControl</p>
-          </Link>
-        </li>
-        <li className={styles.navbarItem}>
-          <Link href="/device">
-            <p>Device</p>
-          </Link>
-        </li>
-        <Link href={'/account'} passHref>
-          <div className={styles.avatarContainer}>
-            <Avatar size={36} />
-          </div>
-        </Link>
-      </ul>
+      <Link href="/account" passHref>
+        <div className={styles.avatarContainer}>
+          <Avatar size={60} />
+        </div>
+      </Link>
     </nav>
   );
-};
-
-export default Navbar;
+}

@@ -1,18 +1,26 @@
-import React from 'react';
 import Account from '@/components/account/Account';
-import Esp32Devices from '@/components/arm-control/Esp32Devices';
+import AppContext from '@/contexts/AppContext';
+import { useUser } from '@supabase/auth-helpers-react';
+import { useRouter } from 'next/router';
+import { useContext, useEffect } from 'react';
 
 export default function AccountPage() {
-  return (
-    // <div className="flex-container">
-    //   <div>
-    //     <Account />
-    //   </div>
-    //   <div>
-    //     <Esp32Devices />
-    //   </div>
-    // </div>
+  const { teacherPath } = useContext(AppContext);
+  const router = useRouter();
+  const user = useUser();
+  const role = user?.user_metadata?.role;
 
-    <Account />
-  );
+  useEffect(() => {
+    if (role === 'teacher') {
+      return;
+    }
+    if (teacherPath === null) {
+      return;
+    }
+    if (router.asPath !== teacherPath) {
+      router.push(teacherPath);
+    }
+  }, []);
+
+  return <Account />;
 }
