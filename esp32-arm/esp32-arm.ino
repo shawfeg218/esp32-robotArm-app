@@ -74,10 +74,10 @@ void setup() {
 
 void loop() {
   // 检查按鈕状态
-  if (digitalRead(buttonPin) == LOW) {
-    // 如果按鈕被按下，重置WiFi
-    handleResetWifi();
-  }
+  // if (digitalRead(buttonPin) == LOW) {
+  //   // 如果按鈕被按下，重置WiFi
+  //   handleResetWifi();
+  // }
   if (!mqttClient.connected()) {
     reconnectMqtt();
   }
@@ -113,7 +113,7 @@ void handleResetWifiWrapper() {
 void setupWifiManager() {
   wifiManager.setConfigPortalTimeout(180);
 
-  if (!wifiManager.autoConnect(("ESP32_AP"+  WiFi.macAddress()).c_str(), "")) {
+  if (!wifiManager.autoConnect(("ESP32_AP_"+  WiFi.macAddress()).c_str(), "")) {
     Serial.println("無法連接到WiFi，請重新設置");
     ESP.restart();
   }
@@ -153,6 +153,15 @@ void reconnectMqtt() {
     Serial.print("Attempting MQTT connection...");
     if (mqttClient.connect("ESP32Client")) {
       Serial.println("connected");
+      
+      // subscribe to teacher topic
+      mqttClient.subscribe((teacherTopic + "/control/set-axis-angle").c_str());
+      mqttClient.subscribe((teacherTopic + "/control/correct-act").c_str());
+      mqttClient.subscribe((teacherTopic + "/control/wrong-act").c_str());
+      mqttClient.subscribe((teacherTopic + "/control/grab-act").c_str());
+      mqttClient.subscribe((teacherTopic + "/control/reset-arm").c_str());
+      
+      // subscribe to default topic
       mqttClient.subscribe((baseTopic + "/control/reset-wifi").c_str());
       mqttClient.subscribe((baseTopic + "/control/set-axis-angle").c_str());
       mqttClient.subscribe((baseTopic + "/control/correct-act").c_str());
@@ -161,7 +170,6 @@ void reconnectMqtt() {
       mqttClient.subscribe((baseTopic + "/control/reset-arm").c_str());
       mqttClient.subscribe((baseTopic + "/control/get-angles").c_str());
       mqttClient.subscribe((baseTopic + "/control/get-esp32Status").c_str());
-      mqttClient.subscribe((baseTopic + "/control/get-heartbeat").c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -177,10 +185,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     message += (char)payload[i];
   }
 
-  if(String(topic) == (baseTopic + "/control/reset-wifi")) {
-    Serial.println("topic: " + String(topic));
-    handleResetWifi();
-  } else if(String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle")) {
+  if(String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle")) {
     Serial.println("topic: " + String(topic));
     handleSetAxisAngle(message);
   } else if(String(topic) == (baseTopic + "/control/correct-act") || String(topic) == (teacherTopic + "/control/correct-act")) {
@@ -195,6 +200,9 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   } else if(String(topic) == (baseTopic + "/control/reset-arm") || String(topic) == (teacherTopic + "/control/reset-arm")) {
     Serial.println("topic: " + String(topic));
     resetArm();
+  }else if(String(topic) == (baseTopic + "/control/reset-wifi")) {
+    Serial.println("topic: " + String(topic));
+    handleResetWifi();
   } else if(String(topic) == (baseTopic + "/control/get-angles")) {
     handleGetAngles();
   } else if(String(topic) == (baseTopic + "/control/get-esp32Status")) {
@@ -324,6 +332,6 @@ void handleGetEsp32Status() {
 
   String esp32Status;
   serializeJson(doc, esp32Status);
-  Serial.println(esp32Status);
+  // Serial.println(esp32Status);
   mqttClient.publish((baseTopic + "/esp32Status").c_str(), (esp32Status.c_str()));
 }
