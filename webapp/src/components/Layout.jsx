@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import { useSession, useUser } from '@supabase/auth-helpers-react';
 import Sidebar from './Sidebar';
 import AppContext from '@/contexts/AppContext';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import Auth from './account/Auth';
 import TeacherPanel from './TeacherPanel';
 import { useRouter } from 'next/router';
@@ -26,22 +26,34 @@ export default function Layout({ children }) {
   const session = useSession();
 
   const user = useUser();
-  const role = user?.user_metadata?.role;
 
   const router = useRouter();
 
-  const { setSocket, setControlMode, setTeacherPath, displaySidebar, setDisplaySidebar } =
-    useContext(AppContext);
+  const {
+    role,
+    setRole,
+    setSocket,
+    setControlMode,
+    setTeacherPath,
+    displaySidebar,
+    setDisplaySidebar,
+  } = useContext(AppContext);
 
   useEffect(() => {
-    socketInitializer();
+    if (session) {
+      const userRole = user.user_metadata?.role || 'student';
+      console.log('userRole: ', userRole);
+      setRole(userRole);
+      socketInitializer(userRole);
+    }
 
     return () => {
       socketIO?.disconnect();
     };
-  }, []);
+  }, [session, user]);
 
-  const socketInitializer = async () => {
+  const socketInitializer = async (role) => {
+    console.log('socket role: ', role);
     // socketIO = io('http://localhost:5000');
     const url = process.env.NEXT_PUBLIC_SERVER_URL;
     // console.log('url: ', url);
