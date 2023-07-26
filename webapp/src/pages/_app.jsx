@@ -1,3 +1,4 @@
+// pages/_app.js
 import '@/styles/globals.css';
 import Layout from '@/components/Layout';
 import { AppContextProvider } from '@/contexts/AppContext';
@@ -11,11 +12,9 @@ import { NextUIProvider } from '@nextui-org/react';
 function App({ Component, pageProps }) {
   const handler = nc().use(cors());
   const [supabase] = useState(() => createBrowserSupabaseClient());
+
   return (
-    <SessionContextProvider
-      supabaseClient={supabase}
-      initialSession={pageProps.initialSession}
-    >
+    <SessionContextProvider supabaseClient={supabase} initialSession={pageProps.initialSession}>
       <AppContextProvider>
         <NextUIProvider>
           <Layout>

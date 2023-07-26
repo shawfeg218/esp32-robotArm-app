@@ -6,7 +6,7 @@
   background-color: white;
   border-bottom: 0.0625rem solid #ececf1;
   height: 5rem;
-  padding: 0.03rem;
+  padding: 0.03rem 1rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -15,7 +15,6 @@
 }
 
 .menuDiv {
-  margin-left: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,29 +28,10 @@
   background-color: #ccc;
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1800px) {
   .menuDiv {
     display: none;
   }
-}
-
-.logo {
-  margin-left: 1.5rem;
-  display: flex;
-  align-items: center;
-  /* background-color: #4caf50; */
-}
-
-.logo span {
-  margin-left: 1.5rem;
-  color: rgb(0, 0, 0);
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 1.25rem;
-}
-
-.logo :hover {
-  cursor: pointer;
 }
 
 .navbarList {
@@ -63,6 +43,7 @@
 
 .navbarItem {
   margin-right: 1rem;
+  margin-bottom: 0;
 }
 
 .navbarItem p {
@@ -111,8 +92,11 @@
   cursor: pointer;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 640px) {
   .avatarContainer {
+    display: none;
+  }
+  .logo {
     display: none;
   }
 }

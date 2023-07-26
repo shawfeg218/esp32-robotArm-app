@@ -4,6 +4,7 @@ import QuestionView from './QuestionView';
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { Loading } from '@nextui-org/react';
 
 export default function Question() {
   // State
@@ -11,7 +12,7 @@ export default function Question() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState();
-  const { point, setPoint, selectedSubject, connectedMacAddress } =
+  const { controlMode, point, setPoint, selectedSubject, connectedMacAddress } =
     useContext(AppContext);
 
   const [questions, setQuestions] = useState({});
@@ -102,16 +103,26 @@ export default function Question() {
   };
 
   useEffect(() => {
-    if (correct === true) {
+    if (controlMode === 'single' && correct === true && connectedMacAddress !== '') {
       axios.post('/api/correct-act', {
         connectedMacAddress,
       });
-      setPoint((prev) => prev + 1);
-      playSound(correctSoundRef);
-    } else if (correct === false) {
+    } else if (controlMode === 'single' && correct === false && connectedMacAddress !== '') {
       axios.post('/api/wrong-act', {
         connectedMacAddress,
       });
+    }
+
+    if (controlMode === 'multi-singleRoute' && correct === true) {
+      axios.post('/api/T-correct-act');
+    } else if (controlMode === 'multi-singleRoute' && correct === false) {
+      axios.post('/api/T-wrong-act');
+    }
+
+    if (correct === true) {
+      setPoint((prev) => prev + 1);
+      playSound(correctSoundRef);
+    } else if (correct === false) {
       playSound(wrongSoundRef);
     }
   }, [correct]);
@@ -147,11 +158,7 @@ export default function Question() {
         src="/audio/mixkit-correct-answer-reward-952.wav"
         preload="auto"
       />
-      <audio
-        ref={wrongSoundRef}
-        src="/audio/mixkit-cartoon-failure-piano-473.wav"
-        preload="auto"
-      />
+      <audio ref={wrongSoundRef} src="/audio/mixkit-cartoon-failure-piano-473.wav" preload="auto" />
 
       <QuestionView
         currentQuestionIndex={currentQuestionIndex}
@@ -164,6 +171,6 @@ export default function Question() {
       />
     </>
   ) : (
-    <div>Loading...</div>
+    <Loading color="primary" size="large" />
   );
 }

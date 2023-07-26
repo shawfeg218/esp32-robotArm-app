@@ -3,21 +3,21 @@
   position: fixed;
   background-color: white;
   border-right: 0.0625rem solid #ececf1;
-  margin-top: 5rem;
+  margin-top: 1rem;
   width: 13rem;
-  height: 100vh;
+  height: 100%;
   z-index: var(--sidebar-z-index);
+  overflow-y: scroll;
 
   transform: translateX(-100%);
   transition: transform 0.3s ease-out;
 }
 
 .container.show {
-  /* 當顯示 Sidebar 時，移動元素到視窗內 */
   transform: translateX(0);
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1800px) {
   .container {
     transform: translateX(0);
   }

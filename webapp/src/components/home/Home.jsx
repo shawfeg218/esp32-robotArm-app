@@ -1,17 +1,16 @@
 import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
-import { FaChalkboardTeacher } from 'react-icons/fa';
-import { GrConnect } from 'react-icons/gr';
-import { TfiPanel } from 'react-icons/tfi';
+import { BsArrowRightShort } from 'react-icons/bs';
 import styles from '@/styles/Home.module.css';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import History from '../quiz/History';
-import { Card, Text } from '@nextui-org/react';
+import { Table, Loading, Button, Card, Text } from '@nextui-org/react';
+import HomeCard from './HomeCard';
 
 export default function Home() {
   const [recentHistory, setRecentHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
   const user = useUser();
 
@@ -55,91 +54,119 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className="cardContainer">
-        <Link href="/quiz" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <p>QUIZ</p>
-            <div className="reactIconsDiv">
-              <FaChalkboardTeacher className="reactIcons" size="5rem" />
-            </div>
-          </Card>
-        </Link>
+    <div className="flex justify-center w-full mt-16">
+      <div>
+        <div className="max-w-6xl flex flex-col sm:flex-row sm:flex-wrap justify-center">
+          <HomeCard
+            img="/img/Control.jpg"
+            title={"Let's control my arm!"}
+            description=""
+            link="/arm-control"
+          />
+          <HomeCard
+            img="/img/device-linking.jpg"
+            title={'Device setting'}
+            description=""
+            link="/device"
+          />
+          <HomeCard
+            img="/img/audioChat.jpg"
+            title={'Audio chat'}
+            description=""
+            link="/audio-chat"
+          />
+          <HomeCard
+            img="/img/VideoLearning.jpg"
+            title={'Video Learning'}
+            description=""
+            link="/video-learning"
+          />
+          <HomeCard img="/img/Quiz.jpg" title={"it's QUIZ time"} description="" link="/quiz" />
 
-        <Link href="/arm-control" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <p>操作手臂</p>
-            <div className="reactIconsDiv">
-              <TfiPanel className="reactIcons" size="5rem" />
-            </div>
-          </Card>
-        </Link>
-
-        <Link href="/device" passHref>
-          <Card isHoverable isPressable variant="bordered" className="card">
-            <p>連線設定</p>
-            <div className="reactIconsDiv">
-              <GrConnect className="reactIcons" size="5rem" />
-            </div>
-          </Card>
-        </Link>
-      </div>
-      {loading ? (
-        'Loading...'
-      ) : (
-        <Card isHoverable className={styles.history_container}>
-          <Card.Header>
-            <h3>History</h3>
-          </Card.Header>
-          <Card.Body>
-            {recentHistory.length > 0 ? (
-              <table className="styled-table">
-                <thead>
-                  <tr>
-                    <th>科目</th>
-                    <th>得分</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentHistory.map((entry, index) => (
-                    <tr key={index}>
-                      <td>{entry.subject_name}</td>
-                      <td>{entry.score}</td>
-                      <td>
-                        {new Date(entry.inserted_at).toLocaleDateString(
-                          undefined,
-                          {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                          }
-                        )}{' '}
-                        {new Date(entry.inserted_at).toLocaleTimeString(
-                          undefined,
-                          {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          }
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div className="w-96 flex justify-center ">
+            {loading ? (
+              <Card isHoverable className="w-full max-w-sm flex-col items-center">
+                <div className="h-full flex items-center">
+                  <Loading size="lg" color="primary" />
+                </div>
+              </Card>
             ) : (
-              <p>No history data available.</p>
+              <Card isHoverable className="w-full max-w-sm flex-col items-center">
+                <div>
+                  {recentHistory.length > 0 ? (
+                    <>
+                      <h1 className="text-gray-900 text-center">HISTORY</h1>
+                      <Table
+                        lined
+                        shadow={false}
+                        selectionMode="single"
+                        containerCss={{ width: '100%', minWidth: 'fit-content' }}
+                        css={{ height: 'auto', width: '100%' }}
+                      >
+                        <Table.Header>
+                          <Table.Column
+                            css={{ fontWeight: 'bold', fontSize: '$sm' }}
+                            align="center"
+                          >
+                            科目
+                          </Table.Column>
+                          <Table.Column
+                            css={{ fontWeight: 'bold', fontSize: '$sm' }}
+                            align="center"
+                          >
+                            得分
+                          </Table.Column>
+                          <Table.Column
+                            css={{ fontWeight: 'bold', fontSize: '$sm' }}
+                            align="center"
+                          >
+                            Date
+                          </Table.Column>
+                        </Table.Header>
+                        <Table.Body>
+                          {recentHistory.map((entry, index) => (
+                            <Table.Row key={index}>
+                              <Table.Cell css={{ textAlign: 'center' }}>
+                                {entry.subject_name}
+                              </Table.Cell>
+                              <Table.Cell css={{ textAlign: 'center' }}>{entry.score}</Table.Cell>
+                              <Table.Cell css={{ textAlign: 'center' }}>
+                                {new Date(entry.inserted_at).toLocaleDateString(undefined, {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                })}
+
+                                {new Date(entry.inserted_at).toLocaleTimeString(undefined, {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </Table.Cell>
+                            </Table.Row>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                      <div className="px-5 my-8">
+                        <Link href="/history" passHref>
+                          <button className="w-full inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                            SEE ALL
+                          </button>
+                        </Link>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="my-32 text-center">
+                      <h1 className="text-gray-900">HISTORY</h1>
+
+                      <h2>No history data available.</h2>
+                    </div>
+                  )}
+                </div>
+              </Card>
             )}
-          </Card.Body>
-          <Card.Footer>
-            {recentHistory.length > 0 && (
-              <Link href="/history">
-                <button>更多</button>
-              </Link>
-            )}
-          </Card.Footer>
-        </Card>
-      )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

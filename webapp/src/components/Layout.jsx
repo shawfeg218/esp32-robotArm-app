@@ -1,35 +1,17 @@
+// Layout.jsx
 import styles from '@/styles/Layout.module.css';
 import Navbar from './Navbar';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSession, useUser } from '@supabase/auth-helpers-react';
 import Sidebar from './Sidebar';
 import AppContext from '@/contexts/AppContext';
-import { useContext, useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import Auth from './account/Auth';
+import TeacherPanel from './TeacherPanel';
+import { useRouter } from 'next/router';
+import io from 'socket.io-client';
+let socketIO;
 
 function Overlay({ displaySidebar, setDisplaySidebar }) {
-  function preventScroll(e) {
-    e.preventDefault();
-  }
-
-  function noScroll() {
-    window.addEventListener('wheel', preventScroll, { passive: false });
-    window.addEventListener('touchmove', preventScroll, { passive: false });
-  }
-
-  function canScroll() {
-    window.removeEventListener('wheel', preventScroll);
-    window.removeEventListener('touchmove', preventScroll);
-  }
-
-  useEffect(() => {
-    if (displaySidebar) {
-      noScroll();
-    } else {
-      canScroll();
-    }
-  }, [displaySidebar]);
-
   return (
     <div
       className={`${styles.overlay} ${displaySidebar ? '' : styles.hide}`}
@@ -42,33 +24,85 @@ function Overlay({ displaySidebar, setDisplaySidebar }) {
 
 export default function Layout({ children }) {
   const session = useSession();
-  const supabase = useSupabaseClient();
 
-  const { displaySidebar, setDisplaySidebar } = useContext(AppContext);
+  const user = useUser();
+  const role = user?.user_metadata?.role;
+
+  const router = useRouter();
+
+  const { setSocket, setControlMode, setTeacherPath, displaySidebar, setDisplaySidebar } =
+    useContext(AppContext);
+
+  useEffect(() => {
+    socketInitializer();
+
+    return () => {
+      socketIO?.disconnect();
+    };
+  }, []);
+
+  const socketInitializer = async () => {
+    // socketIO = io('http://localhost:5000');
+    const url = process.env.NEXT_PUBLIC_SERVER_URL;
+    // console.log('url: ', url);
+    socketIO = io(url);
+
+    setSocket(socketIO);
+
+    socketIO.on('connect_error', (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+
+    socketIO.on('connect_timeout', (timeout) => {
+      console.log('Connection Timeout', timeout);
+    });
+
+    socketIO.on('connect', () => {
+      console.log('socket connected');
+    });
+
+    if (role !== 'teacher') {
+      socketIO.on('lock_page_student', (path) => {
+        // console.log('locked: ', path);
+        setTeacherPath(path);
+        router.push(path);
+      });
+
+      socketIO.on('unlock_page_student', () => {
+        // console.log('unlocked');
+        setTeacherPath(null);
+      });
+
+      socketIO.on('set_controlMode_student', (mode) => {
+        console.log('mode: ', mode);
+        setControlMode(mode);
+      });
+    }
+  };
+
+  // sidebar
+  useEffect(() => {
+    if (displaySidebar) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [displaySidebar]);
 
   return (
     <>
       {!session ? (
-        <div className={styles.auth_page}>
-          <div className={styles.authContainer}>
-            <Auth
-              supabaseClient={supabase}
-              appearance={{ theme: ThemeSupa }}
-              theme="default"
-              providers={[]}
-            />
-          </div>
+        <div className="flex justify-center items-center w-full min-h-screen ">
+          <Auth />
         </div>
       ) : (
         <>
           <Navbar />
-          <Overlay
-            displaySidebar={displaySidebar}
-            setDisplaySidebar={setDisplaySidebar}
-          />
-          <div className={styles.flex}>
+          <Overlay displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
+          <div className="flex min-h-screen">
             <Sidebar />
-            <div className={styles.container}>{children}</div>
+            <TeacherPanel />
+            <div className="py-16 flex-col items-center w-full min-h-screen">{children}</div>
           </div>
         </>
       )}

@@ -74,9 +74,9 @@ export default function AddSubject() {
 
   const removeOption = (questionIndex, optionIndex) => {
     const newQuestions = [...questions];
-    newQuestions[questionIndex].options = newQuestions[
-      questionIndex
-    ].options.filter((_, index) => index !== optionIndex);
+    newQuestions[questionIndex].options = newQuestions[questionIndex].options.filter(
+      (_, index) => index !== optionIndex
+    );
     setQuestions(newQuestions);
   };
 
@@ -84,16 +84,11 @@ export default function AddSubject() {
     setUpdating(true);
 
     try {
-      let { error: subjectError } = await supabase
-        .from('subjects')
-        .insert([{ name: subjectName }]);
+      let { error: subjectError } = await supabase.from('subjects').insert([{ name: subjectName }]);
 
       if (subjectError) throw subjectError;
 
-      let { data, error } = await supabase
-        .from('subjects')
-        .select('id')
-        .eq('name', subjectName);
+      let { data, error } = await supabase.from('subjects').select('id').eq('name', subjectName);
       console.log(data);
       let subjectId = data[0].id;
 
@@ -162,9 +157,7 @@ export default function AddSubject() {
       }
 
       // 檢查每一個問題是否有正確答案被選中
-      const correctOption = question.options.find(
-        (option) => option.is_correct
-      );
+      const correctOption = question.options.find((option) => option.is_correct);
       if (!correctOption) {
         setMessage('每一題必須勾選一個正確答案');
         return;
@@ -180,11 +173,7 @@ export default function AddSubject() {
       <div className={styles.subjectForm}>
         <h2>Subject</h2>
         <label>Subject Name</label>
-        <PrettyTextArea
-          value={subjectName}
-          onChange={handleSubjectChange}
-          required
-        />
+        <PrettyTextArea value={subjectName} onChange={handleSubjectChange} required />
       </div>
       <div className={styles.questionForm}>
         <h2>Question</h2>
@@ -193,10 +182,7 @@ export default function AddSubject() {
             <div className={styles.question_bar}>
               <h3>題目{questionIndex + 1}</h3>
               {questions.length > 1 && (
-                <div
-                  className={styles.removeIcon}
-                  onClick={() => removeQuestion(questionIndex)}
-                >
+                <div className={styles.removeIcon} onClick={() => removeQuestion(questionIndex)}>
                   <AiOutlineDelete className="reactIcons" size="1.5rem" />
                 </div>
               )}
@@ -219,21 +205,14 @@ export default function AddSubject() {
                           type="checkbox"
                           name={`correct-option-${questionIndex}`}
                           checked={option.is_correct}
-                          onChange={() =>
-                            handleOptionCorrectChange(
-                              questionIndex,
-                              optionIndex
-                            )
-                          }
+                          onChange={() => handleOptionCorrectChange(questionIndex, optionIndex)}
                         />
                         <h4>選為正確選項</h4>
                       </div>
                       {question.options.length > 2 && (
                         <div
                           className={styles.removeIcon}
-                          onClick={() =>
-                            removeOption(questionIndex, optionIndex)
-                          }
+                          onClick={() => removeOption(questionIndex, optionIndex)}
                         >
                           <IoIosRemove className="reactIcons" size="2rem" />
                         </div>
@@ -242,9 +221,7 @@ export default function AddSubject() {
                     <label key={optionIndex}>選項{optionIndex + 1}</label>
                     <PrettyTextArea
                       value={option.text}
-                      onChange={(e) =>
-                        handleOptionChange(e, questionIndex, optionIndex)
-                      }
+                      onChange={(e) => handleOptionChange(e, questionIndex, optionIndex)}
                       required
                     />
                   </div>
@@ -260,11 +237,7 @@ export default function AddSubject() {
             </button>
           </div>
         ))}
-        <button
-          className={styles.add_question_btn}
-          type="button"
-          onClick={addQuestion}
-        >
+        <button className={styles.add_question_btn} type="button" onClick={addQuestion}>
           Add Question
         </button>
       </div>
@@ -280,12 +253,8 @@ export default function AddSubject() {
         <p>{message ? message : null}</p>
         <p>{successMessage ? successMessage : null}</p>
       </div>
-      <Button ghost className={styles.submit_btn} type="submit">
-        {udpdating ? (
-          <Loading type="points-opacity" color="currentColor" size="sm" />
-        ) : (
-          'submit'
-        )}
+      <Button ghost className="hover:bg-blue-600 w-full" type="submit">
+        {udpdating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
       </Button>
     </form>
   );
