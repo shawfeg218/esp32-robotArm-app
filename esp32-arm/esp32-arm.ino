@@ -30,6 +30,8 @@ const int init_angleD = 0;
 const int init_angleE = 180; 
 const int init_angleF = 18; 
 
+const int buttonPin = 18;
+
 int angleA;
 int angleB;
 int angleC;
@@ -66,9 +68,16 @@ void setup() {
   mqttClient.setCallback(mqttCallback);
   reconnectMqtt();
 
+
+  pinMode(buttonPin, INPUT_PULLUP);
 }
 
 void loop() {
+  // 检查按鈕状态
+  if (digitalRead(buttonPin) == LOW) {
+    // 如果按鈕被按下，重置WiFi
+    handleResetWifi();
+  }
   if (!mqttClient.connected()) {
     reconnectMqtt();
   }
