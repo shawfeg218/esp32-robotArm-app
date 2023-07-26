@@ -104,7 +104,7 @@ void handleResetWifiWrapper() {
 void setupWifiManager() {
   wifiManager.setConfigPortalTimeout(180);
 
-  if (!wifiManager.autoConnect("ESP32_AP", "")) {
+  if (!wifiManager.autoConnect(("ESP32_AP"+  WiFi.macAddress()).c_str(), "")) {
     Serial.println("無法連接到WiFi，請重新設置");
     ESP.restart();
   }
