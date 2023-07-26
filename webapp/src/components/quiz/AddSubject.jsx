@@ -169,93 +169,95 @@ export default function AddSubject() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.container}>
-      <div className={styles.subjectForm}>
-        <h2>Subject</h2>
-        <label>Subject Name</label>
-        <PrettyTextArea value={subjectName} onChange={handleSubjectChange} required />
-      </div>
-      <div className={styles.questionForm}>
-        <h2>Question</h2>
-        {questions.map((question, questionIndex) => (
-          <div className={styles.questionItem} key={questionIndex}>
-            <div className={styles.question_bar}>
-              <h3>題目{questionIndex + 1}</h3>
-              {questions.length > 1 && (
-                <div className={styles.removeIcon} onClick={() => removeQuestion(questionIndex)}>
-                  <AiOutlineDelete className="reactIcons" size="1.5rem" />
-                </div>
-              )}
-            </div>
-            <label>
-              <PrettyTextArea
-                value={question.text}
-                onChange={(e) => handleQuestionChange(e, questionIndex)}
-                required
-              />
-            </label>
-
-            <div className={styles.optionForm}>
-              {question.options.map((option, optionIndex) => (
-                <div className={styles.optionItemContainer} key={optionIndex}>
-                  <div className={styles.optionContainer}>
-                    <div className={styles.option_bar}>
-                      <div className={styles.correctDiv}>
-                        <input
-                          type="checkbox"
-                          name={`correct-option-${questionIndex}`}
-                          checked={option.is_correct}
-                          onChange={() => handleOptionCorrectChange(questionIndex, optionIndex)}
-                        />
-                        <h4>選為正確選項</h4>
-                      </div>
-                      {question.options.length > 2 && (
-                        <div
-                          className={styles.removeIcon}
-                          onClick={() => removeOption(questionIndex, optionIndex)}
-                        >
-                          <IoIosRemove className="reactIcons" size="2rem" />
-                        </div>
-                      )}
-                    </div>
-                    <label key={optionIndex}>選項{optionIndex + 1}</label>
-                    <PrettyTextArea
-                      value={option.text}
-                      onChange={(e) => handleOptionChange(e, questionIndex, optionIndex)}
-                      required
-                    />
+    <div className="w-full flex justify-center">
+      <form onSubmit={handleSubmit} className="mt-16 bg-slate-100 pt-0 px-2 pb-12 w-full max-w-3xl">
+        <div className={styles.subjectForm}>
+          <h2>Subject</h2>
+          <label>Subject Name</label>
+          <PrettyTextArea value={subjectName} onChange={handleSubjectChange} required />
+        </div>
+        <div className={styles.questionForm}>
+          <h2>Question</h2>
+          {questions.map((question, questionIndex) => (
+            <div className={styles.questionItem} key={questionIndex}>
+              <div className={styles.question_bar}>
+                <h3>題目{questionIndex + 1}</h3>
+                {questions.length > 1 && (
+                  <div className={styles.removeIcon} onClick={() => removeQuestion(questionIndex)}>
+                    <AiOutlineDelete className="reactIcons" size="1.5rem" />
                   </div>
-                </div>
-              ))}
+                )}
+              </div>
+              <label>
+                <PrettyTextArea
+                  value={question.text}
+                  onChange={(e) => handleQuestionChange(e, questionIndex)}
+                  required
+                />
+              </label>
+
+              <div className={styles.optionForm}>
+                {question.options.map((option, optionIndex) => (
+                  <div className={styles.optionItemContainer} key={optionIndex}>
+                    <div className={styles.optionContainer}>
+                      <div className={styles.option_bar}>
+                        <div className={styles.correctDiv}>
+                          <input
+                            type="checkbox"
+                            name={`correct-option-${questionIndex}`}
+                            checked={option.is_correct}
+                            onChange={() => handleOptionCorrectChange(questionIndex, optionIndex)}
+                          />
+                          <h4 className="mt-2 ml-2">選為正確選項</h4>
+                        </div>
+                        {question.options.length > 2 && (
+                          <div
+                            className={styles.removeIcon}
+                            onClick={() => removeOption(questionIndex, optionIndex)}
+                          >
+                            <IoIosRemove className="reactIcons" size="2rem" />
+                          </div>
+                        )}
+                      </div>
+                      <label key={optionIndex}>選項{optionIndex + 1}</label>
+                      <PrettyTextArea
+                        value={option.text}
+                        onChange={(e) => handleOptionChange(e, questionIndex, optionIndex)}
+                        required
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                className={styles.add_option_btn}
+                type="button"
+                onClick={() => addOption(questionIndex)}
+              >
+                Add New Option
+              </button>
             </div>
-            <button
-              className={styles.add_option_btn}
-              type="button"
-              onClick={() => addOption(questionIndex)}
-            >
-              Add New Option
-            </button>
-          </div>
-        ))}
-        <button className={styles.add_question_btn} type="button" onClick={addQuestion}>
-          Add Question
-        </button>
-      </div>
-      <div className={styles.submit_check}>
-        <h2>
-          Subject Name: <span>{subjectName}</span>
-        </h2>
-        <h2>
-          With
-          <span> {questions.length} </span>
-          Questions
-        </h2>
-        <p>{message ? message : null}</p>
-        <p>{successMessage ? successMessage : null}</p>
-      </div>
-      <Button ghost className="hover:bg-blue-600 w-full" type="submit">
-        {udpdating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
-      </Button>
-    </form>
+          ))}
+          <button className={styles.add_question_btn} type="button" onClick={addQuestion}>
+            Add Question
+          </button>
+        </div>
+        <div className={styles.submit_check}>
+          <h2>
+            Subject Name: <span>{subjectName}</span>
+          </h2>
+          <h2>
+            With
+            <span> {questions.length} </span>
+            Questions
+          </h2>
+          <p>{message ? message : null}</p>
+          <p>{successMessage ? successMessage : null}</p>
+        </div>
+        <Button ghost className="hover:bg-blue-600 w-full" type="submit">
+          {udpdating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
+        </Button>
+      </form>
+    </div>
   );
 }
