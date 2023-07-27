@@ -18,17 +18,19 @@ WiFiManager wifiManager;
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
-Servo servoA, servoB, servoC, servoD, servoE, servoF; 
+Servo servoA, servoB, servoC, servoD, servoE, servoF, servoG, servoH; 
 
 const String baseTopic = "esp32/" + WiFi.macAddress();
 const String teacherTopic = "esp32/Teacher";
 
-const int init_angleA = 0; 
-const int init_angleB = 0; 
-const int init_angleC = 180; 
-const int init_angleD = 0; 
-const int init_angleE = 180; 
-const int init_angleF = 18; 
+const int init_angleA = 90; 
+const int init_angleB = 90; 
+const int init_angleC = 75; 
+const int init_angleD = 145; 
+const int init_angleE = 160; 
+const int init_angleF = 90; 
+const int init_angleG = 75;
+const int init_angleH = 90;
 
 const int buttonPin = 18;
 
@@ -38,6 +40,8 @@ int angleC;
 int angleD;
 int angleE;
 int angleF;
+int angleG;
+int angleH;
 
 void handleResetWifi();
 void handleResetWifiWrapper();
@@ -131,12 +135,17 @@ void handleResetWifi() {
 
 
 void attachServos() {
-  servoA.attach(17);
-  servoB.attach(18);
-  servoC.attach(26);
-  servoD.attach(25);
-  servoE.attach(33);
-  servoF.attach(32);
+  // 左手
+  servoA.attach(26);
+  servoB.attach(27);
+  servoC.attach(14);
+  servoD.attach(12);
+
+  // 右手
+  servoE.attach(18);
+  servoF.attach(17);
+  servoG.attach(16);
+  servoH.attach(33);
 }
 
 void initializedAngles() {
@@ -146,6 +155,8 @@ void initializedAngles() {
   servoD.write(init_angleD);
   servoE.write(init_angleE);
   servoF.write(init_angleF);
+  servoG.write(init_angleG);
+  servoH.write(init_angleH);
 }
 
 void reconnectMqtt() {
@@ -302,14 +313,22 @@ void handleSetAxisAngle(String message) {
     angleF = jsonDoc["F"];
     servoF.write(angleF);
   }
+  if(angleG != jsonDoc["G"]) {
+    angleG = jsonDoc["G"];
+    servoG.write(angleG);
+  }
+  if(angleH != jsonDoc["H"]) {
+    angleH = jsonDoc["H"];
+    servoH.write(angleH);
+  }
 
-  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + "}"; 
+  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) +", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}"; 
   Serial.println(angles);
 }
 
 
 void handleGetAngles() {
-  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + "}";
+  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + ", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}";
   mqttClient.publish((baseTopic + "/angles").c_str(), angles.c_str());
 }
 
