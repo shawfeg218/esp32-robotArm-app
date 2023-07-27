@@ -7,20 +7,24 @@ export default function ArmControl() {
   const { controlMode, connectedMacAddress } = useContext(AppContext);
 
   const [targetAngles, setTargetAngles] = useState({
-    A: 0,
-    B: 0,
-    C: 180,
-    D: 0,
-    E: 180,
-    F: 18,
+    A: 90,
+    B: 90,
+    C: 75,
+    D: 145,
+    E: 160,
+    F: 90,
+    G: 75,
+    H: 90,
   });
   const [currentAngles, setCurrentAngles] = useState({
-    A: 0,
-    B: 0,
-    C: 180,
-    D: 0,
-    E: 180,
-    F: 18,
+    A: 90,
+    B: 90,
+    C: 75,
+    D: 145,
+    E: 160,
+    F: 90,
+    G: 75,
+    H: 90,
   });
 
   const handleChange = (axis, angle) => {
@@ -47,12 +51,14 @@ export default function ArmControl() {
 
   const handleReset = () => {
     setTargetAngles({
-      A: 0,
-      B: 0,
-      C: 180,
-      D: 0,
-      E: 180,
-      F: 18,
+      A: 90,
+      B: 90,
+      C: 75,
+      D: 145,
+      E: 160,
+      F: 90,
+      G: 75,
+      H: 90,
     });
 
     if (controlMode === 'single' && connectedMacAddress !== '') {

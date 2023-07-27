@@ -29,64 +29,93 @@ export default function ArmControlView(props) {
             <h2 className="mt-64 hover:cursor-default">教師控制中</h2>
           </div>
         )}
-        <h2>Arm Control</h2>
-        <div>A軸角度：{targetAngles.A}°</div>
-        <input
-          type="range"
-          min="0"
-          max="180"
-          value={targetAngles.A}
-          onChange={(e) => handleChange('A', e.target.value)}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <Spacer y={1} />
-        <div>B軸角度：{targetAngles.B}°</div>
-        <input
-          type="range"
-          min="0"
-          max="180"
-          value={targetAngles.B}
-          onChange={(e) => handleChange('B', e.target.value)}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <Spacer y={1} />
-        <div>C軸角度：{targetAngles.C}°</div>
-        <input
-          type="range"
-          min="0"
-          max="180"
-          value={targetAngles.C}
-          onChange={(e) => handleChange('C', e.target.value)}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <Spacer y={1} />
-        <div>D軸角度：{targetAngles.D}°</div>
-        <input
-          type="range"
-          min="0"
-          max="180"
-          value={targetAngles.D}
-          onChange={(e) => handleChange('D', e.target.value)}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-        />
-        <Spacer y={1} />
+        <h2>右手</h2>
+        <Spacer y={2} />
         <div>E軸角度：{targetAngles.E}°</div>
         <input
           type="range"
-          min="0"
-          max="180"
+          min="50"
+          max="160"
           value={targetAngles.E}
           onChange={(e) => handleChange('E', e.target.value)}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
-        <Spacer y={1} />
+        <Spacer y={4} />
         <div>F軸角度：{targetAngles.F}°</div>
         <input
           type="range"
-          min="0"
-          max="180"
+          min="30"
+          max="150"
           value={targetAngles.F}
           onChange={(e) => handleChange('F', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+        <Spacer y={4} />
+        <div>G軸角度：{targetAngles.G}°</div>
+        <input
+          type="range"
+          min="0"
+          max="150"
+          value={targetAngles.G}
+          onChange={(e) => handleChange('G', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+        <Spacer y={4} />
+        <div>H軸角度：{targetAngles.H}°</div>
+        <input
+          type="range"
+          min="60"
+          max="120"
+          value={targetAngles.H}
+          onChange={(e) => handleChange('H', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+      </div>
+      <div className={styles.controlPanel}>
+        {role === 'teacher' || controlMode === 'single' ? null : (
+          <div className="absolute left-0 w-full h-full flex justify-center bg-slate-100/75">
+            <h2 className="mt-64 hover:cursor-default">教師控制中</h2>
+          </div>
+        )}
+        <h2>左手</h2>
+        <Spacer y={2} />
+        <div>A軸角度：{targetAngles.A}°</div>
+        <input
+          type="range"
+          min="0"
+          max="90"
+          value={targetAngles.A}
+          onChange={(e) => handleChange('A', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+        <Spacer y={4} />
+        <div>B軸角度：{targetAngles.B}°</div>
+        <input
+          type="range"
+          min="30"
+          max="150"
+          value={targetAngles.B}
+          onChange={(e) => handleChange('B', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+        <Spacer y={4} />
+        <div>C軸角度：{targetAngles.C}°</div>
+        <input
+          type="range"
+          min="0"
+          max="150"
+          value={targetAngles.C}
+          onChange={(e) => handleChange('C', e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+        <Spacer y={4} />
+        <div>D軸角度：{targetAngles.D}°</div>
+        <input
+          type="range"
+          min="120"
+          max="170"
+          value={targetAngles.D}
+          onChange={(e) => handleChange('D', e.target.value)}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
       </div>
@@ -111,6 +140,12 @@ export default function ArmControlView(props) {
           </div>
           <div>
             F軸-當前角度：{currentAngles.F}° - 目標角度：{targetAngles.F}°
+          </div>
+          <div>
+            G軸-當前角度：{currentAngles.G}° - 目標角度：{targetAngles.G}°
+          </div>
+          <div>
+            H軸-當前角度：{currentAngles.H}° - 目標角度：{targetAngles.H}°
           </div>
         </div>
 
