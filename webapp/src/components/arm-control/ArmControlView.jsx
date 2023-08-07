@@ -18,7 +18,6 @@ export default function ArmControlView(props) {
     handleCorrectAction,
     handleWrongAction,
     handleGrabAction,
-    handleDance,
     handleTalkAction,
     // handleResetWifi,
   } = props;
@@ -185,6 +184,9 @@ export default function ArmControlView(props) {
               className={styles.controlBtn}
               onClick={() => {
                 setDancing(!dancing);
+                if (dancing === true) {
+                  handleReset();
+                }
               }}
             >
               {dancing ? '停止...' : '跳舞'}
