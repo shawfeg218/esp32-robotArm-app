@@ -38,7 +38,16 @@ export default function Esp32Status() {
     }
   }, [connectedMacAddress]);
 
-  const handleDisFetchStatus = () => {
+  const handleResetWifi = () => {
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      // console.log('reset wifi');
+      axios.post('/api/reset-wifi', {
+        connectedMacAddress,
+      });
+    }
+  };
+
+  const handleDisconnect = () => {
     axios.post('/api/unsubscribe-topic', {
       connectedMacAddress,
     });
@@ -74,29 +83,34 @@ export default function Esp32Status() {
         )}
       </div>
 
-      <div className="">
+      <div className="mt-3">
         {connectedDeviceName === '' ? null : (
           <>
             <Button
               ghost
-              onClick={() => {
-                handleDisFetchStatus();
-              }}
-              className="w-full text-red-600 font-bold hover:bg-red-600 hover:text-white border-red-600"
+              className="w-full text-purple-600 hover:bg-purple-600 hover:text-white border-purple-600"
+              onClick={handleResetWifi}
             >
-              停止更新狀態
+              重置wifi
             </Button>
-
-            {router.asPath !== '/arm-control' ? (
+            <Spacer y={0.25} />
+            <Button
+              ghost
+              onClick={handleDisconnect}
+              className="w-full text-white bg-red-600 border-red-600"
+            >
+              取消連線
+            </Button>
+            {router.asPath !== '/device' ? (
               <>
-                <Spacer y={0.5} />
+                <Spacer y={0.25} />
                 <Button
-                  onClick={() => {
-                    router.push('/arm-control');
-                  }}
                   className="w-full"
+                  onClick={() => {
+                    router.push('/device');
+                  }}
                 >
-                  手臂控制
+                  連線設置
                 </Button>
               </>
             ) : null}
