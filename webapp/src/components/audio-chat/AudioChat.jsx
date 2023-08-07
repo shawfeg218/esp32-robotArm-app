@@ -167,7 +167,7 @@ export default function AudioChat() {
         <section>
           <h1>Audio chat</h1>
           <div className="overflow-auto h-32 my-4">
-            {ans ? <h3>{ans}</h3> : <h3>Start your recording</h3>}
+            {ans ? <h3>{ans}</h3> : <h3>開始對話...</h3>}
           </div>
           <div className="w-full flex justify-center relative">
             {recording ? <div className="absolute bottom-2 z-0 spinner"></div> : null}
