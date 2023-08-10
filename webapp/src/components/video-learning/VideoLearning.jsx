@@ -3,11 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { parseTranscription, parseTranslation, generateContent } from '../../lib/parseSubtitles';
 import YouTube from 'react-youtube';
 import Toast from '../Toast';
-import { example } from '../../lib/example';
+// import { example } from '../../lib/example';
 import { base64ToBlob } from '../../lib/base64ToBlob';
 
 export default function VideoLearning() {
-  const [key, setKey] = useState(null);
+  // const [key, setKey] = useState(null);
   const [res, setRes] = useState(null);
 
   const [ans, setAns] = useState(null);
@@ -26,7 +26,7 @@ export default function VideoLearning() {
   const [currentSubtitle, setCurrentSubtitle] = useState(0);
 
   const [loading, setLoading] = useState(false);
-  const [keyStatus, setKeyStatus] = useState('warning');
+  // const [keyStatus, setKeyStatus] = useState('warning');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('');
@@ -65,13 +65,13 @@ export default function VideoLearning() {
     }
   };
 
-  useEffect(() => {
-    if (key !== null) {
-      setKeyStatus('success');
-    } else {
-      setKeyStatus('warning');
-    }
-  }, [key]);
+  // useEffect(() => {
+  //   if (key !== null) {
+  //     setKeyStatus('success');
+  //   } else {
+  //     setKeyStatus('warning');
+  //   }
+  // }, [key]);
 
   // for update video playing time
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function VideoLearning() {
   useEffect(() => {
     const interval = setInterval(() => {
       updateTime();
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, [player]);
@@ -111,11 +111,11 @@ export default function VideoLearning() {
 
   async function transcribeAudioLink() {
     setLoading(true);
-    if (!key) {
-      setKeyStatus('error');
-      setLoading(false);
-      return;
-    }
+    // if (!key) {
+    //   setKeyStatus('error');
+    //   setLoading(false);
+    //   return;
+    // }
     if (!videoUrl) {
       setLoading(false);
       setUrlStatus('error');
@@ -128,7 +128,6 @@ export default function VideoLearning() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          apiKey: key,
           videoUrl: videoUrl,
         }),
       });
@@ -195,7 +194,6 @@ export default function VideoLearning() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          apiKey: key,
           content: content,
         }),
       });
@@ -231,6 +229,13 @@ export default function VideoLearning() {
     }
   }
 
+  const playTime = (time) => {
+    if (player) {
+      player.seekTo(time, true);
+      player.playVideo();
+    }
+  };
+
   return (
     <div className="w-full mt-4 flex justify-center overflow-x-scroll">
       {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
@@ -238,17 +243,17 @@ export default function VideoLearning() {
       <div>
         <section className="flex-col text-center ">
           <h1>Audio Translate</h1>
-          <h2>whisper-1, gpt-3.5-turbo </h2>
+          <h2>whisper-1, gpt-4 </h2>
 
           <Spacer y={2} />
-          <Input
+          {/* <Input
             labelPlaceholder="openai key"
             bordered
             clearable
             status={keyStatus}
             onChange={(e) => setKey(e.target.value)}
           />
-          <Spacer y={2} />
+          <Spacer y={2} /> */}
 
           <Input
             clearable
@@ -291,21 +296,30 @@ export default function VideoLearning() {
             </div>
           ) : (
             <>
-              <div className="flex justify-center">
+              {/* <div className="flex justify-center">
                 {res ? (
                   <div className="bg-slate-100 my-10 overflow-scroll max-w-2xl p-2 max-h-80">
                     <p className="text-black w-full">{res}</p>
                   </div>
                 ) : null}
-              </div>
+              </div> */}
+              <Spacer y={2} />
+
               <div className="flex justify-center">
                 {res && videoTranscription.length > 0 ? (
-                  <div className="w-full h-fit max-w-2xl bg-slate-100 p-4">
+                  <div className="w-full h-fit max-w-2xl bg-slate-100 p-2">
                     <ul className="text-black overflow-auto w-full h-80">
                       {videoTranscription.map((subtitle, index) => (
                         <li
-                          className="border-solid border-x-0 border-t-0 border-b-slate-300"
+                          className=" border-solid border-x-0 border-t-0 border-b-slate-300 hover:cursor-pointer hover:bg-slate-200 p-2"
                           key={index}
+                          onClick={
+                            // play the time of the subtitle
+                            () => {
+                              // console.log('subtitle: ', subtitle.startTimestamp);
+                              playTime(subtitle.startTimestamp);
+                            }
+                          }
                         >
                           <p>{subtitle.number}</p>
                           <p>{subtitle.content}</p>
@@ -323,7 +337,7 @@ export default function VideoLearning() {
               <>
                 <Spacer y={0.5} />
                 <div className="mt-3 flex justify-center">
-                  <Button bordered size="md" disabled={loading} onPress={contentLearning}>
+                  <Button bordered size="md" disabled={learningLoading} onClick={contentLearning}>
                     Learning
                   </Button>
                 </div>
