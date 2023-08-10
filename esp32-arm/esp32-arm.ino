@@ -18,7 +18,7 @@ WiFiManager wifiManager;
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
-Servo servoA, servoB, servoC, servoD, servoE, servoF, servoG, servoH, servoG, servoH; 
+Servo servoA, servoB, servoC, servoD, servoE, servoF, servoG, servoH;
 
 const String baseTopic = "esp32/" + WiFi.macAddress();
 const String teacherTopic = "esp32/Teacher";
@@ -32,15 +32,6 @@ const int init_angleF = 90;
 const int init_angleG = 75;
 const int init_angleH = 90;
 
-const int buttonPin = 18;
-const int init_angleA = 90; 
-const int init_angleB = 90; 
-const int init_angleC = 75; 
-const int init_angleD = 145; 
-const int init_angleE = 160; 
-const int init_angleF = 90; 
-const int init_angleG = 75;
-const int init_angleH = 90;
 
 const int buttonPin = 18;
 
@@ -50,8 +41,6 @@ int angleC;
 int angleD;
 int angleE;
 int angleF;
-int angleG;
-int angleH;
 int angleG;
 int angleH;
 
@@ -64,6 +53,7 @@ void resetArm();
 void handleSetAxisAngle(String message);
 void handleGetAngles();
 void handleGetEsp32Status();
+void speakingAct();
 
 void setup() {
   Serial.begin(115200); 
@@ -86,8 +76,6 @@ void setup() {
 
 
   pinMode(buttonPin, INPUT_PULLUP);
-
-  pinMode(buttonPin, INPUT_PULLUP);
 }
 
 void loop() {
@@ -96,11 +84,7 @@ void loop() {
   //   // 如果按鈕被按下，重置WiFi
   //   handleResetWifi();
   // }
-  // 检查按鈕状态
-  // if (digitalRead(buttonPin) == LOW) {
-  //   // 如果按鈕被按下，重置WiFi
-  //   handleResetWifi();
-  // }
+
   if (!mqttClient.connected()) {
     reconnectMqtt();
   }
@@ -176,8 +160,6 @@ void initializedAngles() {
   servoF.write(init_angleF);
   servoG.write(init_angleG);
   servoH.write(init_angleH);
-  servoG.write(init_angleG);
-  servoH.write(init_angleH);
 }
 
 void reconnectMqtt() {
@@ -190,27 +172,20 @@ void reconnectMqtt() {
       mqttClient.subscribe((teacherTopic + "/control/set-axis-angle").c_str());
       mqttClient.subscribe((teacherTopic + "/control/correct-act").c_str());
       mqttClient.subscribe((teacherTopic + "/control/wrong-act").c_str());
-      mqttClient.subscribe((teacherTopic + "/control/grab-act").c_str());
+      // mqttClient.subscribe((teacherTopic + "/control/grab-act").c_str());
       mqttClient.subscribe((teacherTopic + "/control/reset-arm").c_str());
-      
-      // subscribe to default topic
-      
-      // subscribe to teacher topic
-      mqttClient.subscribe((teacherTopic + "/control/set-axis-angle").c_str());
-      mqttClient.subscribe((teacherTopic + "/control/correct-act").c_str());
-      mqttClient.subscribe((teacherTopic + "/control/wrong-act").c_str());
-      mqttClient.subscribe((teacherTopic + "/control/grab-act").c_str());
-      mqttClient.subscribe((teacherTopic + "/control/reset-arm").c_str());
+      mqttClient.subscribe((teacherTopic + "/control/speak-act").c_str());
       
       // subscribe to default topic
       mqttClient.subscribe((baseTopic + "/control/reset-wifi").c_str());
       mqttClient.subscribe((baseTopic + "/control/set-axis-angle").c_str());
       mqttClient.subscribe((baseTopic + "/control/correct-act").c_str());
       mqttClient.subscribe((baseTopic + "/control/wrong-act").c_str());
-      mqttClient.subscribe((baseTopic + "/control/grab-act").c_str());
+      // mqttClient.subscribe((baseTopic + "/control/grab-act").c_str());
       mqttClient.subscribe((baseTopic + "/control/reset-arm").c_str());
       mqttClient.subscribe((baseTopic + "/control/get-angles").c_str());
       mqttClient.subscribe((baseTopic + "/control/get-esp32Status").c_str());
+      mqttClient.subscribe((baseTopic + "/control/speak-act").c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -226,7 +201,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     message += (char)payload[i];
   }
 
-  if(String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle")) {
+  
   if(String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle")) {
     Serial.println("topic: " + String(topic));
     handleSetAxisAngle(message);
@@ -242,10 +217,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   } else if(String(topic) == (baseTopic + "/control/reset-arm") || String(topic) == (teacherTopic + "/control/reset-arm")) {
     Serial.println("topic: " + String(topic));
     resetArm();
-  }else if(String(topic) == (baseTopic + "/control/reset-wifi")) {
+  } else if(String(topic) == (baseTopic + "/control/speak-act") || String(topic) == (teacherTopic + "/control/speak-act")) {
     Serial.println("topic: " + String(topic));
-    handleResetWifi();
-  }else if(String(topic) == (baseTopic + "/control/reset-wifi")) {
+    speakingAct();
+  } else if(String(topic) == (baseTopic + "/control/reset-wifi")) {
     Serial.println("topic: " + String(topic));
     handleResetWifi();
   } else if(String(topic) == (baseTopic + "/control/get-angles")) {
@@ -261,10 +236,10 @@ void correctAct() {
   Serial.println("correct-action");
  
   for(int i=0;i<4;i++){
-      servoE.write(128);
-  servoF.write(90);
-  servoG.write(0);
-  servoH.write(90);
+    servoE.write(128);
+    servoF.write(90);
+    servoG.write(0);
+    servoH.write(90);
 
     servoA.write(9);
     servoB.write(56);
@@ -277,7 +252,7 @@ void correctAct() {
     delay(800);
     
   }
-  
+  initializedAngles();
   
 }
 
@@ -294,15 +269,18 @@ void wrongAct() {
   servoC.write(120);
   servoD.write(140);
   delay(1000);
-//右手
+  
+  //右手
   servoG.write(112);
   servoF.write(60);
-//左手
+  
+  //左手
   servoC.write(48);
   servoB.write(70);
   delay(1000);
     
   }
+  initializedAngles();
 }
 
 void grabAct() {
@@ -315,53 +293,59 @@ void grabAct() {
   servoF.write(angleF);
   delay(500);
 }
+
 void speakingAct(){
   Serial.println("speaking-action");
   for(int i=0;i<2;i++){//for要改成while(講話)
-  servoE.write(128);
-  servoF.write(90);
-  servoG.write(0);
-  servoH.write(90);
+    servoE.write(128);
+    servoF.write(90);
+    servoG.write(0);
+    servoH.write(90);
 
-  servoA.write(9);
-  servoB.write(56);
-  servoC.write(150);
-  servoD.write(145);
-  delay(1000);
-//右手
-  for(int i=0;i<2;i++){
-    servoG.write(67);
-    delay(700);
-    servoG.write(40);
-    servoH.write(110);
-    delay(500);
+    servoA.write(9);
+    servoB.write(56);
+    servoC.write(150);
+    servoD.write(145);
+    delay(1000);
+    
+    //右手
+    for(int i=0;i<2;i++){
+      servoG.write(67);
+      delay(700);
+      servoG.write(40);
+      servoH.write(110);
+      delay(500);
 
-  }
+    }
   
-//左手
-  for(int i=0;i<3;i++){
-    servoC.write(90);
-    servoD.write(161);
-    delay(300);
-  }
-  delay(400);
-  //右手2
-  for(int i=0;i<3;i++){
-    servoF.write(48);
-    servoG.write(150);
-    servoH.write(120);
-    delay(300);
-  }
-  //左手2
+    //左手
     for(int i=0;i<3;i++){
-    servoB.write(88);
-    servoC.write(90);
-    servoD.write(130);
-    delay(300);
+      servoC.write(90);
+      servoD.write(161);
+      delay(300);
+    }
+    delay(400);
+    
+    //右手2
+    for(int i=0;i<3;i++){
+      servoF.write(48);
+      servoG.write(150);
+      servoH.write(120);
+      delay(300);
+    }
+    
+    //左手2
+    for(int i=0;i<3;i++){
+      servoB.write(88);
+      servoC.write(90);
+      servoD.write(130);
+      delay(300);
+    }
   }
-  }
-
+    initializedAngles();
 }
+
+
 void resetArm() {
   Serial.println("Servos reseted");
   angleA = init_angleA;
@@ -416,14 +400,7 @@ void handleSetAxisAngle(String message) {
     angleH = jsonDoc["H"];
     servoH.write(angleH);
   }
-  if(angleG != jsonDoc["G"]) {
-    angleG = jsonDoc["G"];
-    servoG.write(angleG);
-  }
-  if(angleH != jsonDoc["H"]) {
-    angleH = jsonDoc["H"];
-    servoH.write(angleH);
-  }
+
 
   String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) +", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) +", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}"; 
   Serial.println(angles);
