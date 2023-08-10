@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         throw new Error(serverError.message);
       }
 
-      res.status(200).json({ message: 'Send wrong-act request successful' });
+      res.status(200).json({ message: 'Send T-wrong-act request successful' });
     } else {
       throw new Error('Method not allowed');
     }

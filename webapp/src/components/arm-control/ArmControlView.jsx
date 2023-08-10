@@ -18,7 +18,7 @@ export default function ArmControlView(props) {
     handleCorrectAction,
     handleWrongAction,
     handleGrabAction,
-    handleTalkAction,
+    handleSpeakAction,
     // handleResetWifi,
   } = props;
 
@@ -177,7 +177,7 @@ export default function ArmControlView(props) {
             <button className={styles.controlBtn} onClick={handleGrabAction}>
               抓動作
             </button>
-            <button className={styles.controlBtn} onClick={handleTalkAction}>
+            <button className={styles.controlBtn} onClick={handleSpeakAction}>
               說話動作
             </button>
             <button

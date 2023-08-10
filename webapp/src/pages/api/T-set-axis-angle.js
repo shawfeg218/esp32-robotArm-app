@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         throw new Error(serverError.message);
       }
 
-      res.status(200).json({ message: 'Send set-axis-angle request successful' });
+      res.status(200).json({ message: 'Send T-set-axis-angle request successful' });
     } else {
       throw new Error('Method not allowed');
     }
