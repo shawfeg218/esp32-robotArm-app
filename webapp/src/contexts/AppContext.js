@@ -4,10 +4,7 @@ import { createContext, useState } from 'react';
 const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
-  const supabase = useSupabaseClient();
-  const user = useUser();
-  const role = user?.user_metadata?.role;
-
+  const [role, setRole] = useState(null);
   const [displaySidebar, setDisplaySidebar] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState('');
   const [point, setPoint] = useState(0);
@@ -23,9 +20,8 @@ export const AppContextProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         // supabase
-        supabase,
-        user,
         role,
+        setRole,
         // socket
         socket,
         setSocket,
