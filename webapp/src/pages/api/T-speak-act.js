@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   const url = process.env.NEXT_PUBLIC_SERVER_URL;
   try {
     if (req.method === 'POST') {
-      const serverResponse = await fetch(`${url}/api/T-reset-arm`, {
+      const serverResponse = await fetch(`${url}/api/T-speak-act`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         throw new Error(serverError.message);
       }
 
-      res.status(200).json({ message: 'Send T-reset-arm request successful' });
+      res.status(200).json({ message: 'Send T-speak-act request successful' });
     } else {
       throw new Error('Method not allowed');
     }

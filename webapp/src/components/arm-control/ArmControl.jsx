@@ -208,7 +208,19 @@ export default function ArmControl() {
     }
   };
 
-  const handleTalkAction = () => {};
+  const handleSpeakAction = () => {
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      // console.log('talk action');
+      axios.post('/api/speak-act', {
+        connectedMacAddress,
+      });
+    }
+
+    if (controlMode === 'multi-singleRoute') {
+      axios.post('/api/T-speak-act');
+      console.log('All talk action');
+    }
+  };
 
   // const handleResetWifi = () => {
   //   if (controlMode === 'single' && connectedMacAddress !== '') {
@@ -232,7 +244,7 @@ export default function ArmControl() {
       handleWrongAction={handleWrongAction}
       handleGrabAction={handleGrabAction}
       handleDance={handleDance}
-      handleTalkAction={handleTalkAction}
+      handleSpeakAction={handleSpeakAction}
       // handleResetWifi={handleResetWifi}
     />
   );
