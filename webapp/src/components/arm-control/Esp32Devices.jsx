@@ -240,7 +240,11 @@ export default function Esp32Devices() {
             <ul>
               {devices.length > 0 ? (
                 devices.map((device, index) => (
-                  <li key={index}>
+                  <li
+                    key={index}
+                    className="hover:cursor-pointer hover:bg-slate-100 active:bg-slate-100"
+                    onClick={() => handleConnect(device.device_name, device.mac_address)}
+                  >
                     <div className={styles.listItems}>
                       <p>
                         {device.device_name}: <span>{device.mac_address}</span>
@@ -257,9 +261,6 @@ export default function Esp32Devices() {
 
                         <div onClick={() => handleDeviceEdit(index)}>
                           <AiOutlineEdit className="reactIcons" size="1.3rem" />
-                        </div>
-                        <div onClick={() => handleConnect(device.device_name, device.mac_address)}>
-                          <GrConnect className="reactIcons" size="1.3rem" />
                         </div>
                       </div>
                     </div>

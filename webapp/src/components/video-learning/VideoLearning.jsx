@@ -311,7 +311,7 @@ export default function VideoLearning() {
                     <ul className="text-black overflow-auto w-full h-80">
                       {videoTranscription.map((subtitle, index) => (
                         <li
-                          className=" border-solid border-x-0 border-t-0 border-b-slate-300 hover:cursor-pointer hover:bg-slate-200 p-2"
+                          className=" border-solid border-x-0 border-t-0 border-b-slate-300 hover:cursor-pointer hover:bg-slate-200 active:bg-slate-200 p-2"
                           key={index}
                           onClick={
                             // play the time of the subtitle
