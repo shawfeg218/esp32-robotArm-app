@@ -18,7 +18,7 @@ WiFiManager wifiManager;
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
-Servo servoA, servoB, servoC, servoD, servoE, servoF, servoG, servoH;
+Servo servoA, servoB, servoC, servoD, servoE, servoF, servoG, servoH; 
 
 const String baseTopic = "esp32/" + WiFi.macAddress();
 const String teacherTopic = "esp32/Teacher";
@@ -31,7 +31,6 @@ const int init_angleE = 160;
 const int init_angleF = 90; 
 const int init_angleG = 75;
 const int init_angleH = 90;
-
 
 const int buttonPin = 18;
 
@@ -120,7 +119,7 @@ void handleResetWifiWrapper() {
 void setupWifiManager() {
   wifiManager.setConfigPortalTimeout(180);
 
-  if (!wifiManager.autoConnect(("ESP32_AP__"+  WiFi.macAddress()).c_str(), "")) {
+  if (!wifiManager.autoConnect(("ESP32_AP_"+  WiFi.macAddress()).c_str(), "")) {
     Serial.println("無法連接到WiFi，請重新設置");
     ESP.restart();
   }
@@ -172,20 +171,21 @@ void reconnectMqtt() {
       mqttClient.subscribe((teacherTopic + "/control/set-axis-angle").c_str());
       mqttClient.subscribe((teacherTopic + "/control/correct-act").c_str());
       mqttClient.subscribe((teacherTopic + "/control/wrong-act").c_str());
-      // mqttClient.subscribe((teacherTopic + "/control/grab-act").c_str());
+      mqttClient.subscribe((teacherTopic + "/control/grab-act").c_str());
       mqttClient.subscribe((teacherTopic + "/control/reset-arm").c_str());
       mqttClient.subscribe((teacherTopic + "/control/speak-act").c_str());
-      
+
       // subscribe to default topic
       mqttClient.subscribe((baseTopic + "/control/reset-wifi").c_str());
       mqttClient.subscribe((baseTopic + "/control/set-axis-angle").c_str());
       mqttClient.subscribe((baseTopic + "/control/correct-act").c_str());
       mqttClient.subscribe((baseTopic + "/control/wrong-act").c_str());
-      // mqttClient.subscribe((baseTopic + "/control/grab-act").c_str());
+      mqttClient.subscribe((baseTopic + "/control/grab-act").c_str());
       mqttClient.subscribe((baseTopic + "/control/reset-arm").c_str());
       mqttClient.subscribe((baseTopic + "/control/get-angles").c_str());
       mqttClient.subscribe((baseTopic + "/control/get-esp32Status").c_str());
       mqttClient.subscribe((baseTopic + "/control/speak-act").c_str());
+
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -201,7 +201,6 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     message += (char)payload[i];
   }
 
-  
   if(String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle")) {
     Serial.println("topic: " + String(topic));
     handleSetAxisAngle(message);
@@ -234,7 +233,6 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
 
 void correctAct() {
   Serial.println("correct-action");
- 
   for(int i=0;i<4;i++){
     servoE.write(128);
     servoF.write(90);
@@ -253,7 +251,6 @@ void correctAct() {
     
   }
   initializedAngles();
-  
 }
 
 void wrongAct() {
@@ -345,7 +342,6 @@ void speakingAct(){
     initializedAngles();
 }
 
-
 void resetArm() {
   Serial.println("Servos reseted");
   angleA = init_angleA;
@@ -401,14 +397,13 @@ void handleSetAxisAngle(String message) {
     servoH.write(angleH);
   }
 
-
-  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) +", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) +", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}"; 
+  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) +", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}"; 
   Serial.println(angles);
 }
 
 
 void handleGetAngles() {
-  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + ", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + ", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}";
+  String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + ", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}";
   mqttClient.publish((baseTopic + "/angles").c_str(), angles.c_str());
 }
 
@@ -431,6 +426,6 @@ void handleGetEsp32Status() {
 
   String esp32Status;
   serializeJson(doc, esp32Status);
-  // // Serial.println(esp32Status);
+  // Serial.println(esp32Status);
   mqttClient.publish((baseTopic + "/esp32Status").c_str(), (esp32Status.c_str()));
 }
