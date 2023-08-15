@@ -49,7 +49,7 @@ function Quiz() {
                   isPressable
                   variant="bordered"
                   key={subject.name}
-                  className="card"
+                  className="w-36 h-48 card"
                   onClick={() => handleSelectSubject(subject.name)}
                 >
                   <p>{subject.name.toUpperCase()}</p>

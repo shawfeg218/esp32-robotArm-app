@@ -1,11 +1,7 @@
-import AppContext from '@/contexts/AppContext';
 import Link from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
-import { BsArrowRightShort } from 'react-icons/bs';
-import styles from '@/styles/Home.module.css';
+import React, { useEffect, useState } from 'react';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import History from '../quiz/History';
-import { Table, Loading, Button, Card, Text } from '@nextui-org/react';
+import { Table, Loading, Card } from '@nextui-org/react';
 import HomeCard from './HomeCard';
 
 export default function Home() {
@@ -85,18 +81,27 @@ export default function Home() {
 
           <div className="w-96 flex justify-center ">
             {loading ? (
-              <Card isHoverable className="w-full max-w-sm flex-col items-center">
+              <Card
+                aria-label="Loading"
+                isHoverable
+                className="w-full max-w-sm flex-col items-center"
+              >
                 <div className="h-full flex items-center">
                   <Loading size="lg" color="primary" />
                 </div>
               </Card>
             ) : (
-              <Card isHoverable className="w-full max-w-sm flex-col items-center">
+              <Card
+                aria-label="history section"
+                isHoverable
+                className="w-full max-w-sm flex-col items-center"
+              >
                 <div>
                   {recentHistory.length > 0 ? (
                     <>
                       <h1 className="text-gray-900 text-center">HISTORY</h1>
                       <Table
+                        aria-label="history table"
                         lined
                         shadow={false}
                         selectionMode="single"

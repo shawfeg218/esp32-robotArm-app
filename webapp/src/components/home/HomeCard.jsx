@@ -6,7 +6,7 @@ import { BsArrowRightShort } from 'react-icons/bs';
 export default function HomeCard(props) {
   const { img, title, description, link } = props;
   return (
-    <Card isHoverable className="w-fit">
+    <Card aria-label="Home card" isHoverable className="w-fit">
       <div className="w-96 bg-white border border-gray-200 rounded-lg shadow">
         <div className="overflow-hidden h-60 w-full flex justify-center items-center">
           <div>
