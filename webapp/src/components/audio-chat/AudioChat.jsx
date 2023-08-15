@@ -7,8 +7,12 @@ import { BiVolumeMute } from 'react-icons/bi';
 import { RxCross2 } from 'react-icons/rx';
 import { base64ToBlob } from '../../lib/base64ToBlob';
 import PrettyTextArea from '../PrettyTextArea';
+import { useContext } from 'react';
+import AppContext from '@/contexts/AppContext';
 
 export default function AudioChat() {
+  const { handleSpeakAction } = useContext(AppContext);
+
   const ansAudioRef = useRef(null);
   const [recording, setRecording] = useState(false);
   const cancelRecordRef = useRef(false);
@@ -41,6 +45,7 @@ export default function AudioChat() {
       ansAudioRef.current.load();
       ansAudioRef.current.oncanplaythrough = () => {
         ansAudioRef.current.play();
+        handleSpeakAction();
       };
       ansAudioRef.current.onerror = (e) => {
         console.error('Error playing audio:', e);
