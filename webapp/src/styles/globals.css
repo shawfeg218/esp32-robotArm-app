@@ -159,9 +159,8 @@ button.primary,
   align-items: center;
   margin-bottom: 1rem;
 }
+
 .card {
-  width: 9.375rem;
-  height: 12.5rem;
   background-color: var(--custom-main-color);
   padding: 1rem;
   margin: 1rem;

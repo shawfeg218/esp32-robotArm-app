@@ -4,12 +4,18 @@ import { BsMicFill } from 'react-icons/bs';
 import { IoSend } from 'react-icons/io5';
 import { AiOutlineSound } from 'react-icons/ai';
 import { BiVolumeMute } from 'react-icons/bi';
+import { RxCross2 } from 'react-icons/rx';
 import { base64ToBlob } from '../../lib/base64ToBlob';
 import PrettyTextArea from '../PrettyTextArea';
+import { useContext } from 'react';
+import AppContext from '@/contexts/AppContext';
 
 export default function AudioChat() {
+  const { handleSpeakAction } = useContext(AppContext);
+
   const ansAudioRef = useRef(null);
   const [recording, setRecording] = useState(false);
+  const cancelRecordRef = useRef(false);
   const [audioData, setAudioData] = useState(null);
   const [recorder, setRecorder] = useState(null);
 
@@ -39,6 +45,7 @@ export default function AudioChat() {
       ansAudioRef.current.load();
       ansAudioRef.current.oncanplaythrough = () => {
         ansAudioRef.current.play();
+        handleSpeakAction();
       };
       ansAudioRef.current.onerror = (e) => {
         console.error('Error playing audio:', e);
@@ -64,9 +71,13 @@ export default function AudioChat() {
     };
 
     recorder.onstop = (e) => {
-      const blob = new Blob(chunks);
-      setAudioData(blob);
+      console.log('recorder.onstop: ', cancelRecordRef.current);
+      if (cancelRecordRef.current === false) {
+        const blob = new Blob(chunks);
+        setAudioData(blob);
+      }
       chunks = [];
+      cancelRecordRef.current = false;
     };
 
     setRecorder(recorder);
@@ -76,6 +87,15 @@ export default function AudioChat() {
 
   function stopRecording() {
     if (recorder) {
+      recorder.stop();
+      setRecorder(null);
+      setRecording(false);
+    }
+  }
+
+  function cancelRecording() {
+    if (recorder) {
+      cancelRecordRef.current = true;
       recorder.stop();
       setRecorder(null);
       setRecording(false);
@@ -170,6 +190,14 @@ export default function AudioChat() {
             {ans ? <h3>{ans}</h3> : <h3>開始對話...</h3>}
           </div>
           <div className="w-full flex justify-center relative">
+            {recording && (
+              <button
+                className="absolute mt-0 right-0 w-4 text-center text-3xl bg-transparent border-0"
+                onClick={cancelRecording}
+              >
+                <RxCross2 />
+              </button>
+            )}
             {recording ? <div className="absolute bottom-2 z-0 spinner"></div> : null}
             <button
               className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"

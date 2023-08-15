@@ -12,7 +12,7 @@ export default function Question() {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);
   const [correct, setCorrect] = useState();
-  const { controlMode, point, setPoint, selectedSubject, connectedMacAddress } =
+  const { point, setPoint, selectedSubject, handleCorrectAction, handleWrongAction } =
     useContext(AppContext);
 
   const [questions, setQuestions] = useState({});
@@ -52,7 +52,7 @@ export default function Question() {
 
       if (quizError) throw quizError;
 
-      console.log('quizData:', quizData);
+      // console.log('quizData:', quizData);
 
       const questions = quizData.reduce((acc, row) => {
         if (!(row.question_id in acc)) {
@@ -83,7 +83,7 @@ export default function Question() {
   useEffect(() => {
     fetchQuestionsData().then((result) => {
       setQuestions(result);
-      console.log(result);
+      // console.log(result);
     });
   }, []);
 
@@ -103,26 +103,12 @@ export default function Question() {
   };
 
   useEffect(() => {
-    if (controlMode === 'single' && correct === true && connectedMacAddress !== '') {
-      axios.post('/api/correct-act', {
-        connectedMacAddress,
-      });
-    } else if (controlMode === 'single' && correct === false && connectedMacAddress !== '') {
-      axios.post('/api/wrong-act', {
-        connectedMacAddress,
-      });
-    }
-
-    if (controlMode === 'multi-singleRoute' && correct === true) {
-      axios.post('/api/T-correct-act');
-    } else if (controlMode === 'multi-singleRoute' && correct === false) {
-      axios.post('/api/T-wrong-act');
-    }
-
     if (correct === true) {
       setPoint((prev) => prev + 1);
+      handleCorrectAction();
       playSound(correctSoundRef);
     } else if (correct === false) {
+      handleWrongAction();
       playSound(wrongSoundRef);
     }
   }, [correct]);

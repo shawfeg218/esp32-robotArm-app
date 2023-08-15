@@ -251,7 +251,8 @@ export default function Esp32Devices() {
                       </p>
                       <div className={styles.editIcons}>
                         <div
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setShowDeleteModal(true);
                             setDeviceToDeleteIndex(index);
                           }}
@@ -259,7 +260,12 @@ export default function Esp32Devices() {
                           <AiOutlineDelete className="reactIcons" size="1.3rem" />
                         </div>
 
-                        <div onClick={() => handleDeviceEdit(index)}>
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeviceEdit(index);
+                          }}
+                        >
                           <AiOutlineEdit className="reactIcons" size="1.3rem" />
                         </div>
                       </div>
@@ -302,7 +308,7 @@ export default function Esp32Devices() {
                 <Button size="sm" onClick={() => handleDeviceUpdate(editingDeviceIndex)}>
                   更新
                 </Button>
-                <Button size="sm" bg-blue-600 onClick={() => handleDeviceEdit(null)}>
+                <Button size="sm" onClick={() => handleDeviceEdit(null)}>
                   取消
                 </Button>
               </div>
