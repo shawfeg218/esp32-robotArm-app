@@ -20,6 +20,7 @@ export const AppContextProvider = ({ children }) => {
 
   // armControl
   const [dancing, setDancing] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
 
   const [targetAngles, setTargetAngles] = useState({
     A: 90,
@@ -87,6 +88,15 @@ export const AppContextProvider = ({ children }) => {
       return () => clearInterval(interval);
     }
   }, [dancing]);
+
+  useEffect(() => {
+    if (speaking === true) {
+      const interval = setInterval(() => {
+        handleSpeakAction();
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [speaking]);
 
   const handleChange = (axis, angle) => {
     const newAngles = { ...targetAngles, [axis]: angle };
@@ -223,7 +233,7 @@ export const AppContextProvider = ({ children }) => {
 
   const handleSpeakAction = () => {
     if (controlMode === 'single' && connectedMacAddress !== '') {
-      // console.log('talk action');
+      console.log('talk action');
       axios.post('/api/speak-act', {
         connectedMacAddress,
       });
@@ -273,6 +283,8 @@ export const AppContextProvider = ({ children }) => {
         // armControl
         dancing,
         setDancing,
+        speaking,
+        setSpeaking,
         targetAngles,
         setTargetAngles,
         currentAngles,

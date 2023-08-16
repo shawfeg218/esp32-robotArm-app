@@ -49,7 +49,7 @@ export default function TeacherPanel() {
     if (mode === 'single') {
       setToastMessage('單一控制');
     } else if (mode === 'multi-singleRoute') {
-      setToastMessage('多裝置單一路由');
+      setToastMessage('教師控制');
     }
     setToastType('check');
   };
@@ -69,24 +69,20 @@ export default function TeacherPanel() {
             <Button onClick={unlockPage}>解除鎖定</Button>
           </div>
           <>
-            {router.asPath === '/arm-control' ||
-            router.asPath === '/device' ||
-            router.asPath === '/quiz' ? (
-              <div className="mt-4 pl-1 pt-3 border border-x-0 border-b-0 border-solid border-slate-300">
-                <Radio.Group
-                  label="連線方式"
-                  Value={controlMode}
-                  defaultValue={controlMode}
-                  onChange={(value) => {
-                    handleControlModeChange(value);
-                  }}
-                  className="text-xl"
-                >
-                  <Radio value="single">單一裝置</Radio>
-                  <Radio value="multi-singleRoute">多裝置單一路由</Radio>
-                </Radio.Group>
-              </div>
-            ) : null}
+            <div className="mt-4 pl-1 pt-3 border border-x-0 border-b-0 border-solid border-slate-300">
+              <Radio.Group
+                label="連線方式"
+                Value={controlMode}
+                defaultValue={controlMode}
+                onChange={(value) => {
+                  handleControlModeChange(value);
+                }}
+                className="text-xl"
+              >
+                <Radio value="single">單一裝置</Radio>
+                <Radio value="multi-singleRoute">教師控制</Radio>
+              </Radio.Group>
+            </div>
           </>
         </Collapse>
       ) : null}

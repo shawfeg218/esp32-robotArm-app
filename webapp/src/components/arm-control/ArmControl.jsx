@@ -10,6 +10,8 @@ export default function ArmControl() {
     currentAngles,
     dancing,
     setDancing,
+    speaking,
+    setSpeaking,
     handleDance,
     handleChange,
     handleReset,
@@ -26,6 +28,8 @@ export default function ArmControl() {
       currentAngles={currentAngles}
       dancing={dancing}
       setDancing={setDancing}
+      speaking={speaking}
+      setSpeaking={setSpeaking}
       handleChange={handleChange}
       handleReset={handleReset}
       handleCorrectAction={handleCorrectAction}

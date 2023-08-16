@@ -13,6 +13,8 @@ export default function ArmControlView(props) {
     currentAngles,
     dancing,
     setDancing,
+    speaking,
+    setSpeaking,
     handleChange,
     handleReset,
     handleCorrectAction,
@@ -177,15 +179,23 @@ export default function ArmControlView(props) {
             <button className={styles.controlBtn} onClick={handleGrabAction}>
               抓動作
             </button>
-            <button className={styles.controlBtn} onClick={handleSpeakAction}>
-              說話動作
+            <button
+              className={styles.controlBtn}
+              onClick={() => {
+                setSpeaking(!speaking);
+                if (speaking === true) {
+                  setSpeaking(false);
+                }
+              }}
+            >
+              {speaking ? '停止...' : '說話動作'}
             </button>
             <button
               className={styles.controlBtn}
               onClick={() => {
                 setDancing(!dancing);
                 if (dancing === true) {
-                  handleReset();
+                  setDancing(false);
                 }
               }}
             >
