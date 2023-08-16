@@ -45,7 +45,10 @@ export default function AudioChat() {
       ansAudioRef.current.load();
       ansAudioRef.current.oncanplaythrough = () => {
         ansAudioRef.current.play();
-        handleAction(text);
+        // check how long is the audio
+        const duration = ansAudioRef.current.duration;
+        console.log('duration: ', duration);
+        handleAction(text, duration);
       };
       ansAudioRef.current.onerror = (e) => {
         console.error('Error playing audio:', e);
@@ -172,25 +175,40 @@ export default function AudioChat() {
     }
   }
 
-  function danceTenSec() {
-    console.log('danceTenSec');
-    setDancing(true);
-    setTimeout(() => {
-      setDancing(false);
-    }, 10000);
+  function danceAtleastTen(duration) {
+    console.log('danceAtleastTen');
+    if (duration < 10) {
+      setDancing(true);
+      setTimeout(() => {
+        setDancing(false);
+      }, 10000);
+    } else {
+      setDancing(true);
+      setTimeout(() => {
+        setDancing(false);
+      }, duration * 1000);
+    }
   }
 
-  function handleAction(text) {
+  function speakInDuration(duration) {
+    console.log('speakInDuration');
+    setSpeaking(true);
+    setTimeout(() => {
+      setSpeaking(false);
+    }, duration * 1000);
+  }
+
+  function handleAction(text, duration) {
     const actionWords = ['跳舞'];
     // check if text has some action words
     const action = actionWords.find((word) => text.includes(word));
 
     switch (action) {
       case '跳舞':
-        danceTenSec();
+        danceTenSec(duration);
         break;
       default:
-        handleSpeakAction();
+        speakInDuration(duration);
         break;
     }
   }
