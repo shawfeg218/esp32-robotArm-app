@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 
 export default function AudioChat() {
-  const { handleSpeakAction } = useContext(AppContext);
+  const { handleSpeakAction, setDancing } = useContext(AppContext);
 
   const ansAudioRef = useRef(null);
   const [recording, setRecording] = useState(false);
@@ -45,7 +45,7 @@ export default function AudioChat() {
       ansAudioRef.current.load();
       ansAudioRef.current.oncanplaythrough = () => {
         ansAudioRef.current.play();
-        handleSpeakAction();
+        handleAction(text);
       };
       ansAudioRef.current.onerror = (e) => {
         console.error('Error playing audio:', e);
@@ -172,9 +172,32 @@ export default function AudioChat() {
     }
   }
 
+  function danceTenSec() {
+    console.log('danceTenSec');
+    setDancing(true);
+    setTimeout(() => {
+      setDancing(false);
+    }, 10000);
+  }
+
+  function handleAction(text) {
+    const actionWords = ['跳舞'];
+    // check if text has some action words
+    const action = actionWords.find((word) => text.includes(word));
+
+    switch (action) {
+      case '跳舞':
+        danceTenSec();
+        break;
+      default:
+        handleSpeakAction();
+        break;
+    }
+  }
+
   return (
     <div className="flex justify-center text-black w-full h-full mt-16">
-      <div className="h-full w-96 max-w-2xl justify-center items-center text-center relative">
+      <div className="h-full w-full max-w-2xl justify-center items-center text-center relative">
         <audio autoPlay muted={muted} ref={ansAudioRef} src={ansAudioUrl} />
         {ansAudioUrl ? (
           <button
@@ -186,13 +209,13 @@ export default function AudioChat() {
         ) : null}
         <section>
           <h1>Audio chat</h1>
-          <div className="overflow-auto h-32 my-4">
+          <div className="overflow-auto w-full h-32 my-4">
             {ans ? <h3>{ans}</h3> : <h3>開始對話...</h3>}
           </div>
           <div className="w-full flex justify-center relative">
             {recording && (
               <button
-                className="absolute mt-0 right-0 w-4 text-center text-3xl bg-transparent border-0"
+                className="absolute mt-0 right-16 w-4 text-center text-3xl bg-transparent border-0"
                 onClick={cancelRecording}
               >
                 <RxCross2 />
@@ -215,29 +238,31 @@ export default function AudioChat() {
         </section>
         <section>
           <div className="relative mt-16">
-            <div className="flex absolute bottom-0">
-              <div className="flex w-80">
-                <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
-              </div>
-              <div className="flex flex-col justify-end">
-                <button
-                  className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
-                  disabled={loading}
-                  onClick={() => {
-                    if (enter) {
-                      const newUserMessage = { role: 'user', content: enter };
-                      let newConversationHistory = [...conversationHistory, newUserMessage];
-                      if (newConversationHistory.length > 10) {
-                        newConversationHistory = newConversationHistory.slice(-10);
+            <div className="flex justify-center">
+              <div className="flex absolute bottom-0">
+                <div className="flex w-80">
+                  <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
+                </div>
+                <div className="flex flex-col justify-end">
+                  <button
+                    className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
+                    disabled={loading}
+                    onClick={() => {
+                      if (enter) {
+                        const newUserMessage = { role: 'user', content: enter };
+                        let newConversationHistory = [...conversationHistory, newUserMessage];
+                        if (newConversationHistory.length > 10) {
+                          newConversationHistory = newConversationHistory.slice(-10);
+                        }
+                        setConversationHistory(newConversationHistory);
+                        setText(enter);
+                        setEnter('');
                       }
-                      setConversationHistory(newConversationHistory);
-                      setText(enter);
-                      setEnter('');
-                    }
-                  }}
-                >
-                  <IoSend />
-                </button>
+                    }}
+                  >
+                    <IoSend />
+                  </button>
+                </div>
               </div>
             </div>
             {/* <div>
