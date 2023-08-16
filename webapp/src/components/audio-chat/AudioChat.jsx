@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 
 export default function AudioChat() {
-  const { handleSpeakAction, setDancing } = useContext(AppContext);
+  const { setSpeaking, setDancing } = useContext(AppContext);
 
   const ansAudioRef = useRef(null);
   const [recording, setRecording] = useState(false);
@@ -199,13 +199,14 @@ export default function AudioChat() {
   }
 
   function handleAction(text, duration) {
+    console.log('handleAction: ', duration);
     const actionWords = ['跳舞'];
     // check if text has some action words
     const action = actionWords.find((word) => text.includes(word));
 
     switch (action) {
       case '跳舞':
-        danceTenSec(duration);
+        danceAtleastTen(duration);
         break;
       default:
         speakInDuration(duration);
