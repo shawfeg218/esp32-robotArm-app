@@ -153,7 +153,7 @@ export default function Home() {
                       </Table>
                       <div className="px-5 my-8">
                         <Link href="/history" passHref>
-                          <button className="w-full inline-flex justify-center items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                          <button className="w-full inline-flex justify-center items-center border-0 px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800">
                             SEE ALL
                           </button>
                         </Link>
