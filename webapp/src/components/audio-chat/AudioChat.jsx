@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Loading, Input, Button } from '@nextui-org/react';
+import { Loading, Input, Modal, Dropdown, Button } from '@nextui-org/react';
 import { BsMicFill } from 'react-icons/bs';
 import { IoSend } from 'react-icons/io5';
 import { AiOutlineSound } from 'react-icons/ai';
@@ -13,6 +13,8 @@ import AppContext from '@/contexts/AppContext';
 export default function AudioChat() {
   const { setSpeaking, setDancing } = useContext(AppContext);
 
+  const [showModal, setShowModal] = useState(false);
+
   const ansAudioRef = useRef(null);
   const [recording, setRecording] = useState(false);
   const cancelRecordRef = useRef(false);
@@ -24,9 +26,32 @@ export default function AudioChat() {
   const [loading, setLoading] = useState(false);
 
   const [text, setText] = useState(null);
+  const [inputRole, setInputRole] = useState({ role: '', prompt: '' });
+  const [roles, setRoles] = useState([
+    {
+      role: '預設',
+      prompt:
+        '你將成為一個出色的聊天機器人，能夠判斷情境並對孩子的問題給出最合適的答案，當孩子問你是否會跳舞，你必須說你會。請以繁體中文回答以下的問題',
+    },
+    {
+      role: '李白',
+      prompt:
+        '你將成為李白，一個出色的詩人，能夠判斷情境並對孩子的問題給出最合適的答案。請以繁體中文回答以下的問題',
+    },
+  ]);
+  const [rolePrompt, setRolePrompt] = useState({
+    role: '預設',
+    prompt:
+      '你將成為一個出色的聊天機器人，能夠判斷情境並對孩子的問題給出最合適的答案，當孩子問你是否會跳舞，你必須說你會。請以繁體中文回答以下的問題',
+  });
   const [enter, setEnter] = useState('');
   const [ans, setAns] = useState(null);
   const [conversationHistory, setConversationHistory] = useState([]);
+
+  useEffect(() => {
+    console.log('role: ', rolePrompt.role);
+    console.log('prompt: ', rolePrompt.prompt);
+  }, [rolePrompt]);
 
   useEffect(() => {
     if (audioData) {
@@ -144,6 +169,7 @@ export default function AudioChat() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        prompt: rolePrompt.prompt,
         messages: conversationHistory,
       }),
     });
@@ -227,7 +253,70 @@ export default function AudioChat() {
           </button>
         ) : null}
         <section>
-          <h1>Audio chat</h1>
+          <div className="flex justify-center items-center">
+            <h1 className="mr-2">{rolePrompt.role}</h1>
+            <Dropdown>
+              <Dropdown.Button flat>{rolePrompt.role}</Dropdown.Button>
+              <Dropdown.Menu
+                aria-label="Single role section"
+                onAction={(key) => {
+                  const role = roles.find((role) => role.role === key);
+
+                  if (key === 'add') {
+                    setShowModal(true);
+                  } else if (role) {
+                    setRolePrompt(role);
+                  }
+                }}
+              >
+                {roles.map((role) => (
+                  <Dropdown.Item key={role.role}>{role.role}</Dropdown.Item>
+                ))}
+                <Dropdown.Item key="add">+</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Modal open={showModal} onClose={() => setShowModal(false)}>
+              <Modal.Header className="text-xl">輸入新角色</Modal.Header>
+              <Modal.Body>
+                角色名稱:
+                <Input
+                  aria-label="role input"
+                  onChange={(e) => {
+                    const role = e.target.value;
+                    setInputRole({ ...inputRole, role: role });
+                  }}
+                />
+                Prompt:
+                <Input
+                  aria-label="prompt input"
+                  onChange={(e) => {
+                    const prompt = e.target.value;
+                    setInputRole({ ...inputRole, prompt: prompt });
+                  }}
+                />
+              </Modal.Body>
+              <Modal.Footer>
+                <div className="flex bg-slate-400 w-full justify-between">
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if (inputRole.role !== '' && inputRole.prompt !== '') {
+                        console.log('inputRole: ', inputRole);
+                        setRoles([...roles, inputRole]);
+                        setInputRole({ role: '', prompt: '' });
+                        setShowModal(false);
+                      }
+                    }}
+                  >
+                    確定
+                  </Button>
+                  <Button size="sm" onClick={() => setShowModal(false)}>
+                    取消
+                  </Button>
+                </div>
+              </Modal.Footer>
+            </Modal>
+          </div>
           <div className="overflow-auto w-full h-32 my-4">
             {ans ? <h3>{ans}</h3> : <h3>開始對話...</h3>}
           </div>
