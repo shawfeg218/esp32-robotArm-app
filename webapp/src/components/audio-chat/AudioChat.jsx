@@ -301,7 +301,7 @@ export default function AudioChat() {
                 />
               </Modal.Body>
               <Modal.Footer>
-                <div className="flex bg-slate-400 w-full justify-between">
+                <div className="flex w-full justify-between">
                   <Button
                     size="sm"
                     onClick={() => {
