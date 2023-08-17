@@ -25,7 +25,6 @@ export default function AudioChat() {
   const [muted, setMuted] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const [text, setText] = useState(null);
   const [inputRole, setInputRole] = useState({ role: '', prompt: '' });
   const [roles, setRoles] = useState([
     {
@@ -44,7 +43,10 @@ export default function AudioChat() {
     prompt:
       '你將成為一個出色的聊天機器人，能夠判斷情境並對孩子的問題給出最合適的答案，當孩子問你是否會跳舞，你必須說你會。請以繁體中文回答以下的問題',
   });
+
+  const [text, setText] = useState(null);
   const [enter, setEnter] = useState('');
+  const [userM, setUserM] = useState('');
   const [ans, setAns] = useState(null);
   const [conversationHistory, setConversationHistory] = useState([]);
 
@@ -162,6 +164,7 @@ export default function AudioChat() {
 
   async function audioChat() {
     setLoading(true);
+    setUserM(text);
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`, {
       // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
       method: 'POST',
@@ -179,6 +182,7 @@ export default function AudioChat() {
       console.log(error);
       window.alert(error);
       setLoading(false);
+      setText('');
     } else {
       const responseJson = await response.json();
       // console.log('audioChat: ', responseJson);
@@ -197,6 +201,7 @@ export default function AudioChat() {
       setAnsAudioUrl(audioUrl);
 
       setLoading(false);
+      setText('');
       // console.log('conversationHistory: ', conversationHistory);
     }
   }
@@ -341,7 +346,7 @@ export default function AudioChat() {
             {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
           </div>
           <h2 className="h-40 overflow-x-scroll break-words text-center">
-            {text ? `${text}` : ''}
+            {userM ? `${userM}` : ''}
           </h2>
         </section>
         <section>
