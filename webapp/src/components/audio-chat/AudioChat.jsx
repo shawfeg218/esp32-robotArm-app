@@ -10,6 +10,29 @@ import PrettyTextArea from '../PrettyTextArea';
 import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 
+const voiceProfiles = [
+  {
+    label: '中文男性',
+    voiceLang: 'zh-TW',
+    voiceName: 'zh-TW-YunJheNeural',
+  },
+  {
+    label: '中文女性',
+    voiceLang: 'zh-TW',
+    voiceName: 'zh-TW-HsiaoChenNeural',
+  },
+  {
+    label: '英文男性',
+    voiceLang: 'en-US',
+    voiceName: 'en-US-DavisNeural',
+  },
+  {
+    label: '英文女性',
+    voiceLang: 'en-US',
+    voiceName: 'en-US-JennyNeural',
+  },
+];
+
 export default function AudioChat() {
   const { setSpeaking, setDancing } = useContext(AppContext);
 
@@ -25,23 +48,32 @@ export default function AudioChat() {
   const [muted, setMuted] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const [inputRole, setInputRole] = useState({ role: '', prompt: '' });
+  const [inputRole, setInputRole] = useState({
+    role: '',
+    prompt: '',
+    voice: voiceProfiles[0],
+  });
+
   const [roles, setRoles] = useState([
     {
-      role: '預設',
+      role: 'MEMEbot',
       prompt:
-        '你將成為一個出色的聊天機器人，能夠判斷情境並對孩子的問題給出最合適的答案，當孩子問你是否會跳舞，你必須說你會。請以繁體中文回答以下的問題',
+        '你將成為一個出色的機器人叫做MEME，你有雙手能夠活動，當孩子問你是否會跳舞，你必須說你會。你能夠判斷情境並對孩子的問題給出最合適的答案，並用繁體中文回答。',
+      voice: voiceProfiles[0],
     },
     {
       role: '李白',
       prompt:
         '你將成為李白，一個出色的詩人，能夠判斷情境並對孩子的問題給出最合適的答案。請以繁體中文回答以下的問題',
+      voice: voiceProfiles[0],
     },
   ]);
+
   const [rolePrompt, setRolePrompt] = useState({
-    role: '預設',
+    role: 'MEMEbot',
     prompt:
-      '你將成為一個出色的聊天機器人，能夠判斷情境並對孩子的問題給出最合適的答案，當孩子問你是否會跳舞，你必須說你會。請以繁體中文回答以下的問題',
+      '你將成為一個出色的機器人叫做MEME，你有雙手能夠活動，當孩子問你是否會跳舞，你必須說你會。你能夠判斷情境並對孩子的問題給出最合適的答案，並用繁體中文回答。',
+    voice: voiceProfiles[0],
   });
 
   const [text, setText] = useState(null);
@@ -53,6 +85,7 @@ export default function AudioChat() {
   useEffect(() => {
     console.log('role: ', rolePrompt.role);
     console.log('prompt: ', rolePrompt.prompt);
+    console.log('voice: ', rolePrompt.voice);
   }, [rolePrompt]);
 
   useEffect(() => {
@@ -174,6 +207,8 @@ export default function AudioChat() {
       body: JSON.stringify({
         prompt: rolePrompt.prompt,
         messages: conversationHistory,
+        voiceLang: rolePrompt.voice.voiceLang,
+        voiceName: rolePrompt.voice.voiceName,
       }),
     });
 
@@ -185,7 +220,7 @@ export default function AudioChat() {
       setText('');
     } else {
       const responseJson = await response.json();
-      // console.log('audioChat: ', responseJson);
+      console.log('audioChat: ', responseJson);
 
       const { answer, answerAudio } = responseJson;
       const newAssistantMessage = { role: 'assistant', content: answer };
@@ -195,6 +230,7 @@ export default function AudioChat() {
       }
       setConversationHistory(newConversationHistory);
       setAns(answer);
+      console.log(answer);
 
       const audioBlob = base64ToBlob(answerAudio, 'audio/mp3');
       const audioUrl = URL.createObjectURL(audioBlob);
@@ -259,7 +295,9 @@ export default function AudioChat() {
         ) : null}
         <section>
           <div className="flex justify-center items-center">
-            <h1 className="mr-2">{rolePrompt.role}</h1>
+            <h1 className="mr-3">{rolePrompt.role}</h1>
+
+            {/* select role */}
             <Dropdown>
               <Dropdown.Button flat>{rolePrompt.role}</Dropdown.Button>
               <Dropdown.Menu
@@ -271,15 +309,22 @@ export default function AudioChat() {
                     setShowModal(true);
                   } else if (role) {
                     setRolePrompt(role);
+                    setAns(null);
+                    setUserM('');
+                    setConversationHistory([]);
                   }
                 }}
               >
                 {roles.map((role) => (
                   <Dropdown.Item key={role.role}>{role.role}</Dropdown.Item>
                 ))}
-                <Dropdown.Item key="add">+</Dropdown.Item>
+                <Dropdown.Item color="primary" key="add">
+                  新增
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+
+            {/* create new role */}
             <Modal open={showModal} onClose={() => setShowModal(false)}>
               <Modal.Header className="text-xl">輸入新角色</Modal.Header>
               <Modal.Body>
@@ -299,23 +344,57 @@ export default function AudioChat() {
                     setInputRole({ ...inputRole, prompt: prompt });
                   }}
                 />
+                語音屬性:
+                <Dropdown>
+                  <Dropdown.Button flat>{inputRole.voice.label}</Dropdown.Button>
+                  <Dropdown.Menu
+                    aria-label="Voice profile selection"
+                    onAction={(key) => {
+                      const selectedVoiceProfile = voiceProfiles.find(
+                        (profile) => profile.label === key
+                      );
+                      if (selectedVoiceProfile) {
+                        console.log('selectedVoiceProfile: ', selectedVoiceProfile);
+                        setInputRole({
+                          ...inputRole,
+                          voice: selectedVoiceProfile,
+                        });
+                      }
+                    }}
+                  >
+                    {voiceProfiles.map((profile) => (
+                      <Dropdown.Item key={profile.label}>{profile.label}</Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
               </Modal.Body>
               <Modal.Footer>
                 <div className="flex w-full justify-between">
                   <Button
                     size="sm"
                     onClick={() => {
-                      if (inputRole.role !== '' && inputRole.prompt !== '') {
+                      // if all fields are filled then setRoles
+                      if (inputRole.role === '') {
+                        window.alert('請輸入角色名稱');
+                      } else if (inputRole.prompt === '') {
+                        window.alert('請輸入Prompt');
+                      } else {
                         console.log('inputRole: ', inputRole);
                         setRoles([...roles, inputRole]);
-                        setInputRole({ role: '', prompt: '' });
+                        setInputRole({ role: '', prompt: '', voice: voiceProfiles[0] });
                         setShowModal(false);
                       }
                     }}
                   >
                     確定
                   </Button>
-                  <Button size="sm" onClick={() => setShowModal(false)}>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setInputRole({ role: '', prompt: '', voice: voiceProfiles[0] });
+                      setShowModal(false);
+                    }}
+                  >
                     取消
                   </Button>
                 </div>
