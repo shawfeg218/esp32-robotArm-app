@@ -13,9 +13,13 @@ export default function UpdateTeacher() {
   const [loading, setLoading] = useState(false);
   const [cantSubmit, setCantSubmit] = useState(true);
 
+  const code = process.env.NEXT_PUBLIC_TEACHER_CODE;
+
   useEffect(() => {
-    if (teacherToken === 'teacher') {
+    if (teacherToken === code) {
       setCantSubmit(false);
+    } else {
+      setCantSubmit(true);
     }
   }, [teacherToken]);
 
