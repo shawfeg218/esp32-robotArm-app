@@ -5,7 +5,7 @@ import styles from '@/styles/AddSubject.module.css';
 import { IoIosRemove } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
 import PrettyTextArea from '../PrettyTextArea';
-import { Button, Loading } from '@nextui-org/react';
+import { Button, Loading, Spacer } from '@nextui-org/react';
 
 export default function AddSubject() {
   const supabase = useSupabaseClient();
@@ -15,6 +15,7 @@ export default function AddSubject() {
   const [udpdating, setUpdating] = useState(false);
 
   const [subjectName, setSubjectName] = useState('');
+  const [subjectDescribe, setSubjectDescribe] = useState('');
   const [questions, setQuestions] = useState([
     {
       text: '',
@@ -24,10 +25,6 @@ export default function AddSubject() {
       ],
     },
   ]);
-
-  const handleSubjectChange = (e) => {
-    setSubjectName(e.target.value);
-  };
 
   const handleQuestionChange = (e, questionIndex) => {
     const newQuestions = [...questions];
@@ -82,22 +79,26 @@ export default function AddSubject() {
 
   const updateToDatabase = async () => {
     setUpdating(true);
-
+    let subjectId;
     try {
-      let { error: subjectError } = await supabase.from('subjects').insert([{ name: subjectName }]);
+      let { error: subjectError } = await supabase
+        .from('subjects')
+        .insert([{ name: subjectName, inserted_at: new Date().toISOString() }]);
 
       if (subjectError) throw subjectError;
 
       let { data, error } = await supabase.from('subjects').select('id').eq('name', subjectName);
-      console.log(data);
-      let subjectId = data[0].id;
+      // console.log(data);
+      subjectId = data[0].id;
 
       // For each question
       for (let question of questions) {
         // Insert question into the questions table
         let { error: questionError } = await supabase
           .from('questions')
-          .insert([{ subject_id: subjectId, text: question.text }]);
+          .insert([
+            { subject_id: subjectId, text: question.text, inserted_at: new Date().toISOString() },
+          ]);
 
         if (questionError) throw questionError;
 
@@ -106,7 +107,7 @@ export default function AddSubject() {
           .from('questions')
           .select('id')
           .eq('text', question.text);
-        console.log(data);
+        // console.log(data);
         let questionId = data[0].id;
 
         // For each option of the question
@@ -116,6 +117,7 @@ export default function AddSubject() {
               question_id: questionId,
               text: option.text,
               is_correct: option.is_correct,
+              inserted_at: new Date().toISOString(),
             },
           ]);
 
@@ -123,10 +125,15 @@ export default function AddSubject() {
         }
       }
 
-      setSuccessMessage('Data successfully inserted into the database');
+      setSuccessMessage('Data successfully inserted into the database!');
     } catch (error) {
       console.log('Error: ', error.message);
-      setMessage('There was an error inserting the data into the database');
+      setMessage('There was an error inserting the data into the database!');
+
+      // Delete the subject if there was an error
+      if (subjectId) {
+        await supabase.from('subjects').delete().eq('id', subjectId);
+      }
     } finally {
       setUpdating(false);
     }
@@ -137,21 +144,24 @@ export default function AddSubject() {
 
     // 檢查主題名稱是否有被填寫
     if (!subjectName) {
-      setMessage('必須填寫主題名稱');
+      setMessage('必須填寫主題名稱!');
+      setSuccessMessage(null);
       return;
     }
 
     // 檢查每一個問題是否有內容被填寫
     for (let question of questions) {
       if (!question.text) {
-        setMessage('所有問題必須有內容');
+        setMessage('所有問題必須有內容!');
+        setSuccessMessage(null);
         return;
       }
 
       // 檢查每一個選項是否有內容被填寫
       for (let option of question.options) {
         if (!option.text) {
-          setMessage('所有選項必須有內容');
+          setMessage('所有選項必須有內容!');
+          setSuccessMessage(null);
           return;
         }
       }
@@ -159,7 +169,8 @@ export default function AddSubject() {
       // 檢查每一個問題是否有正確答案被選中
       const correctOption = question.options.find((option) => option.is_correct);
       if (!correctOption) {
-        setMessage('每一題必須勾選一個正確答案');
+        setMessage('每一題必須勾選一個正確答案!');
+        setSuccessMessage(null);
         return;
       }
     }
@@ -174,7 +185,18 @@ export default function AddSubject() {
         <div className={styles.subjectForm}>
           <h2>Subject</h2>
           <label>Subject Name</label>
-          <PrettyTextArea value={subjectName} onChange={handleSubjectChange} required />
+          <PrettyTextArea
+            value={subjectName}
+            onChange={(e) => setSubjectName(e.target.value)}
+            required
+          />
+          <Spacer y={1} />
+          <label>Subject Describe</label>
+          <PrettyTextArea
+            value={subjectDescribe}
+            onChange={(e) => setSubjectDescribe(e.target.value)}
+            required
+          />
         </div>
         <div className={styles.questionForm}>
           <h2>Question</h2>
@@ -251,8 +273,8 @@ export default function AddSubject() {
             <span> {questions.length} </span>
             Questions
           </h2>
-          <p>{message ? message : null}</p>
-          <p>{successMessage ? successMessage : null}</p>
+          <p className="text-red-600">{message ? message : null}</p>
+          <p className="text-green-600">{successMessage ? successMessage : null}</p>
         </div>
         <Button ghost className="hover:bg-blue-600 w-full" type="submit">
           {udpdating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
