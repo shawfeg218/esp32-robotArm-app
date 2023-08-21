@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Loading, Input, Modal, Dropdown, Button } from '@nextui-org/react';
+import { Loading, Input, Modal, Dropdown, Button, Textarea } from '@nextui-org/react';
 import { BsMicFill } from 'react-icons/bs';
 import { IoSend } from 'react-icons/io5';
 import { AiOutlineSound } from 'react-icons/ai';
@@ -299,7 +299,9 @@ export default function AudioChat() {
 
             {/* select role */}
             <Dropdown>
-              <Dropdown.Button flat>{rolePrompt.role}</Dropdown.Button>
+              <Dropdown.Button className="z-0" flat>
+                {rolePrompt.role}
+              </Dropdown.Button>
               <Dropdown.Menu
                 aria-label="Single role section"
                 onAction={(key) => {
@@ -337,8 +339,8 @@ export default function AudioChat() {
                   }}
                 />
                 Prompt:
-                <Input
-                  aria-label="prompt input"
+                <Textarea
+                  aria-label="prompt textarea"
                   onChange={(e) => {
                     const prompt = e.target.value;
                     setInputRole({ ...inputRole, prompt: prompt });
@@ -432,7 +434,7 @@ export default function AudioChat() {
           <div className="relative mt-16">
             <div className="flex justify-center">
               <div className="flex absolute bottom-0">
-                <div className="flex w-80">
+                <div className="flex w-80 z-20">
                   <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
                 </div>
                 <div className="flex flex-col justify-end">
