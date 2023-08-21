@@ -409,12 +409,14 @@ export default function AudioChat() {
           <div className="w-full flex justify-center relative">
             {recording && (
               <button
-                className="absolute mt-0 right-16 w-4 text-center text-3xl bg-transparent border-0"
+                className="absolute mt-0 right-48 w-4 text-center text-3xl bg-transparent border-0"
                 onClick={cancelRecording}
               >
                 <RxCross2 />
               </button>
             )}
+
+            {/* recording spinner */}
             {recording ? <div className="absolute bottom-2 z-0 spinner"></div> : null}
             <button
               className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
