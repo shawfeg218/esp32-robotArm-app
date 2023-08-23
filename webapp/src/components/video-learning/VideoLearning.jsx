@@ -5,9 +5,11 @@ import YouTube from 'react-youtube';
 import Toast from '../Toast';
 // import { example } from '../../lib/example';
 import { base64ToBlob } from '../../lib/base64ToBlob';
+import { useContext } from 'react';
+import AppContext from '@/contexts/AppContext';
 
 export default function VideoLearning() {
-  // const [key, setKey] = useState(null);
+  const { setSpeaking } = useContext(AppContext);
   const [res, setRes] = useState(null);
 
   const [ans, setAns] = useState(null);
@@ -26,7 +28,6 @@ export default function VideoLearning() {
   const [currentSubtitle, setCurrentSubtitle] = useState(0);
 
   const [loading, setLoading] = useState(false);
-  // const [keyStatus, setKeyStatus] = useState('warning');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('');
@@ -65,14 +66,6 @@ export default function VideoLearning() {
     }
   };
 
-  // useEffect(() => {
-  //   if (key !== null) {
-  //     setKeyStatus('success');
-  //   } else {
-  //     setKeyStatus('warning');
-  //   }
-  // }, [key]);
-
   // for update video playing time
   useEffect(() => {
     for (let i = 0; i < videoTranscription.length; i++) {
@@ -105,22 +98,23 @@ export default function VideoLearning() {
     if (ansAudioRef.current) {
       ansAudioRef.current.oncanplaythrough = () => {
         ansAudioRef.current.play();
+        // check how long is the audio
+        const duration = ansAudioRef.current.duration;
+        console.log('duration: ', duration);
+        speakInDuration(duration);
       };
     }
   }, []);
 
   async function transcribeAudioLink() {
     setLoading(true);
-    // if (!key) {
-    //   setKeyStatus('error');
-    //   setLoading(false);
-    //   return;
-    // }
+
     if (!videoUrl) {
       setLoading(false);
       setUrlStatus('error');
       return;
     }
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/video-translate`, {
         method: 'POST',
@@ -235,6 +229,14 @@ export default function VideoLearning() {
       player.playVideo();
     }
   };
+
+  function speakInDuration(duration) {
+    console.log('speakInDuration');
+    setSpeaking(true);
+    setTimeout(() => {
+      setSpeaking(false);
+    }, duration * 1000);
+  }
 
   return (
     <div className="w-full mt-4 flex justify-center overflow-x-scroll">
