@@ -79,7 +79,7 @@ export default function AddLesson() {
 
     for (let paragraph of paragraphs) {
       if (!paragraph) {
-        setMessage('所有段落必須有內容!');
+        setMessage('所有頁數必須有內容!');
         setSuccessMessage(null);
         return;
       }
@@ -115,7 +115,7 @@ export default function AddLesson() {
             {paragraphs.map((paragraph, paragraphIndex) => (
               <div className="my-6" key={paragraphIndex}>
                 <div className="flex justify-between items-center">
-                  <h3>段落{paragraphIndex + 1}</h3>
+                  <h3>頁數{paragraphIndex + 1}</h3>
                   {paragraphs.length > 1 && (
                     <div
                       className="flex justify-center hover:text-slate-300 hover:cursor-pointer"
@@ -135,7 +135,7 @@ export default function AddLesson() {
               </div>
             ))}
             <Button className="w-full my-4" onClick={addParagraph}>
-              增加段落
+              增加頁數
             </Button>
           </div>
         </div>
@@ -144,9 +144,8 @@ export default function AddLesson() {
             課文名稱: <span>{lessonTitle}</span>
           </h2>
           <h2>
-            長度
-            <span> {paragraphs.length} </span>
-            段落
+            總共
+            <span> {paragraphs.length} </span>頁
           </h2>
           <p className="text-red-600">{message ? message : null}</p>
           <p className="text-green-600">{successMessage ? successMessage : null}</p>

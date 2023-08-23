@@ -1,6 +1,5 @@
 import Lesson from '@/components/lesson/Lesson';
 import AppContext from '@/contexts/AppContext';
-import { useUser } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 

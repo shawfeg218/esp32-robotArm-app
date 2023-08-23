@@ -31,7 +31,7 @@ export default function QuestionView(props) {
   };
 
   const handleLeave = () => {
-    setSelectedSubject('');
+    setSelectedSubject(null);
   };
 
   return (
