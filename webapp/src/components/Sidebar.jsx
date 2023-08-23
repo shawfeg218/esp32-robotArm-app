@@ -7,6 +7,7 @@ import { TfiPanel } from 'react-icons/tfi';
 import { GrConnect } from 'react-icons/gr';
 import { BsMicFill } from 'react-icons/bs';
 import { MdOutlineOndemandVideo } from 'react-icons/md';
+import { TfiWrite } from 'react-icons/tfi';
 
 import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
@@ -57,7 +58,7 @@ export default function Sidebar() {
           </div>
         </Link>
 
-        <Link href="/quiz" passHref>
+        <Link href="/lesson" passHref>
           <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
             <div>
               <div>
@@ -65,7 +66,20 @@ export default function Sidebar() {
               </div>
             </div>
             <div>
-              <p>QUIZ</p>
+              <p>上課</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link href="/quiz" passHref>
+          <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
+            <div>
+              <div>
+                <TfiWrite className="reactIcons" size="2rem" />
+              </div>
+            </div>
+            <div>
+              <p>小測驗</p>
             </div>
           </div>
         </Link>
