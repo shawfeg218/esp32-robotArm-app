@@ -2,6 +2,7 @@ import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState, useEffect, useContext } from 'react';
 import { GrFormPrevious, GrFormNext } from 'react-icons/gr';
+import { Input, Button, Pagination } from '@nextui-org/react';
 
 export default function Textbook() {
   const supabase = useSupabaseClient();
@@ -10,6 +11,8 @@ export default function Textbook() {
   const [texts, setTexts] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
+  const [onSetPage, setOnSetPage] = useState(false);
+  const [setPage, setSetPage] = useState();
 
   const handleLeave = () => {
     setSelectedLesson(null);
@@ -53,35 +56,28 @@ export default function Textbook() {
   };
 
   return (
-    <div className="w-full max-w-2xl max-h-screen pb-32">
-      <div className="w-fit flex items-center hover:cursor-pointer" onClick={handleLeave}>
-        <GrFormPrevious size="2rem" />
-        <span>leave</span>
-      </div>
-
-      <section className="w-full h-full flex justify-between mt-8">
-        <button
-          className="w-fit border-0 bg-transparent p-1 disabled:cursor "
-          onClick={prevPage}
-          disabled={currentPage === 0}
-        >
-          {currentPage !== 0 ? <GrFormPrevious size="2rem" /> : null}
-        </button>
-
-        <div className="w-full h-full overflow-y-scroll p-4 border border-solid border-slate-300 rounded-md bg-yellow-50">
-          <h2>{texts[currentPage]?.lesson_title}</h2>
-          <p>{texts[currentPage]?.paragraph_content}</p>
+    <div className="w-full max-w-2xl min-h-screen">
+      <div className="h-full">
+        <div className="w-fit flex items-center hover:cursor-pointer" onClick={handleLeave}>
+          <GrFormPrevious size="2rem" />
+          <span>leave</span>
         </div>
-
-        <button
-          className="w-fit border-0 bg-transparent p-1 disabled:cursor"
-          onClick={nextPage}
-          disabled={currentPage === texts.length - 1}
-        >
-          {currentPage !== texts.length - 1 ? <GrFormNext size="2rem" /> : null}
-        </button>
-      </section>
-      <h3 className="w-full text-center">{currentPage + 1}</h3>
+        <section className="w-full h-96 mt-8 bg-slate-200">
+          <div className="w-full h-full overflow-y-scroll p-4 border border-solid border-slate-300 rounded-md bg-yellow-50">
+            <h2>{texts[currentPage]?.lesson_title}</h2>
+            <p>{texts[currentPage]?.paragraph_content}</p>
+          </div>
+          <div className="w-full flex justify-center mt-4">
+            <Pagination
+              total={texts.length}
+              initialPage={1}
+              onChange={(page) => {
+                setCurrentPage(page - 1);
+              }}
+            ></Pagination>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
