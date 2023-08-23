@@ -8,7 +8,8 @@ const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [displaySidebar, setDisplaySidebar] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [selectedLesson, setSelectedLesson] = useState(null);
   const [point, setPoint] = useState(0);
   const [connectedDeviceName, setConnectedDeviceName] = useState('');
   const [connectedMacAddress, setConnectedMacAddress] = useState('');
@@ -270,6 +271,8 @@ export const AppContextProvider = ({ children }) => {
         setDisplaySidebar,
         selectedSubject,
         setSelectedSubject,
+        selectedLesson,
+        setSelectedLesson,
         point,
         setPoint,
         connectedDeviceName,

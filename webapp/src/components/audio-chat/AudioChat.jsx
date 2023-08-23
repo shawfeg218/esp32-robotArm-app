@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Loading, Input, Modal, Dropdown, Button } from '@nextui-org/react';
+import { Loading, Input, Modal, Dropdown, Button, Textarea } from '@nextui-org/react';
 import { BsMicFill } from 'react-icons/bs';
 import { IoSend } from 'react-icons/io5';
 import { AiOutlineSound } from 'react-icons/ai';
@@ -299,7 +299,9 @@ export default function AudioChat() {
 
             {/* select role */}
             <Dropdown>
-              <Dropdown.Button flat>{rolePrompt.role}</Dropdown.Button>
+              <Dropdown.Button className="z-0" flat>
+                {rolePrompt.role}
+              </Dropdown.Button>
               <Dropdown.Menu
                 aria-label="Single role section"
                 onAction={(key) => {
@@ -337,8 +339,8 @@ export default function AudioChat() {
                   }}
                 />
                 Prompt:
-                <Input
-                  aria-label="prompt input"
+                <Textarea
+                  aria-label="prompt textarea"
                   onChange={(e) => {
                     const prompt = e.target.value;
                     setInputRole({ ...inputRole, prompt: prompt });
@@ -407,12 +409,14 @@ export default function AudioChat() {
           <div className="w-full flex justify-center relative">
             {recording && (
               <button
-                className="absolute mt-0 right-16 w-4 text-center text-3xl bg-transparent border-0"
+                className="absolute mt-0 right-48 w-4 text-center text-3xl bg-transparent border-0"
                 onClick={cancelRecording}
               >
                 <RxCross2 />
               </button>
             )}
+
+            {/* recording spinner */}
             {recording ? <div className="absolute bottom-2 z-0 spinner"></div> : null}
             <button
               className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
@@ -432,7 +436,7 @@ export default function AudioChat() {
           <div className="relative mt-16">
             <div className="flex justify-center">
               <div className="flex absolute bottom-0">
-                <div className="flex w-80">
+                <div className="flex w-80 z-20">
                   <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
                 </div>
                 <div className="flex flex-col justify-end">

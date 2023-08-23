@@ -24,6 +24,8 @@ export default function Auth() {
   const [checkMessage, setCheckMessage] = useState('');
   const [message, setMessage] = useState(null);
 
+  const code = process.env.NEXT_PUBLIC_TEACHER_CODE;
+
   useEffect(() => {
     let canSubmit = true;
 
@@ -48,10 +50,10 @@ export default function Auth() {
     }
 
     // check teacher token
-    if (role === 'teacher' && teacherToken !== 'teacher') {
+    if (role === code && teacherToken !== code) {
       setTeacherTokenStatus('error');
       canSubmit = false;
-    } else if (role === 'teacher' && teacherToken === 'teacher') {
+    } else if (role === code && teacherToken === code) {
       setTeacherTokenStatus('default');
     }
 
@@ -111,6 +113,7 @@ export default function Auth() {
         {forgetPassword ? (
           <>
             <Input
+              aria-label="Email input"
               fullWidth
               clearable
               bordered
@@ -161,6 +164,7 @@ export default function Auth() {
                   </Dropdown>
                 </div>
                 <Input
+                  aria-label="Email input"
                   fullWidth
                   clearable
                   bordered
@@ -170,6 +174,7 @@ export default function Auth() {
                 />
                 <Spacer y={1} />
                 <Input
+                  aria-label="Full name input"
                   fullWidth
                   clearable
                   bordered
@@ -179,6 +184,7 @@ export default function Auth() {
                 />
                 <Spacer y={1} />
                 <Input.Password
+                  aria-label="Password input"
                   fullWidth
                   clearable
                   bordered
@@ -190,6 +196,7 @@ export default function Auth() {
                 />
                 <Spacer y={1} />
                 <Input.Password
+                  aria-label="Check password input"
                   fullWidth
                   clearable
                   bordered
@@ -204,6 +211,7 @@ export default function Auth() {
                   <>
                     <Spacer y={2} />
                     <Input
+                      aria-label="Teacher token input"
                       fullWidth
                       clearable
                       bordered
@@ -240,6 +248,7 @@ export default function Auth() {
             ) : (
               <>
                 <Input
+                  aria-label="Email input"
                   fullWidth
                   clearable
                   bordered
@@ -250,6 +259,7 @@ export default function Auth() {
                 <Spacer y={0.5} />
 
                 <Input.Password
+                  aria-label="Password input"
                   fullWidth
                   clearable
                   bordered

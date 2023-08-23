@@ -48,7 +48,7 @@ export default function Question() {
       const { data: quizData, error: quizError } = await supabase
         .from('quiz_data')
         .select('*')
-        .eq('subject_name', selectedSubject);
+        .eq('subject_id', selectedSubject);
 
       if (quizError) throw quizError;
 
