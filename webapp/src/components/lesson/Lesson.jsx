@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import Question from './Question';
 import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import styles from '@/styles/Question.module.css';
@@ -7,75 +6,76 @@ import { BiPlus } from 'react-icons/bi';
 import { AiOutlineDelete } from 'react-icons/ai';
 import Link from 'next/link';
 import { Card, Modal, Button } from '@nextui-org/react';
+import Textbook from './Textbook';
 
-function Quiz() {
+function Lesson() {
   const user = useUser();
   const role = user?.user_metadata?.role;
   const supabase = useSupabaseClient();
 
-  const { selectedSubject, setSelectedSubject } = useContext(AppContext);
-  const [subjects, setSubjects] = useState([]);
+  const { selectedLesson, setSelectedLesson } = useContext(AppContext);
+  const [lessons, setLessons] = useState([]);
 
   const [showDelModal, setShowDelModal] = useState(false);
-  const [delSub, setDelSub] = useState({});
+  const [delLesson, setDelLesson] = useState({});
 
-  const handleSelectSubject = (subject) => {
-    setSelectedSubject(subject);
+  const handleSelectLesson = (lesson) => {
+    setSelectedLesson(lesson);
   };
 
-  async function fetchSubjects() {
+  async function fetchLessons() {
     try {
-      const { data, error } = await supabase.from('subjects').select('*');
+      const { data, error } = await supabase.from('lessons').select('*');
 
       if (error) {
         throw error;
       }
 
-      setSubjects(data);
+      setLessons(data);
     } catch (error) {
       console.log('Error fetching subjects:', error);
     }
   }
 
   useEffect(() => {
-    fetchSubjects();
-    // subjects.map((subject) => console.log(subject));
+    fetchLessons();
+    // lessons.map((lesson) => console.log(lesson));
   }, []);
 
-  const handleDeleteSubject = async () => {
-    const id = delSub.id;
-    console.log('delSub:', id);
+  const handleDeleteLesson = async () => {
+    const id = delLesson.id;
+    console.log('delLesson:', id);
     try {
-      const { data, error } = await supabase.from('subjects').delete().eq('id', id);
+      const { data, error } = await supabase.from('lessons').delete().eq('id', id);
 
       if (error) {
         throw error;
       }
 
       // console.log('data:', data);
-      fetchSubjects();
+      fetchLessons();
     } catch (error) {
-      console.log('Error deleting subject:', error);
+      console.log('Error deleting lesson:', error);
     } finally {
-      setDelSub({});
+      setDelLesson({});
     }
   };
 
   return (
     <>
       <>
-        {selectedSubject ? null : (
+        {selectedLesson ? null : (
           <>
             <div className="cardContainer mt-16">
-              {subjects.map((subject, index) => (
-                <div key={subject.id}>
+              {lessons.map((lesson, index) => (
+                <div key={lesson.id}>
                   <Card
                     isHoverable
                     isPressable
                     variant="bordered"
-                    // key={subject.id}
+                    // key={lesson.id}
                     className="relative w-96 h-52 bg-white p-4 m-4 hover:bg-yellow-50"
-                    onClick={() => handleSelectSubject(subject.id)}
+                    onClick={() => handleSelectLesson(lesson.id)}
                   >
                     <AiOutlineDelete
                       size="1.5rem"
@@ -83,39 +83,37 @@ function Quiz() {
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDelModal(true);
-                        setDelSub(subjects[index]);
-                        console.log(subjects[index]);
+                        setDelLesson(lessons[index]);
+                        console.log(lessons[index]);
                       }}
                     />
-                    <p className="font-bold">{subject.name.toUpperCase()}</p>
-                    <p className="font-bold">Subject id: {subject.id}</p>
-                    <p className="font-bold">Total questions: {subject.total_questions}</p>
+                    <p className="font-bold">{lesson.title.toUpperCase()}</p>
+                    <p className="font-bold">課文 id: {lesson.id}</p>
+                    <p className="font-bold">課文大綱: {lesson.description}</p>
                     {/* <p className="font-bold">
                       Inserted time:
-                      {new Date(subject.inserted_at).toLocaleDateString(undefined, {
+                      {new Date(lesson.inserted_at).toLocaleDateString(undefined, {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit',
                       })}
                     </p> */}
-                    <p className="font-bold">題目介紹:</p>
-                    <p className="font-bold">{subject.describe ? subject.describe : '無說明'}</p>
                   </Card>
                   <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
                     <Modal.Header className="text-2xl font-bold">
-                      確定刪除 <span className="text-red-500 font-bold">{delSub.name}</span> ?
+                      確定刪除 <span className="text-red-500 font-bold">{delLesson.title}</span> ?
                     </Modal.Header>
                     <Modal.Body className="pl-8">
-                      <h3>subject id: {delSub.id}</h3>
-                      <h3>subject name: {delSub.name}</h3>
-                      <h3>total questions: {delSub.total_questions}</h3>
+                      <h3>課文 id: {delLesson.id}</h3>
+                      <h3>課文名稱: {delLesson.title}</h3>
+                      <h3>課文大綱: {delLesson.description}</h3>
                     </Modal.Body>
                     <Modal.Footer>
                       <div className="flex justify-between w-full">
                         <Button
                           size="sm"
                           onClick={() => {
-                            handleDeleteSubject();
+                            handleDeleteLesson();
                             setShowDelModal(false);
                           }}
                         >
@@ -124,7 +122,7 @@ function Quiz() {
                         <Button
                           size="sm"
                           onClick={() => {
-                            setDelSub({});
+                            setDelLesson({});
                             setShowDelModal(false);
                           }}
                         >
@@ -139,7 +137,7 @@ function Quiz() {
               {/* add subject component */}
               <>
                 {role === 'teacher' ? (
-                  <Link href="/quiz/add-subject" passHref>
+                  <Link href="/lesson/add-lesson" passHref>
                     <div className={styles.addQConatiner}>
                       <div className={styles.addCard}>
                         <div className="reactIcon">
@@ -154,9 +152,9 @@ function Quiz() {
           </>
         )}
       </>
-      {selectedSubject ? <Question /> : null}
+      {selectedLesson ? <Textbook /> : null}
     </>
   );
 }
 
-export default Quiz;
+export default Lesson;
