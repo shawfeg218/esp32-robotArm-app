@@ -41,18 +41,6 @@ export default function Textbook() {
     }
   };
 
-  const nextPage = () => {
-    if (currentPage < texts.length - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
   return (
     <div className="w-full max-w-2xl min-h-screen">
       <div className="h-full">
