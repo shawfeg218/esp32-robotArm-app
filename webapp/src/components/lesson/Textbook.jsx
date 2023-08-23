@@ -1,8 +1,8 @@
 import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState, useEffect, useContext } from 'react';
-import { GrFormPrevious, GrFormNext } from 'react-icons/gr';
-import { Input, Button, Pagination } from '@nextui-org/react';
+import { GrFormPrevious } from 'react-icons/gr';
+import { Pagination } from '@nextui-org/react';
 
 export default function Textbook() {
   const supabase = useSupabaseClient();
@@ -11,8 +11,6 @@ export default function Textbook() {
   const [texts, setTexts] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [onSetPage, setOnSetPage] = useState(false);
-  const [setPage, setSetPage] = useState();
 
   const handleLeave = () => {
     setSelectedLesson(null);
@@ -74,7 +72,7 @@ export default function Textbook() {
               onChange={(page) => {
                 setCurrentPage(page - 1);
               }}
-            ></Pagination>
+            />
           </div>
         </section>
       </div>
