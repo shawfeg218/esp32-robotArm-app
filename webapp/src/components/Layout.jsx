@@ -8,6 +8,7 @@ import { useEffect, useContext, useState } from 'react';
 import Auth from './account/Auth';
 import TeacherPanel from './TeacherPanel';
 import { useRouter } from 'next/router';
+import Face from './Face';
 import io from 'socket.io-client';
 let socketIO;
 
@@ -37,6 +38,8 @@ export default function Layout({ children }) {
     setTeacherPath,
     displaySidebar,
     setDisplaySidebar,
+    showFace,
+    setShowFace,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -101,6 +104,17 @@ export default function Layout({ children }) {
     }
   }, [displaySidebar]);
 
+  useEffect(() => {
+    if (!showFace) {
+      // Start the timer when showFace is false
+      const timer = setTimeout(() => {
+        setShowFace(true);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showFace, setShowFace]);
+
   return (
     <>
       {!session ? (
@@ -114,7 +128,11 @@ export default function Layout({ children }) {
           <div className="flex min-h-screen">
             <Sidebar />
             <TeacherPanel />
-            <div className="py-16 flex-col items-center w-full min-h-screen">{children}</div>
+            {showFace === true ? (
+              <Face />
+            ) : (
+              <div className="py-16 flex-col items-center w-full min-h-screen">{children}</div>
+            )}
           </div>
         </>
       )}

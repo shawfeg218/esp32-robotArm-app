@@ -295,11 +295,13 @@ export default function AudioChat() {
         ) : null}
         <section>
           <div className="flex justify-center items-center">
-            <h1 className="mr-3">{rolePrompt.role}</h1>
+            <div>
+              <h1 className="mr-3">{rolePrompt.role}</h1>
+            </div>
 
             {/* select role */}
             <Dropdown>
-              <Dropdown.Button className="z-0" flat>
+              <Dropdown.Button className="z-0 mt-0" flat>
                 {rolePrompt.role}
               </Dropdown.Button>
               <Dropdown.Menu
