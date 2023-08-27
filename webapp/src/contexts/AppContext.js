@@ -15,6 +15,7 @@ export const AppContextProvider = ({ children }) => {
   const [connectedMacAddress, setConnectedMacAddress] = useState('');
   const [connecting, setConnecting] = useState(false);
 
+  const [faceMode, setFaceMode] = useState(false);
   const [showFace, setShowFace] = useState(false);
   const [socket, setSocket] = useState(null);
   const [teacherPath, setTeacherPath] = useState(null);
@@ -286,6 +287,8 @@ export const AppContextProvider = ({ children }) => {
         setControlMode,
         showFace,
         setShowFace,
+        faceMode,
+        setFaceMode,
         // armControl
         dancing,
         setDancing,
