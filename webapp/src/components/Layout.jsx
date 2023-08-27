@@ -104,16 +104,16 @@ export default function Layout({ children }) {
     }
   }, [displaySidebar]);
 
-  useEffect(() => {
-    if (!showFace) {
-      // Start the timer when showFace is false
-      const timer = setTimeout(() => {
-        setShowFace(true);
-      }, 5000);
+  // useEffect(() => {
+  //   if (!showFace) {
+  //     // Start the timer when showFace is false
+  //     const timer = setTimeout(() => {
+  //       setShowFace(true);
+  //     }, 5000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [showFace, setShowFace]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [showFace, setShowFace]);
 
   return (
     <>
