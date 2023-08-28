@@ -34,7 +34,7 @@ const voiceProfiles = [
 ];
 
 export default function AudioChat() {
-  const { setSpeaking, setDancing } = useContext(AppContext);
+  const { setSpeaking, setDancing, setMood } = useContext(AppContext);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -82,11 +82,11 @@ export default function AudioChat() {
   const [ans, setAns] = useState(null);
   const [conversationHistory, setConversationHistory] = useState([]);
 
-  useEffect(() => {
-    console.log('role: ', rolePrompt.role);
-    console.log('prompt: ', rolePrompt.prompt);
-    console.log('voice: ', rolePrompt.voice);
-  }, [rolePrompt]);
+  // useEffect(() => {
+  //   console.log('role: ', rolePrompt.role);
+  //   console.log('prompt: ', rolePrompt.prompt);
+  //   console.log('voice: ', rolePrompt.voice);
+  // }, [rolePrompt]);
 
   useEffect(() => {
     if (audioData) {
@@ -105,9 +105,11 @@ export default function AudioChat() {
       ansAudioRef.current.load();
       ansAudioRef.current.oncanplaythrough = () => {
         ansAudioRef.current.play();
+
         // check how long is the audio
         const duration = ansAudioRef.current.duration;
-        console.log('duration: ', duration);
+        // console.log('duration: ', duration);
+
         handleAction(text, duration);
       };
       ansAudioRef.current.onerror = (e) => {
@@ -220,7 +222,7 @@ export default function AudioChat() {
       setText('');
     } else {
       const responseJson = await response.json();
-      console.log('audioChat: ', responseJson);
+      // console.log('audioChat: ', responseJson);
 
       const { answer, answerAudio } = responseJson;
       const newAssistantMessage = { role: 'assistant', content: answer };
@@ -230,7 +232,7 @@ export default function AudioChat() {
       }
       setConversationHistory(newConversationHistory);
       setAns(answer);
-      console.log(answer);
+      // console.log(answer);
 
       const audioBlob = base64ToBlob(answerAudio, 'audio/mp3');
       const audioUrl = URL.createObjectURL(audioBlob);
@@ -243,30 +245,36 @@ export default function AudioChat() {
   }
 
   function danceAtleastTen(duration) {
-    console.log('danceAtleastTen');
+    // console.log('danceAtleastTen');
     if (duration < 10) {
       setDancing(true);
+      setMood('happy');
       setTimeout(() => {
         setDancing(false);
+        setMood('default');
       }, 10000);
     } else {
       setDancing(true);
+      setMood('happy');
       setTimeout(() => {
         setDancing(false);
+        setMood('default');
       }, duration * 1000);
     }
   }
 
   function speakInDuration(duration) {
-    console.log('speakInDuration');
+    // console.log('speakInDuration');
     setSpeaking(true);
+    setMood('speak');
     setTimeout(() => {
       setSpeaking(false);
+      setMood('default');
     }, duration * 1000);
   }
 
   function handleAction(text, duration) {
-    console.log('handleAction: ', duration);
+    // console.log('handleAction: ', duration);
     const actionWords = ['跳舞'];
     // check if text has some action words
     const action = actionWords.find((word) => text.includes(word));

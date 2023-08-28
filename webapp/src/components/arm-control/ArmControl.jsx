@@ -19,6 +19,7 @@ export default function ArmControl() {
     handleWrongAction,
     handleGrabAction,
     handleSpeakAction,
+    setMood,
   } = useContext(AppContext);
 
   return (
@@ -37,6 +38,7 @@ export default function ArmControl() {
       handleGrabAction={handleGrabAction}
       handleDance={handleDance}
       handleSpeakAction={handleSpeakAction}
+      setMood={setMood}
       // handleResetWifi={handleResetWifi}
     />
   );

@@ -9,7 +9,7 @@ import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 
 export default function VideoLearning() {
-  const { setSpeaking } = useContext(AppContext);
+  const { setSpeaking, setMood } = useContext(AppContext);
   const [res, setRes] = useState(null);
 
   const [ans, setAns] = useState(null);
@@ -233,8 +233,10 @@ export default function VideoLearning() {
   function speakInDuration(duration) {
     console.log('speakInDuration');
     setSpeaking(true);
+    setMood('speak');
     setTimeout(() => {
       setSpeaking(false);
+      setMood('default');
     }, duration * 1000);
   }
 

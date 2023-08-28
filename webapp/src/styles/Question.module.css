@@ -86,7 +86,6 @@
 }
 
 .addQConatiner {
-  /* border-left: rgb(200, 200, 200) 0.16rem solid;  */
   padding: 0 1.25rem;
   height: fit-content;
   display: flex;
@@ -94,6 +93,7 @@
   justify-content: center;
 }
 
+/*
 .addCard {
   display: flex;
   flex-direction: column;
@@ -114,4 +114,4 @@
 
 .addCard path {
   fill: black;
-}
+} */
