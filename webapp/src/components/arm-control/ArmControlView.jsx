@@ -20,7 +20,7 @@ export default function ArmControlView(props) {
     handleCorrectAction,
     handleWrongAction,
     handleGrabAction,
-    handleSpeakAction,
+    setMood,
     // handleResetWifi,
   } = props;
 
@@ -167,24 +167,44 @@ export default function ArmControlView(props) {
             </div>
           )}
           <div className="w-full h-44 mb-3 py-2 flex flex-wrap justify-between items-center">
-            <button className={styles.controlBtn} onClick={handleReset}>
+            <button
+              disabled={dancing || speaking}
+              className={styles.controlBtn}
+              onClick={handleReset}
+            >
               返回初始狀態
             </button>
-            <button className={styles.controlBtn} onClick={handleCorrectAction}>
+            <button
+              disabled={dancing || speaking}
+              className={styles.controlBtn}
+              onClick={handleCorrectAction}
+            >
               答對動作
             </button>
-            <button className={styles.controlBtn} onClick={handleWrongAction}>
+            <button
+              disabled={dancing || speaking}
+              className={styles.controlBtn}
+              onClick={handleWrongAction}
+            >
               答錯動作
             </button>
-            <button className={styles.controlBtn} onClick={handleGrabAction}>
+            <button
+              disabled={dancing || speaking}
+              className={styles.controlBtn}
+              onClick={handleGrabAction}
+            >
               抓動作
             </button>
             <button
               className={styles.controlBtn}
+              disabled={dancing === true}
               onClick={() => {
-                setSpeaking(!speaking);
                 if (speaking === true) {
                   setSpeaking(false);
+                  setMood('default');
+                } else if (speaking === false) {
+                  setSpeaking(true);
+                  setMood('speak');
                 }
               }}
             >
@@ -192,10 +212,14 @@ export default function ArmControlView(props) {
             </button>
             <button
               className={styles.controlBtn}
+              disabled={speaking === true}
               onClick={() => {
-                setDancing(!dancing);
                 if (dancing === true) {
                   setDancing(false);
+                  setMood('default');
+                } else if (dancing === false) {
+                  setDancing(true);
+                  setMood('happy');
                 }
               }}
             >

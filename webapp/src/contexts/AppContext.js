@@ -17,6 +17,8 @@ export const AppContextProvider = ({ children }) => {
 
   const [faceMode, setFaceMode] = useState(false);
   const [showFace, setShowFace] = useState(false);
+  const [mood, setMood] = useState('default');
+
   const [socket, setSocket] = useState(null);
   const [teacherPath, setTeacherPath] = useState(null);
   const [controlMode, setControlMode] = useState('single');
@@ -285,10 +287,13 @@ export const AppContextProvider = ({ children }) => {
         setConnecting,
         controlMode,
         setControlMode,
+        // face
         showFace,
         setShowFace,
         faceMode,
         setFaceMode,
+        mood,
+        setMood,
         // armControl
         dancing,
         setDancing,

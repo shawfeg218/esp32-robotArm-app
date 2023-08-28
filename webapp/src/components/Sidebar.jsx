@@ -16,7 +16,8 @@ import Avatar from './account/Avatar';
 import { Switch } from '@nextui-org/react';
 
 export default function Sidebar() {
-  const { displaySidebar, setDisplaySidebar, faceMode, setFaceMode } = useContext(AppContext);
+  const { displaySidebar, setDisplaySidebar, faceMode, setFaceMode, setMood } =
+    useContext(AppContext);
 
   // useEffect(() => {
   //   console.log('FaceMode:', faceMode);
@@ -140,6 +141,18 @@ export default function Sidebar() {
             }}
           ></Switch>
         </div>
+        {/* <select
+          name="mood"
+          onChange={(e) => {
+            setMood(e.target.value);
+          }}
+        >
+          <option value="default">預設</option>
+          <option value="happy">開心</option>
+          <option value="cry">哭哭</option>
+          <option value="angry">生氣</option>
+          <option value="speak">說話</option>
+        </select> */}
       </div>
     </div>
   );

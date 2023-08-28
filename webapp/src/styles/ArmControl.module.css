@@ -83,6 +83,17 @@
   transition: background-color 0.3s ease-in-out;
 }
 
+.controlBtn:disabled {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.controlBtn:disabled:hover {
+  background-color: #e0e0e0;
+}
+
 .controlBtn:hover {
   background-color: #999;
 }

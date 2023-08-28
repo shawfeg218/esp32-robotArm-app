@@ -16,7 +16,7 @@
   transform: translateX(0);
 }
 
-@media (min-width: 1800px) {
+@media (min-width: 1930px) {
   .container {
     transform: translateX(0);
   }

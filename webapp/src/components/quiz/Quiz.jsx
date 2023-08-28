@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import Question from './Question';
 import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import styles from '@/styles/Question.module.css';
 import { BiPlus } from 'react-icons/bi';
 import { AiOutlineDelete } from 'react-icons/ai';
 import Link from 'next/link';
@@ -140,11 +139,9 @@ function Quiz() {
               <>
                 {role === 'teacher' ? (
                   <Link href="/quiz/add-subject" passHref>
-                    <div className={styles.addQConatiner}>
-                      <div className={styles.addCard}>
-                        <div className="reactIcon">
-                          <BiPlus size="3rem" />
-                        </div>
+                    <div className="border-4 border-dashed rounded-lg m-4 w-96 h-52 bg-white hover:bg-yellow-50 flex justify-center items-center">
+                      <div className="reactIcon">
+                        <BiPlus size="3rem" />
                       </div>
                     </div>
                   </Link>

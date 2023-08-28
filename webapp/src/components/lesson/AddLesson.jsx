@@ -72,7 +72,7 @@ export default function AddLesson() {
     e.preventDefault();
 
     if (!lessonTitle) {
-      setMessage('必須填寫課文標題!');
+      setMessage('必須填寫課文名稱!');
       setSuccessMessage(null);
       return;
     }
@@ -92,7 +92,7 @@ export default function AddLesson() {
   return (
     <div className="w-full flex justify-center">
       <form onSubmit={handleSubmit} className="mt-16 bg-slate-100 pt-4 px-2 pb-12 w-full max-w-3xl">
-        <div className="border border-black border-x-0 border-t-0 border-solid pb-4">
+        <div className=" pb-4">
           <h2>新增課文</h2>
           <label>課文名稱</label>
           <PrettyTextArea
@@ -111,7 +111,7 @@ export default function AddLesson() {
 
         <div className="py-4">
           <h2>內容</h2>
-          <div className="border-solid border border-black rounded-md px-4 py-2">
+          <div className="border-solid border-2 border-slate-300 rounded-md px-4 pt-2 pb-8">
             {paragraphs.map((paragraph, paragraphIndex) => (
               <div className="my-6" key={paragraphIndex}>
                 <div className="flex justify-between items-center">
