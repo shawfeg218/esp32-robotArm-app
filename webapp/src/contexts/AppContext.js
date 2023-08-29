@@ -250,14 +250,14 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  // const handleResetWifi = () => {
-  //   if (controlMode === 'single' && connectedMacAddress !== '') {
-  //     // console.log('reset wifi');
-  //     axios.post('/api/reset-wifi', {
-  //       connectedMacAddress,
-  //     });
-  //   }
-  // };
+  const handleResetWifi = () => {
+    if (controlMode === 'single' && connectedMacAddress !== '') {
+      console.log('reset wifi');
+      axios.post('/api/reset-wifi', {
+        connectedMacAddress,
+      });
+    }
+  };
 
   return (
     <AppContext.Provider
@@ -311,7 +311,7 @@ export const AppContextProvider = ({ children }) => {
         handleWrongAction,
         handleGrabAction,
         handleSpeakAction,
-        // handleResetWifi,
+        handleResetWifi,
       }}
     >
       {children}
