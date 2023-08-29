@@ -1,5 +1,4 @@
 import ArmControl from '@/components/arm-control/ArmControl';
-import Esp32Status from '@/components/arm-control/Esp32Status';
 import AppContext from '@/contexts/AppContext';
 import { useUser } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
@@ -22,9 +21,8 @@ export default function ArmControlPage() {
   }, []);
 
   return (
-    <div className="mt-16 flex flex-wrap justify-center">
+    <div className="mt-16 flex justify-center">
       <ArmControl />
-      <Esp32Status />
     </div>
   );
 }
