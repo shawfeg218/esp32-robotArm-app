@@ -15,6 +15,8 @@ export default function Esp32Status() {
     setConnectedMacAddress,
     connectedDeviceName,
     connectedMacAddress,
+    handleResetWifi,
+    controlMode,
   } = useContext(AppContext);
 
   const [esp32Status, setEsp32Status] = useState({});
@@ -37,15 +39,6 @@ export default function Esp32Status() {
       return () => clearInterval(interval);
     }
   }, [connectedMacAddress]);
-
-  const handleResetWifi = () => {
-    if (controlMode === 'single' && connectedMacAddress !== '') {
-      // console.log('reset wifi');
-      axios.post('/api/reset-wifi', {
-        connectedMacAddress,
-      });
-    }
-  };
 
   const handleDisconnect = () => {
     axios.post('/api/unsubscribe-topic', {
@@ -86,13 +79,15 @@ export default function Esp32Status() {
       <div className="mt-3">
         {connectedDeviceName === '' ? null : (
           <>
-            <Button
-              ghost
-              className="w-full text-purple-600 hover:bg-purple-600 hover:text-white border-purple-600"
-              onClick={handleResetWifi}
-            >
-              重置wifi
-            </Button>
+            {controlMode === 'single' ? (
+              <Button
+                ghost
+                className="w-full text-purple-600 hover:bg-purple-600 hover:text-white border-purple-600"
+                onClick={handleResetWifi}
+              >
+                重置wifi
+              </Button>
+            ) : null}
             <Spacer y={0.25} />
             <Button
               ghost
