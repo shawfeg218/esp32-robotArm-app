@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '@/styles/ArmControl.module.css';
 import { Spacer } from '@nextui-org/react';
 import { useUser } from '@supabase/auth-helpers-react';
+import Esp32Status from './Esp32Status';
 
 export default function ArmControlView(props) {
   const user = useUser();
@@ -123,110 +124,113 @@ export default function ArmControlView(props) {
         />
       </div>
 
-      <div className={styles.columnContainer}>
-        <div className={styles.servoState}>
-          <h2>Servo</h2>
-          <div className="flex">
-            <h5 className="w-1/2">A軸-當前角度：{currentAngles.A}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.A}°</h5>
-          </div>
-          <div className="flex">
-            <h5 className="w-1/2">B軸-當前角度：{currentAngles.B}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.B}°</h5>
-          </div>
-          <div className="flex">
-            <h5 className="w-1/2">C軸-當前角度：{currentAngles.C}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.C}°</h5>
-          </div>
-          <div className="flex">
-            <h5 className="w-1/2">D軸-當前角度：{currentAngles.D}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.D}°</h5>
-          </div>
-          <div className="flex">
-            <h5 className="w-1/2">E軸-當前角度：{currentAngles.E}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.E}°</h5>
-          </div>
-          <div className="flex">
-            <h5 className="w-1/2">F軸-當前角度：{currentAngles.F}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.F}°</h5>
-          </div>
-          <div className="flex">
-            <h5 className="w-1/2">G軸-當前角度：{currentAngles.G}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.G}°</h5>
-          </div>
-          <div className="flex">
-            <h5 className="w-1/2">H軸-當前角度：{currentAngles.H}°</h5>
-            <h5 className="w-1/2 ml-6">目標角度：{targetAngles.H}°</h5>
-          </div>
-        </div>
-
-        <div className={styles.btnContainer}>
-          {role === 'teacher' || controlMode === 'single' ? null : (
-            <div className="absolute top-0 left-0 w-full h-full flex justify-center bg-slate-100/75">
-              <h2 className="mt-28 hover:cursor-default">教師控制中</h2>
+      <div className="flex flex-wrap justify-center">
+        <div className={styles.columnContainer}>
+          <div className={styles.servoState}>
+            <h2>Servo</h2>
+            <div className="flex">
+              <h5 className="w-1/2">A軸-當前角度：{currentAngles.A}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.A}°</h5>
             </div>
-          )}
-          <div className="w-full h-44 mb-3 py-2 flex flex-wrap justify-between items-center">
-            <button
-              disabled={dancing || speaking}
-              className={styles.controlBtn}
-              onClick={handleReset}
-            >
-              返回初始狀態
-            </button>
-            <button
-              disabled={dancing || speaking}
-              className={styles.controlBtn}
-              onClick={handleCorrectAction}
-            >
-              答對動作
-            </button>
-            <button
-              disabled={dancing || speaking}
-              className={styles.controlBtn}
-              onClick={handleWrongAction}
-            >
-              答錯動作
-            </button>
-            <button
-              disabled={dancing || speaking}
-              className={styles.controlBtn}
-              onClick={handleGrabAction}
-            >
-              抓動作
-            </button>
-            <button
-              className={styles.controlBtn}
-              disabled={dancing === true}
-              onClick={() => {
-                if (speaking === true) {
-                  setSpeaking(false);
-                  setMood('default');
-                } else if (speaking === false) {
-                  setSpeaking(true);
-                  setMood('speak');
-                }
-              }}
-            >
-              {speaking ? '停止...' : '說話動作'}
-            </button>
-            <button
-              className={styles.controlBtn}
-              disabled={speaking === true}
-              onClick={() => {
-                if (dancing === true) {
-                  setDancing(false);
-                  setMood('default');
-                } else if (dancing === false) {
-                  setDancing(true);
-                  setMood('happy');
-                }
-              }}
-            >
-              {dancing ? '停止...' : '跳舞'}
-            </button>
+            <div className="flex">
+              <h5 className="w-1/2">B軸-當前角度：{currentAngles.B}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.B}°</h5>
+            </div>
+            <div className="flex">
+              <h5 className="w-1/2">C軸-當前角度：{currentAngles.C}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.C}°</h5>
+            </div>
+            <div className="flex">
+              <h5 className="w-1/2">D軸-當前角度：{currentAngles.D}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.D}°</h5>
+            </div>
+            <div className="flex">
+              <h5 className="w-1/2">E軸-當前角度：{currentAngles.E}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.E}°</h5>
+            </div>
+            <div className="flex">
+              <h5 className="w-1/2">F軸-當前角度：{currentAngles.F}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.F}°</h5>
+            </div>
+            <div className="flex">
+              <h5 className="w-1/2">G軸-當前角度：{currentAngles.G}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.G}°</h5>
+            </div>
+            <div className="flex">
+              <h5 className="w-1/2">H軸-當前角度：{currentAngles.H}°</h5>
+              <h5 className="w-1/2 ml-6">目標角度：{targetAngles.H}°</h5>
+            </div>
+          </div>
+
+          <div className={styles.btnContainer}>
+            {role === 'teacher' || controlMode === 'single' ? null : (
+              <div className="absolute top-0 left-0 w-full h-full flex justify-center bg-slate-100/75">
+                <h2 className="mt-28 hover:cursor-default">教師控制中</h2>
+              </div>
+            )}
+            <div className="w-full h-44 mb-3 py-2 flex flex-wrap justify-between items-center">
+              <button
+                disabled={dancing || speaking}
+                className={styles.controlBtn}
+                onClick={handleReset}
+              >
+                返回初始狀態
+              </button>
+              <button
+                disabled={dancing || speaking}
+                className={styles.controlBtn}
+                onClick={handleCorrectAction}
+              >
+                答對動作
+              </button>
+              <button
+                disabled={dancing || speaking}
+                className={styles.controlBtn}
+                onClick={handleWrongAction}
+              >
+                答錯動作
+              </button>
+              <button
+                disabled={dancing || speaking}
+                className={styles.controlBtn}
+                onClick={handleGrabAction}
+              >
+                抓動作
+              </button>
+              <button
+                className={styles.controlBtn}
+                disabled={dancing === true}
+                onClick={() => {
+                  if (speaking === true) {
+                    setSpeaking(false);
+                    setMood('default');
+                  } else if (speaking === false) {
+                    setSpeaking(true);
+                    setMood('speak');
+                  }
+                }}
+              >
+                {speaking ? '停止...' : '說話動作'}
+              </button>
+              <button
+                className={styles.controlBtn}
+                disabled={speaking === true}
+                onClick={() => {
+                  if (dancing === true) {
+                    setDancing(false);
+                    setMood('default');
+                  } else if (dancing === false) {
+                    setDancing(true);
+                    setMood('happy');
+                  }
+                }}
+              >
+                {dancing ? '停止...' : '跳舞'}
+              </button>
+            </div>
           </div>
         </div>
+        <Esp32Status />
       </div>
     </div>
   );
