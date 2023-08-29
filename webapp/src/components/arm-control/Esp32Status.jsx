@@ -80,17 +80,12 @@ export default function Esp32Status() {
         {connectedDeviceName === '' ? null : (
           <>
             {controlMode === 'single' ? (
-              <Button
-                ghost
-                className="w-full text-purple-600 hover:bg-purple-600 hover:text-white border-purple-600"
-                onClick={handleResetWifi}
-              >
+              <Button ghost color="secondary" className="w-full" onClick={handleResetWifi}>
                 重置wifi
               </Button>
             ) : null}
             <Spacer y={0.25} />
             <Button
-              ghost
               onClick={handleDisconnect}
               className="w-full text-white bg-red-600 border-red-600"
             >
