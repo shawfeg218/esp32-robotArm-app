@@ -79,10 +79,10 @@ void setup() {
 
 void loop() {
   // 检查按鈕状态
-  // if (digitalRead(buttonPin) == LOW) {
-  //   // 如果按鈕被按下，重置WiFi
-  //   handleResetWifi();
-  // }
+  if (digitalRead(buttonPin) == LOW) {
+    // 如果按鈕被按下，重置WiFi
+    handleResetWifi();
+  }
 
   if (!mqttClient.connected()) {
     reconnectMqtt();
@@ -276,70 +276,82 @@ void wrongAct() {
   servoB.write(70);
   delay(1000);
     
-  }
+       }
   initializedAngles();
 }
 
 void grabAct() {
   Serial.println("grab-action");
-  angleF = init_angleF;
-  servoF.write(angleF);
+ 
+  servoG.write(110);
+  servoF.write(150);
   delay(500);
-
-  angleF = init_angleF - 18;
-  servoF.write(angleF);
-  delay(500);
+  for(int i=0;i<3;i++){
+    servoE.write(random(50,120));
+    
+    }
+  delay(1000);
+  initializedAngles();
 }
 
 void speakingAct(){
-  Serial.println("speaking-action");
-  for(int i=0;i<2;i++){//for要改成while(講話)
+  
     servoE.write(128);
     servoF.write(90);
-    servoG.write(0);
+    servoG.write(50);
     servoH.write(90);
 
     servoA.write(9);
     servoB.write(56);
-    servoC.write(150);
+    servoC.write(30);//150
     servoD.write(145);
-    delay(1000);
-    
+    delay(100);
+
+    int R = random(5);
+    if(R == 0){
     //右手
-    for(int i=0;i<2;i++){
-      servoG.write(67);
-      delay(700);
-      servoG.write(40);
-      servoH.write(110);
+       Serial.println("speaking-action1");
+      servoG.write(110);
       delay(500);
 
-    }
-  
+        }
+     
     //左手
-    for(int i=0;i<3;i++){
-      servoC.write(90);
-      servoD.write(161);
-      delay(300);
-    }
-    delay(400);
-    
+    else if(R == 1){
+    Serial.println("speaking-action2");
+      servoC.write(80);
+      delay(500);
+        }
+
+
+
+     else if(R==2){
     //右手2
-    for(int i=0;i<3;i++){
+      Serial.println("speaking-action3");
       servoF.write(48);
-      servoG.write(150);
+      servoG.write(120);
       servoH.write(120);
-      delay(300);
-    }
-    
+      delay(500);
+         }
     //左手2
-    for(int i=0;i<3;i++){
+     else if(R==3){
+      Serial.println("speaking-action4");
       servoB.write(88);
-      servoC.write(90);
-      servoD.write(130);
-      delay(300);
-    }
-  }
-    initializedAngles();
+      servoC.write(80);
+      servoD.write(150);
+      delay(500);
+         }
+     
+  
+  
+
+     else if(R==4){
+      Serial.println("speaking-action5");
+      servoG.write(70);
+      servoH.write(110);
+      delay(500);
+        }
+    
 }
 
 void resetArm() {
