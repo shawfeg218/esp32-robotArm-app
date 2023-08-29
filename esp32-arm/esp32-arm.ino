@@ -33,6 +33,7 @@ const int init_angleG = 75;
 const int init_angleH = 90;
 
 const int buttonPin = 18;
+int prevBtnState = HIGH;
 
 int angleA;
 int angleB;
@@ -79,10 +80,12 @@ void setup() {
 
 void loop() {
   // 检查按鈕状态
-  if (digitalRead(buttonPin) == LOW) {
-    // 如果按鈕被按下，重置WiFi
+  int currentBtnState = digitalRead(buttonPin);
+  if (currentBtnState == LOW && prevBtnState == HIGH){
     handleResetWifi();
   }
+
+  prevBtnState = currentBtnState;
 
   if (!mqttClient.connected()) {
     reconnectMqtt();
