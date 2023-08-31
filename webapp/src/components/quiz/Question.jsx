@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import QuestionView from './QuestionView';
-import Link from 'next/link';
 import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Loading } from '@nextui-org/react';
 
 export default function Question() {
-  // State
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1);
   const [isAnswered, setIsAnswered] = useState(false);

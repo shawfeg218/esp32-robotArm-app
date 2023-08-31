@@ -6,12 +6,15 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { Card, Modal, Button } from '@nextui-org/react';
 import Textbook from './Textbook';
 import { useRouter } from 'next/router';
+import QuizLoading from '../quiz/QuizLoading';
 
 function Lesson() {
   const router = useRouter();
   const user = useUser();
   const role = user?.user_metadata?.role;
   const supabase = useSupabaseClient();
+
+  const [loading, setLoading] = useState(true);
 
   const { selectedLesson, setSelectedLesson } = useContext(AppContext);
   const [lessons, setLessons] = useState([]);
@@ -24,6 +27,7 @@ function Lesson() {
   };
 
   async function fetchLessons() {
+    setLoading(true);
     try {
       const { data, error } = await supabase.from('lessons').select('*');
 
@@ -31,9 +35,12 @@ function Lesson() {
         throw error;
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setLessons(data);
     } catch (error) {
       console.log('Error fetching subjects:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -67,32 +74,36 @@ function Lesson() {
         {selectedLesson ? null : (
           <>
             <div className="w-full flex justify-center mt-16">
-              <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-                {lessons.map((lesson, index) => (
-                  <div key={lesson.id}>
-                    <Card
-                      isHoverable
-                      isPressable
-                      // key={lesson.id}
-                      className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50"
-                      onClick={() => handleSelectLesson(lesson.id)}
-                    >
-                      {role === 'teacher' && (
-                        <AiOutlineDelete
-                          size="1.5rem"
-                          className="absolute top-4 right-4 hover:text-slate-400"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowDelModal(true);
-                            setDelLesson(lessons[index]);
-                            console.log(lessons[index]);
-                          }}
-                        />
-                      )}
-                      <p className="font-bold">{lesson.title.toUpperCase()}</p>
-                      <p className="font-bold">課文 id: {lesson.id}</p>
-                      <p className="font-bold">課文大綱: {lesson.description}</p>
-                      {/* <p className="font-bold">
+              {loading ? (
+                <QuizLoading />
+              ) : (
+                <>
+                  <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+                    {lessons.map((lesson, index) => (
+                      <div key={lesson.id}>
+                        <Card
+                          isHoverable
+                          isPressable
+                          // key={lesson.id}
+                          className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50"
+                          onClick={() => handleSelectLesson(lesson.id)}
+                        >
+                          {role === 'teacher' && (
+                            <AiOutlineDelete
+                              size="1.5rem"
+                              className="absolute top-4 right-4 hover:text-slate-400"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setShowDelModal(true);
+                                setDelLesson(lessons[index]);
+                                console.log(lessons[index]);
+                              }}
+                            />
+                          )}
+                          <p className="font-bold">{lesson.title.toUpperCase()}</p>
+                          <p className="font-bold">課文 id: {lesson.id}</p>
+                          <p className="font-bold">課文大綱: {lesson.description}</p>
+                          {/* <p className="font-bold">
                       Inserted time:
                       {new Date(lesson.inserted_at).toLocaleDateString(undefined, {
                         year: 'numeric',
@@ -100,63 +111,66 @@ function Lesson() {
                         day: '2-digit',
                       })}
                     </p> */}
-                    </Card>
-                    <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
-                      <Modal.Header className="text-2xl font-bold">
-                        確定刪除 <span className="text-red-500 font-bold">{delLesson.title}</span> ?
-                      </Modal.Header>
-                      <Modal.Body className="pl-8">
-                        <h3>課文 id: {delLesson.id}</h3>
-                        <h3>課文名稱: {delLesson.title}</h3>
-                        <h3>課文大綱: {delLesson.description}</h3>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <div className="flex justify-between w-full">
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              handleDeleteLesson();
-                              setShowDelModal(false);
-                            }}
-                          >
-                            確定
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setDelLesson({});
-                              setShowDelModal(false);
-                            }}
-                          >
-                            取消
-                          </Button>
-                        </div>
-                      </Modal.Footer>
-                    </Modal>
-                  </div>
-                ))}
-
-                {/* add subject component */}
-                <>
-                  {role === 'teacher' ? (
-                    <Card
-                      isHoverable
-                      isPressable
-                      // key={lesson.id}
-                      className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50 border-4 border-dashed"
-                      onClick={() => {
-                        router.push('/lesson/add-lesson');
-                      }}
-                    >
-                      <div className="h-full flex justify-center items-center">
-                        <div className="reactIcon">
-                          <BiPlus size="3rem" />
-                        </div>
+                        </Card>
+                        <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
+                          <Modal.Header className="text-2xl font-bold">
+                            確定刪除{' '}
+                            <span className="text-red-500 font-bold">{delLesson.title}</span> ?
+                          </Modal.Header>
+                          <Modal.Body className="pl-8">
+                            <h3>課文 id: {delLesson.id}</h3>
+                            <h3>課文名稱: {delLesson.title}</h3>
+                            <h3>課文大綱: {delLesson.description}</h3>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <div className="flex justify-between w-full">
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  handleDeleteLesson();
+                                  setShowDelModal(false);
+                                }}
+                              >
+                                確定
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setDelLesson({});
+                                  setShowDelModal(false);
+                                }}
+                              >
+                                取消
+                              </Button>
+                            </div>
+                          </Modal.Footer>
+                        </Modal>
                       </div>
-                    </Card>
-                  ) : null}
+                    ))}
+
+                    {/* add subject component */}
+                    <>
+                      {role === 'teacher' ? (
+                        <Card
+                          isHoverable
+                          isPressable
+                          // key={lesson.id}
+                          className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50 border-4 border-dashed"
+                          onClick={() => {
+                            router.push('/lesson/add-lesson');
+                          }}
+                        >
+                          <div className="h-full flex justify-center items-center">
+                            <div className="reactIcon">
+                              <BiPlus size="3rem" />
+                            </div>
+                          </div>
+                        </Card>
+                      ) : null}
+                    </>
+                  </div>
                 </>
-              </div>
+              )}
             </div>
           </>
         )}
