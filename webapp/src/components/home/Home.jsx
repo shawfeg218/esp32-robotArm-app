@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <div className="flex justify-center w-full mt-16">
       <div>
-        <div className="max-w-6xl flex flex-col sm:flex-row sm:flex-wrap justify-center">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 justify-center">
           <HomeCard
             img="/img/Control.jpg"
             title={'機器人控制'}
@@ -83,13 +83,13 @@ export default function Home() {
 
           <div className="w-96 flex justify-center ">
             {loading ? (
-              <Card
-                aria-label="Loading"
-                isHoverable
-                className="w-full max-w-sm flex-col items-center"
-              >
-                <div className="h-full flex items-center">
-                  <Loading size="lg" color="primary" />
+              <Card aria-label="Loading" className="w-full max-w-sm flex-col items-center">
+                <div className="w-full px-8">
+                  <h1 className="text-gray-900 text-center">HISTORY</h1>
+                  <div className="w-full h-52 bg-slate-200"></div>
+                  <div className="my-8">
+                    <div className="w-full h-8 bg-slate-200"></div>
+                  </div>
                 </div>
               </Card>
             ) : (

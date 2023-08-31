@@ -151,15 +151,6 @@ button.primary,
   justify-content: space-between;
 }
 
-.cardContainer {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
 .card {
   background-color: #ffffff;
   padding: 1rem;
@@ -191,8 +182,8 @@ button.primary,
   object-fit: cover;
 }
 .avatar.no-image {
-  background-color: #838383;
-  border: 0.0625rem solid rgb(200, 200, 200);
+  background-color: #ffffff;
+  border: 0.0625rem solid rgb(159, 157, 157);
   border-radius: 0.3125rem;
 }
 
@@ -220,10 +211,4 @@ button.primary,
   font-family: sans-serif;
   min-width: 350px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-@media (max-width: 768px) {
-  .cardContainer {
-    width: 100%;
-  }
 }

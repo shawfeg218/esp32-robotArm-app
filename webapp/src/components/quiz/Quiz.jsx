@@ -4,10 +4,11 @@ import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { BiPlus } from 'react-icons/bi';
 import { AiOutlineDelete } from 'react-icons/ai';
-import Link from 'next/link';
 import { Card, Modal, Button } from '@nextui-org/react';
+import { useRouter } from 'next/router';
 
 function Quiz() {
+  const router = useRouter();
   const user = useUser();
   const role = user?.user_metadata?.role;
   const supabase = useSupabaseClient();
@@ -65,31 +66,33 @@ function Quiz() {
       <>
         {selectedSubject ? null : (
           <>
-            <div className="cardContainer mt-16">
-              {subjects.map((subject, index) => (
-                <div key={subject.id}>
-                  <Card
-                    isHoverable
-                    isPressable
-                    variant="bordered"
-                    // key={subject.id}
-                    className="relative w-96 h-52 bg-white p-4 m-4 hover:bg-yellow-50"
-                    onClick={() => handleSelectSubject(subject.id)}
-                  >
-                    <AiOutlineDelete
-                      size="1.5rem"
-                      className="absolute top-2 right-2 hover:text-slate-400"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowDelModal(true);
-                        setDelSub(subjects[index]);
-                        console.log(subjects[index]);
-                      }}
-                    />
-                    <p className="font-bold">{subject.name.toUpperCase()}</p>
-                    <p className="font-bold">Subject id: {subject.id}</p>
-                    <p className="font-bold">Total questions: {subject.total_questions}</p>
-                    {/* <p className="font-bold">
+            <div className="w-full flex justify-center mt-16">
+              <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+                {subjects.map((subject, index) => (
+                  <div key={subject.id}>
+                    <Card
+                      isHoverable
+                      isPressable
+                      // key={subject.id}
+                      className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50"
+                      onClick={() => handleSelectSubject(subject.id)}
+                    >
+                      {role === 'teacher' && (
+                        <AiOutlineDelete
+                          size="1.5rem"
+                          className="absolute top-4 right-4 hover:text-slate-400"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowDelModal(true);
+                            setDelSub(subjects[index]);
+                            console.log(subjects[index]);
+                          }}
+                        />
+                      )}
+                      <p className="font-bold">{subject.name.toUpperCase()}</p>
+                      <p className="font-bold">Subject id: {subject.id}</p>
+                      <p className="font-bold">Total questions: {subject.total_questions}</p>
+                      {/* <p className="font-bold">
                       Inserted time:
                       {new Date(subject.inserted_at).toLocaleDateString(undefined, {
                         year: 'numeric',
@@ -97,56 +100,65 @@ function Quiz() {
                         day: '2-digit',
                       })}
                     </p> */}
-                    <p className="font-bold">題目介紹:</p>
-                    <p className="font-bold">{subject.describe ? subject.describe : '無說明'}</p>
-                  </Card>
-                  <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
-                    <Modal.Header className="text-2xl font-bold">
-                      確定刪除 <span className="text-red-500 font-bold">{delSub.name}</span> ?
-                    </Modal.Header>
-                    <Modal.Body className="pl-8">
-                      <h3>subject id: {delSub.id}</h3>
-                      <h3>subject name: {delSub.name}</h3>
-                      <h3>total questions: {delSub.total_questions}</h3>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <div className="flex justify-between w-full">
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            handleDeleteSubject();
-                            setShowDelModal(false);
-                          }}
-                        >
-                          確定
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            setDelSub({});
-                            setShowDelModal(false);
-                          }}
-                        >
-                          取消
-                        </Button>
-                      </div>
-                    </Modal.Footer>
-                  </Modal>
-                </div>
-              ))}
+                      <p className="font-bold">題目介紹:</p>
+                      <p className="font-bold">{subject.describe ? subject.describe : '無說明'}</p>
+                    </Card>
+                    <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
+                      <Modal.Header className="text-2xl font-bold">
+                        確定刪除 <span className="text-red-500 font-bold">{delSub.name}</span> ?
+                      </Modal.Header>
+                      <Modal.Body className="pl-8">
+                        <h3>subject id: {delSub.id}</h3>
+                        <h3>subject name: {delSub.name}</h3>
+                        <h3>total questions: {delSub.total_questions}</h3>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <div className="flex justify-between w-full">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              handleDeleteSubject();
+                              setShowDelModal(false);
+                            }}
+                          >
+                            確定
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setDelSub({});
+                              setShowDelModal(false);
+                            }}
+                          >
+                            取消
+                          </Button>
+                        </div>
+                      </Modal.Footer>
+                    </Modal>
+                  </div>
+                ))}
 
-              {/* add subject component */}
-              <>
-                {role === 'teacher' ? (
-                  <Link href="/quiz/add-subject" passHref>
-                    <div className="border-4 border-dashed rounded-lg m-4 w-96 h-52 bg-white hover:bg-yellow-50 flex justify-center items-center">
-                      <div className="reactIcon">
-                        <BiPlus size="3rem" />
+                {/* add subject component */}
+                <>
+                  {role === 'teacher' ? (
+                    <Card
+                      isHoverable
+                      isPressable
+                      // key={subject.id}
+                      className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50 border-4 border-dashed"
+                      onClick={() => {
+                        router.push('/quiz/add-subject');
+                      }}
+                    >
+                      <div className="h-full flex justify-center items-center">
+                        <div className="reactIcon">
+                          <BiPlus size="3rem" />
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ) : null}
-              </>
+                    </Card>
+                  ) : null}
+                </>
+              </div>
             </div>
           </>
         )}

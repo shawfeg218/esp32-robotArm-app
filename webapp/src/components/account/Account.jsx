@@ -3,6 +3,7 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import { Input, Button, Loading, Spacer, Tooltip } from '@nextui-org/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { BsFillPersonFill } from 'react-icons/bs';
 
 export default function Account() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function Account() {
   const user = useUser();
   const session = useSession();
   const [loading, setLoading] = useState(true);
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [username, setUsername] = useState(null);
   const [fullname, setFullname] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
@@ -108,15 +110,19 @@ export default function Account() {
   }
 
   async function downloadImage(path) {
+    setLoadingAvatar(true);
     try {
       const { data, error } = await supabase.storage.from('avatars').download(path);
       if (error) {
         throw error;
       }
       const url = URL.createObjectURL(data);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setAvatarFileUrl(url);
     } catch (error) {
       console.log('Error downloading image: ', error);
+    } finally {
+      setLoadingAvatar(false);
     }
   }
 
@@ -129,7 +135,7 @@ export default function Account() {
           </h1>
           <div className="flex">
             <div>
-              {avatar_url ? (
+              {avatar_url && loadingAvatar === false ? (
                 <img
                   src={avatarFileUrl}
                   alt="Avatar"
@@ -137,7 +143,11 @@ export default function Account() {
                   style={{ height: 150, width: 150 }}
                 />
               ) : (
-                <div className="avatar no-image" style={{ height: 150, width: 150 }} />
+                <div className="avatar no-image" style={{ height: 150, width: 150 }}>
+                  <div className="h-full flex justify-center items-center">
+                    <BsFillPersonFill className="text-slate-400" size={150} />
+                  </div>
+                </div>
               )}
               <Button disabled className="m-1 absolute text-blue-600 bg-blue-200" flat size="sm">
                 {loading ? (
