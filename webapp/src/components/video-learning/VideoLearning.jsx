@@ -246,18 +246,10 @@ export default function VideoLearning() {
       <audio ref={ansAudioRef} src={ansAudioUrl} />
       <div>
         <section className="flex-col text-center ">
-          <h1>Audio Translate</h1>
-          <h2>whisper-1, gpt-4 </h2>
+          <h1>影片語言學習</h1>
+          <h2></h2>
 
           <Spacer y={2} />
-          {/* <Input
-            labelPlaceholder="openai key"
-            bordered
-            clearable
-            status={keyStatus}
-            onChange={(e) => setKey(e.target.value)}
-          />
-          <Spacer y={2} /> */}
 
           <Input
             clearable
@@ -269,14 +261,14 @@ export default function VideoLearning() {
 
           <Spacer y={0.5} />
           <div className="mt-3 flex justify-center">
-            <Button bordered size="md" disabled={loading} onPress={transcribeAudioLink}>
-              Transcribe Audio
+            <Button bordered size="md" disabled={loading} onPress={getVideoId}>
+              搜尋
             </Button>
           </div>
           <Spacer y={0.5} />
           <div className="mt-3 flex justify-center">
-            <Button bordered size="md" disabled={loading} onPress={getVideoId}>
-              Find Video
+            <Button bordered size="md" disabled={loading} onPress={transcribeAudioLink}>
+              翻譯影片
             </Button>
           </div>
 
@@ -300,13 +292,6 @@ export default function VideoLearning() {
             </div>
           ) : (
             <>
-              {/* <div className="flex justify-center">
-                {res ? (
-                  <div className="bg-slate-100 my-10 overflow-scroll max-w-2xl p-2 max-h-80">
-                    <p className="text-black w-full">{res}</p>
-                  </div>
-                ) : null}
-              </div> */}
               <Spacer y={2} />
 
               <div className="flex justify-center">
