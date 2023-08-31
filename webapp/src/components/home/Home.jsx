@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <div className="flex justify-center w-full mt-16">
       <div>
-        <div className="max-w-6xl grid gap-8 md:grid-cols-2 xl:grid-cols-3 justify-center">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 justify-center">
           <HomeCard
             img="/img/Control.jpg"
             title={'機器人控制'}

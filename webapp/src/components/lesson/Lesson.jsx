@@ -3,11 +3,12 @@ import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { BiPlus } from 'react-icons/bi';
 import { AiOutlineDelete } from 'react-icons/ai';
-import Link from 'next/link';
 import { Card, Modal, Button } from '@nextui-org/react';
 import Textbook from './Textbook';
+import { useRouter } from 'next/router';
 
 function Lesson() {
+  const router = useRouter();
   const user = useUser();
   const role = user?.user_metadata?.role;
   const supabase = useSupabaseClient();
@@ -66,7 +67,7 @@ function Lesson() {
         {selectedLesson ? null : (
           <>
             <div className="w-full flex justify-center mt-16">
-              <div className="max-w-6xl grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
                 {lessons.map((lesson, index) => (
                   <div key={lesson.id}>
                     <Card
@@ -79,7 +80,7 @@ function Lesson() {
                       {role === 'teacher' && (
                         <AiOutlineDelete
                           size="1.5rem"
-                          className="absolute top-2 right-2 hover:text-slate-400"
+                          className="absolute top-4 right-4 hover:text-slate-400"
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowDelModal(true);
@@ -138,13 +139,21 @@ function Lesson() {
                 {/* add subject component */}
                 <>
                   {role === 'teacher' ? (
-                    <Link href="/lesson/add-lesson" passHref>
-                      <div className="border-4 border-dashed rounded-lg w-96 h-52 bg-white hover:bg-yellow-50 flex justify-center items-center">
+                    <Card
+                      isHoverable
+                      isPressable
+                      // key={lesson.id}
+                      className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50 border-4 border-dashed"
+                      onClick={() => {
+                        router.push('/lesson/add-lesson');
+                      }}
+                    >
+                      <div className="h-full flex justify-center items-center">
                         <div className="reactIcon">
                           <BiPlus size="3rem" />
                         </div>
                       </div>
-                    </Link>
+                    </Card>
                   ) : null}
                 </>
               </div>
