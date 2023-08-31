@@ -5,9 +5,12 @@ import { GrFormPrevious } from 'react-icons/gr';
 import { Pagination } from '@nextui-org/react';
 import { Button, Loading } from '@nextui-org/react';
 import { base64ToBlob } from '@/lib/base64ToBlob';
+import TextbookLoading from './TextbookLoading';
 
 export default function Textbook() {
   const supabase = useSupabaseClient();
+
+  const [loading, setLoading] = useState(true);
 
   const { selectedLesson, setSelectedLesson } = useContext(AppContext);
   const [texts, setTexts] = useState([]);
@@ -35,6 +38,7 @@ export default function Textbook() {
   }, [texts, currentPage]);
 
   const fetchTexts = async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('lesson_view')
@@ -46,12 +50,15 @@ export default function Textbook() {
         throw error;
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       if (data) {
         setTexts(data);
         console.log('data:', data);
       }
     } catch (error) {
       console.log('Error fetching texts:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,38 +124,42 @@ export default function Textbook() {
           <GrFormPrevious size="2rem" />
           <span>leave</span>
         </div>
-        <section className="w-full h-96 mt-8 bg-slate-200">
-          <div className="w-full h-full overflow-y-scroll p-4 border border-solid border-slate-300 rounded-md bg-yellow-50">
-            <div className="flex justify-between items-center">
-              <h2>{texts[currentPage]?.lesson_title}</h2>
-              <>
-                {contentAudioUrl === null ? (
-                  <Button size="sm" disabled={generating} onClick={generateAudio}>
-                    {generating ? (
-                      <Loading type="spinner" color="currentColor" size="sm" />
-                    ) : (
-                      '生成語音'
-                    )}
-                  </Button>
-                ) : (
-                  <audio controls src={contentAudioUrl} />
-                )}
-              </>
-              {/* <audio controls src={contentAudioUrl} /> */}
+
+        {loading ? (
+          <TextbookLoading />
+        ) : (
+          <section className="w-full h-96 mt-8 bg-slate-200">
+            <div className="w-full h-full overflow-y-scroll p-4 border border-solid border-slate-300 rounded-md bg-yellow-50">
+              <div className="flex justify-between items-center">
+                <h2>{texts[currentPage]?.lesson_title}</h2>
+                <>
+                  {contentAudioUrl === null ? (
+                    <Button size="sm" disabled={generating} onClick={generateAudio}>
+                      {generating ? (
+                        <Loading type="spinner" color="currentColor" size="sm" />
+                      ) : (
+                        '生成語音'
+                      )}
+                    </Button>
+                  ) : (
+                    <audio controls src={contentAudioUrl} />
+                  )}
+                </>
+              </div>
+              <p className="mt-6">{texts[currentPage]?.paragraph_content}</p>
             </div>
-            <p>{texts[currentPage]?.paragraph_content}</p>
-          </div>
-          <div className="w-full flex justify-center mt-4">
-            <Pagination
-              total={texts.length}
-              initialPage={1}
-              onChange={(page) => {
-                setContentAudioUrl(null);
-                setCurrentPage(page - 1);
-              }}
-            />
-          </div>
-        </section>
+            <div className="w-full flex justify-center mt-4">
+              <Pagination
+                total={texts.length}
+                initialPage={1}
+                onChange={(page) => {
+                  setContentAudioUrl(null);
+                  setCurrentPage(page - 1);
+                }}
+              />
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -92,26 +92,3 @@
   align-items: center;
   justify-content: center;
 }
-
-/*
-.addCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 9.8rem;
-  height: 12.5rem;
-  border: black 0.2rem dashed;
-  border-radius: 0.625rem;
-  transition: all 0.3s ease-in-out;
-}
-
-.addCard:hover {
-  cursor: pointer;
-  transform: translateY(-0.3125rem);
-  background-color: rgb(253, 253, 234);
-}
-
-.addCard path {
-  fill: black;
-} */
