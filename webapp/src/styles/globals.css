@@ -191,8 +191,8 @@ button.primary,
   object-fit: cover;
 }
 .avatar.no-image {
-  background-color: #838383;
-  border: 0.0625rem solid rgb(200, 200, 200);
+  background-color: #ffffff;
+  border: 0.0625rem solid rgb(159, 157, 157);
   border-radius: 0.3125rem;
 }
 
