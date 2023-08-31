@@ -4,6 +4,7 @@ import { BiSolidFileJson } from 'react-icons/bi';
 export default function HistoryLoading() {
   return (
     <Table
+      aria-label="History table"
       lined
       selectionMode="single"
       color="primary"

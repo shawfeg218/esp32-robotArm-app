@@ -1,6 +1,6 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import React, { useEffect, useState } from 'react';
-import { Table, Loading } from '@nextui-org/react';
+import { Table } from '@nextui-org/react';
 import HistoryLoading from './HistoryLoading';
 
 export default function History() {
@@ -50,13 +50,11 @@ export default function History() {
   return (
     <div className="mt-16 flex justify-center w-full">
       {loading ? (
-        // <div className="h-screen mt-36 flex justify-center">
-        //   <Loading size="lg" color="primary" />
-        // </div>
         <HistoryLoading />
       ) : (
         <Table
           lined
+          aria-label="History table"
           selectionMode="single"
           color="primary"
           containerCss={{
