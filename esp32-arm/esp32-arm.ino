@@ -45,6 +45,7 @@ int angleH;
 
 void handleResetWifi();
 void handleResetWifiWrapper();
+void handleCheckButton();
 void handleRoot();
 void correctAct();
 void grabAct();
@@ -57,33 +58,28 @@ void speakingAct();
 void setup() {
   Serial.begin(115200);
 
-  setupWifiManager();
-
-  server.on("/", handleRoot);
-  server.on("/resetWifi", handleResetWifiWrapper);
-
-  server.begin();
-  Serial.println("Web server started");
-
   attachServos();
   initializedAngles();
   Serial.println("Servos attached and initialized");
 
+  pinMode(buttonPin, INPUT_PULLUP);
+
+  setupWifiManager();
+
+  server.on("/", handleRoot);
+  server.on("/resetWifi", handleResetWifiWrapper);
+  server.begin();
+  Serial.println("Web server started");
+
+
   mqttClient.setServer(mqtt_server, mqtt_port);
   mqttClient.setCallback(mqttCallback);
   reconnectMqtt();
-
-  pinMode(buttonPin, INPUT_PULLUP);
 }
 
 void loop() {
-  // 检查按鈕状态
-  int currentBtnState = digitalRead(buttonPin);
-  if (currentBtnState == LOW && prevBtnState == HIGH) {
-    handleResetWifi();
-  }
 
-  prevBtnState = currentBtnState;
+  handleCheckButton();
 
   if (!mqttClient.connected()) {
     reconnectMqtt();
@@ -91,6 +87,16 @@ void loop() {
   mqttClient.loop();
   server.handleClient();
   delay(10);
+}
+
+void handleCheckButton() {
+  // 检查按鈕状态
+  int currentBtnState = digitalRead(buttonPin);
+  if (currentBtnState == LOW && prevBtnState == HIGH) {
+    handleResetWifi();
+  }
+
+  prevBtnState = currentBtnState;
 }
 
 void handleRoot() {
@@ -138,6 +144,7 @@ void handleResetWifi() {
 
 void attachServos() {
   // 左手
+  
   servoA.attach(26);
   servoB.attach(27);
   servoC.attach(14);
