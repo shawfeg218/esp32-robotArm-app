@@ -71,7 +71,6 @@ void setup() {
   server.begin();
   Serial.println("Web server started");
 
-
   mqttClient.setServer(mqtt_server, mqtt_port);
   mqttClient.setCallback(mqttCallback);
   reconnectMqtt();
@@ -144,7 +143,6 @@ void handleResetWifi() {
 
 void attachServos() {
   // 左手
-  
   servoA.attach(26);
   servoB.attach(27);
   servoC.attach(14);
@@ -241,19 +239,38 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
 void correctAct() {
   Serial.println("correct-action");
   for (int i = 0; i < 4; i++) {
-    servoE.write(128);
-    servoF.write(90);
-    servoG.write(0);
-    servoH.write(90);
+    angleE = 128;
+    servoE.write(angleE);
 
-    servoA.write(9);
-    servoB.write(56);
-    servoC.write(90);
-    servoD.write(145);
+    angleF = 90;
+    servoF.write(angleF);
+
+    angleG = 0;
+    servoG.write(angleG);
+
+    angleH = 90;
+    servoH.write(angleH);
+
+    angleA = 9;
+    servoA.write(angleA);
+
+    angleB = 56;
+    servoB.write(angleB);
+
+    angleC = 90;
+    servoC.write(angleC);
+
+    angleD = 145;
+    servoD.write(angleD);
+
     delay(900);
 
-    servoG.write(90);
-    servoC.write(153);
+    angleG = 90;
+    servoG.write(angleG);
+
+    angleC = 153;
+    servoC.write(angleC);
+
     delay(800);
   }
   initializedAngles();
@@ -262,24 +279,47 @@ void correctAct() {
 void wrongAct() {
   Serial.println("wrong-action");
   for (int i = 0; i < 3; i++) {
-    servoE.write(100);
-    servoF.write(116);
-    servoG.write(50);
-    servoH.write(90);
 
-    servoA.write(47);
-    servoB.write(50);
-    servoC.write(120);
-    servoD.write(140);
+    angleE = 100;
+    servoE.write(angleE);
+
+    angleF = 116;
+    servoF.write(angleF);
+
+    angleG = 50;
+    servoG.write(angleG);
+
+    angleH = 90;
+    servoH.write(angleH);
+
+    angleA = 47;
+    servoA.write(angleA);
+
+    angleB = 50;
+    servoB.write(angleB);
+
+    angleC = 120;
+    servoC.write(angleC);
+
+    angleD = 140;
+    servoD.write(angleD);
+
     delay(1000);
 
     // 右手
-    servoG.write(112);
-    servoF.write(60);
+    angleG = 112;
+    servoG.write(angleG);
+
+    angleF = 60;
+    servoF.write(angleF);
 
     // 左手
-    servoC.write(48);
-    servoB.write(70);
+    angleC = 48;
+    servoC.write(angleC);
+
+    angleB = 70;
+    servoB.write(angleB);
+
     delay(1000);
   }
   initializedAngles();
@@ -288,65 +328,97 @@ void wrongAct() {
 void grabAct() {
   Serial.println("grab-action");
 
-  servoG.write(110);
-  servoF.write(150);
+  angleG = 110;
+  servoG.write(angleG);
+
+  angleF = 150;
+  servoF.write(angleF);
   delay(500);
   for (int i = 0; i < 3; i++) {
-    servoE.write(random(50, 120));
+    angleE = random(50, 120);
+    servoE.write(angleE);
   }
   delay(1000);
   initializedAngles();
 }
 
 void speakingAct() {
+  angleE = 128;
+  servoE.write(angleE);
 
-  servoE.write(128);
-  servoF.write(90);
-  servoG.write(50);
-  servoH.write(90);
+  angleF = 90;
+  servoF.write(angleF);
 
-  servoA.write(9);
-  servoB.write(56);
-  servoC.write(30);  // 150
-  servoD.write(145);
+  angleG = 50;
+  servoG.write(angleG);
+
+  angleH = 90;
+  servoH.write(angleH);
+
+  angleA = 9;
+  servoA.write(angleA);
+
+  angleB = 56;
+  servoB.write(angleB);
+
+  angleC = 30;
+  servoC.write(angleC);
+
+  angleD = 145;
+  servoD.write(angleD);
   delay(100);
 
   int R = random(5);
   if (R == 0) {
     // 右手
     Serial.println("speaking-action1");
-    servoG.write(110);
+    angleG = 110;
+    servoG.write(angleG);
     delay(500);
   }
 
   // 左手
   else if (R == 1) {
     Serial.println("speaking-action2");
-    servoC.write(80);
+    angleC = 80;
+    servoC.write(angleC);
     delay(500);
   }
 
   else if (R == 2) {
     // 右手2
     Serial.println("speaking-action3");
-    servoF.write(48);
-    servoG.write(120);
-    servoH.write(120);
+    angleF = 48;
+    servoF.write(angleF);
+
+    angleG = 120;
+    servoG.write(angleG);
+
+    angleH = 120;
+    servoH.write(angleH);
     delay(500);
   }
   // 左手2
   else if (R == 3) {
     Serial.println("speaking-action4");
-    servoB.write(88);
-    servoC.write(80);
-    servoD.write(150);
+    angleB = 88;
+    servoB.write(angleB);
+
+    angleC = 80;
+    servoC.write(angleC);
+
+    angleD = 150;
+    servoD.write(angleD);
     delay(500);
   }
 
   else if (R == 4) {
     Serial.println("speaking-action5");
-    servoG.write(70);
-    servoH.write(110);
+    angleG = 70;
+    servoG.write(angleG);
+
+    angleH = 110;
+    servoH.write(angleH);
     delay(500);
   }
 }
