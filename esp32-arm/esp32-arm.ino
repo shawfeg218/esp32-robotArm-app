@@ -6,14 +6,18 @@
 #include <ArduinoJson.h>
 #include "config.h"
 
-extern "C"
-{
+extern "C" {
   uint8_t temprature_sens_read();
 }
 
 WebServer server(80);
 
 WiFiManager wifiManager;
+
+unsigned long prevMillisWifiFail = 0;
+unsigned long prevMillisMqttReconnect = 0;
+int onWifiFailedServoStep = 0;
+int onMqttFailedServoStep = 0;
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
@@ -44,11 +48,20 @@ int angleF;
 int angleG;
 int angleH;
 
-void handleResetWifi();
-void handleResetWifiWrapper();
-void checkWiFiStatus();
-void handleCheckButton();
+void attachServos();
+void initializedAngles();
+void onAPOpen(WiFiManager *wifiManagerInstance);
+void onWifiFail();
+void onMqttFailServoAct();
+void wifiSetConSucc();
+void setupWifiManager();
 void handleRoot();
+void handleResetWifiWrapper();
+void mqttCallback(char *topic, byte *payload, unsigned int length);
+void reconnectMqtt();
+
+void handleResetWifi();
+void handleCheckButton();
 void correctAct();
 void grabAct();
 void resetArm();
@@ -57,8 +70,7 @@ void handleGetAngles();
 void handleGetEsp32Status();
 void speakingAct();
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
 
   attachServos();
@@ -68,52 +80,43 @@ void setup()
   pinMode(buttonPin, INPUT_PULLUP);
 
   setupWifiManager();
-
-  server.on("/", handleRoot);
-  server.on("/resetWifi", handleResetWifiWrapper);
-  server.begin();
-  Serial.println("Web server started");
-
-  mqttClient.setServer(mqtt_server, mqtt_port);
-  mqttClient.setCallback(mqttCallback);
-  reconnectMqtt();
 }
 
-void loop()
-{
-  checkWiFiStatus();
+void loop() {
 
   handleCheckButton();
 
-  if (!mqttClient.connected())
-  {
-    reconnectMqtt();
+  if (WiFi.status() == WL_CONNECTED) {
+
+    if (!mqttClient.connected()) {
+      reconnectMqtt();
+    }
+    mqttClient.loop();
+    server.handleClient();
+
+  } else {
+    wifiManager.process();
+    onWifiFail();
   }
-  mqttClient.loop();
-  server.handleClient();
-  delay(10);
 }
 
-void handleCheckButton()
-{
+void handleCheckButton() {
   // 检查按鈕状态
   int currentBtnState = digitalRead(buttonPin);
-  if (currentBtnState == LOW && prevBtnState == HIGH)
-  {
+  if (currentBtnState == LOW && prevBtnState == HIGH) {
     handleResetWifi();
   }
 
   prevBtnState = currentBtnState;
 }
 
-void handleRoot()
-{
+void handleRoot() {
   String html = R"(
     <html>
     <body>
     <h1>Hello, world!</h1>
-    <p>MAC Address: )" +
-                WiFi.macAddress() + R"(</p>
+    <p>MAC Address: )"
+                + WiFi.macAddress() + R"(</p>
     <button id="resetButton">Reset Wi-Fi</button>
     <script>
     document.getElementById('resetButton').addEventListener('click', function() {
@@ -126,27 +129,91 @@ void handleRoot()
   server.send(200, "text/html", html);
 }
 
-void handleResetWifiWrapper()
-{
+void handleResetWifiWrapper() {
   handleResetWifi();
   server.send(200, "text/plain", "Wi-Fi reset");
 }
 
-void setupWifiManager()
-{
-  wifiManager.setConfigPortalTimeout(180);
+void setupWifiManager() {
+  wifiManager.setAPCallback(onAPOpen);
+  wifiManager.setConfigPortalBlocking(false);
 
-  if (!wifiManager.autoConnect(("ESP32_AP_" + WiFi.macAddress()).c_str(), ""))
-  {
-    Serial.println("無法連接到WiFi，請重新設置");
-    ESP.restart();
+  // wifi connect success after user changed wifi setting
+  wifiManager.setSaveConfigCallback(wifiSetConSucc);
+
+  bool res = wifiManager.autoConnect(("ESP32_AP_" + WiFi.macAddress()).c_str(), "");
+  // wifi connect success in setup()
+  if (res == true) {
+    wifiSetConSucc();
   }
-
-  Serial.println("Connected to WiFi");
 }
 
-void handleResetWifi()
-{
+void wifiSetConSucc() {
+  Serial.println("ESP32 connected to SSID: " + WiFi.SSID());
+
+  server.on("/", handleRoot);
+  server.on("/resetWifi", handleResetWifiWrapper);
+  server.begin();
+  Serial.println("Web server started on " + WiFi.localIP());
+
+  mqttClient.setServer(mqtt_server, mqtt_port);
+  mqttClient.setCallback(mqttCallback);
+  reconnectMqtt();
+}
+
+void onAPOpen(WiFiManager *wifiManagerInstance) {
+  String portalSSID = wifiManagerInstance->getConfigPortalSSID();
+  Serial.println("ESP32 has opened an Access Point with SSID: " + portalSSID);
+  Serial.println("ServoA move on wifi connect failed...");
+}
+
+void onWifiFail() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillisWifiFail >= 2000) {
+    prevMillisWifiFail = currentMillis;
+
+    bool res = wifiManager.autoConnect();
+    if (res == true) {
+      wifiManager.stopWebPortal();
+      wifiSetConSucc();
+    }
+
+    switch (onWifiFailedServoStep) {
+      case 0:
+        angleA = 90;
+        servoA.write(angleA);
+        onWifiFailedServoStep++;
+        Serial.println("WiFi Failed Servo step 1");
+        break;
+      case 1:
+        angleA = 0;
+        servoA.write(angleA);
+        onWifiFailedServoStep = 0;
+        Serial.println("WiFi Failed Servo step 2");
+        break;
+    }
+  }
+}
+
+void onMqttFailServoAct() {
+  switch (onMqttFailedServoStep) {
+    case 0:
+      angleE = 160;
+      servoE.write(angleE);
+      onMqttFailedServoStep++;
+      Serial.println("MQTT Failed Servo step 1");
+      break;
+    case 1:
+      angleE = 50;
+      servoE.write(angleE);
+      onMqttFailedServoStep = 0;
+      Serial.println("MQTT Failed Servo step 2");
+      break;
+  }
+}
+
+
+void handleResetWifi() {
   wifiManager.resetSettings();
   ESP.restart();
   server.send(204);
@@ -154,16 +221,8 @@ void handleResetWifi()
   Serial.println("Wi-Fi reset");
 }
 
-void checkWiFiStatus()
-{
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.println("Wi-Fi 狀態: " + String(WiFi.status()));
-  }
-}
 
-void attachServos()
-{
+void attachServos() {
   // 左手
   servoA.attach(26);
   servoB.attach(27);
@@ -177,8 +236,7 @@ void attachServos()
   servoH.attach(33);
 }
 
-void initializedAngles()
-{
+void initializedAngles() {
   servoA.write(init_angleA);
   servoB.write(init_angleB);
   servoC.write(init_angleC);
@@ -189,16 +247,15 @@ void initializedAngles()
   servoH.write(init_angleH);
 }
 
-void reconnectMqtt()
-{
-  while (!mqttClient.connected())
-  {
+void reconnectMqtt() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillisMqttReconnect >= 5000 && WiFi.status() == WL_CONNECTED) {
+    prevMillisMqttReconnect = currentMillis;
+
     Serial.print("Attempting MQTT connection...");
 
     String clientId = "ESP32Client_" + WiFi.macAddress();
-
-    if (mqttClient.connect(clientId.c_str()))
-    {
+    if (mqttClient.connect(clientId.c_str())) {
       Serial.println("connected");
 
       // subscribe to teacher topic
@@ -219,75 +276,50 @@ void reconnectMqtt()
       mqttClient.subscribe((baseTopic + "/control/get-angles").c_str());
       mqttClient.subscribe((baseTopic + "/control/get-esp32Status").c_str());
       mqttClient.subscribe((baseTopic + "/control/speak-act").c_str());
-    }
-    else
-    {
-      Serial.print("MQTT connection failed with state: ");
-      Serial.print(mqttClient.state());
-      Serial.println(" try again in 5 seconds");
-      delay(5000);
+    } else {
+      Serial.println("connection failed, try again in 5 seconds");
+      onMqttFailServoAct();
     }
   }
 }
 
-void mqttCallback(char *topic, byte *payload, unsigned int length)
-{
+void mqttCallback(char *topic, byte *payload, unsigned int length) {
   String message;
-  for (unsigned int i = 0; i < length; i++)
-  {
+  for (unsigned int i = 0; i < length; i++) {
     message += (char)payload[i];
   }
 
-  if (String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle"))
-  {
+  if (String(topic) == (baseTopic + "/control/set-axis-angle") || String(topic) == (teacherTopic + "/control/set-axis-angle")) {
     Serial.println("topic: " + String(topic));
     handleSetAxisAngle(message);
-  }
-  else if (String(topic) == (baseTopic + "/control/correct-act") || String(topic) == (teacherTopic + "/control/correct-act"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/correct-act") || String(topic) == (teacherTopic + "/control/correct-act")) {
     Serial.println("topic: " + String(topic));
     correctAct();
-  }
-  else if (String(topic) == (baseTopic + "/control/wrong-act") || String(topic) == (teacherTopic + "/control/wrong-act"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/wrong-act") || String(topic) == (teacherTopic + "/control/wrong-act")) {
     Serial.println("topic: " + String(topic));
     wrongAct();
-  }
-  else if (String(topic) == (baseTopic + "/control/grab-act") || String(topic) == (teacherTopic + "/control/grab-act"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/grab-act") || String(topic) == (teacherTopic + "/control/grab-act")) {
     Serial.println("topic: " + String(topic));
     grabAct();
-  }
-  else if (String(topic) == (baseTopic + "/control/reset-arm") || String(topic) == (teacherTopic + "/control/reset-arm"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/reset-arm") || String(topic) == (teacherTopic + "/control/reset-arm")) {
     Serial.println("topic: " + String(topic));
     resetArm();
-  }
-  else if (String(topic) == (baseTopic + "/control/speak-act") || String(topic) == (teacherTopic + "/control/speak-act"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/speak-act") || String(topic) == (teacherTopic + "/control/speak-act")) {
     Serial.println("topic: " + String(topic));
     speakingAct();
-  }
-  else if (String(topic) == (baseTopic + "/control/reset-wifi"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/reset-wifi")) {
     Serial.println("topic: " + String(topic));
     handleResetWifi();
-  }
-  else if (String(topic) == (baseTopic + "/control/get-angles"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/get-angles")) {
     handleGetAngles();
-  }
-  else if (String(topic) == (baseTopic + "/control/get-esp32Status"))
-  {
+  } else if (String(topic) == (baseTopic + "/control/get-esp32Status")) {
     handleGetEsp32Status();
   }
 }
 
-void correctAct()
-{
+void correctAct() {
   Serial.println("correct-action");
-  for (int i = 0; i < 4; i++)
-  {
+  for (int i = 0; i < 4; i++) {
     angleE = 128;
     servoE.write(angleE);
 
@@ -325,11 +357,9 @@ void correctAct()
   initializedAngles();
 }
 
-void wrongAct()
-{
+void wrongAct() {
   Serial.println("wrong-action");
-  for (int i = 0; i < 3; i++)
-  {
+  for (int i = 0; i < 3; i++) {
 
     angleE = 100;
     servoE.write(angleE);
@@ -376,8 +406,7 @@ void wrongAct()
   initializedAngles();
 }
 
-void grabAct()
-{
+void grabAct() {
   Serial.println("grab-action");
 
   angleG = 110;
@@ -386,8 +415,7 @@ void grabAct()
   angleF = 150;
   servoF.write(angleF);
   delay(500);
-  for (int i = 0; i < 3; i++)
-  {
+  for (int i = 0; i < 3; i++) {
     angleE = random(50, 120);
     servoE.write(angleE);
   }
@@ -395,8 +423,7 @@ void grabAct()
   initializedAngles();
 }
 
-void speakingAct()
-{
+void speakingAct() {
   angleE = 128;
   servoE.write(angleE);
 
@@ -423,8 +450,7 @@ void speakingAct()
   delay(100);
 
   int R = random(5);
-  if (R == 0)
-  {
+  if (R == 0) {
     // 右手
     Serial.println("speaking-action1");
     angleG = 110;
@@ -433,16 +459,14 @@ void speakingAct()
   }
 
   // 左手
-  else if (R == 1)
-  {
+  else if (R == 1) {
     Serial.println("speaking-action2");
     angleC = 80;
     servoC.write(angleC);
     delay(500);
   }
 
-  else if (R == 2)
-  {
+  else if (R == 2) {
     // 右手2
     Serial.println("speaking-action3");
     angleF = 48;
@@ -456,8 +480,7 @@ void speakingAct()
     delay(500);
   }
   // 左手2
-  else if (R == 3)
-  {
+  else if (R == 3) {
     Serial.println("speaking-action4");
     angleB = 88;
     servoB.write(angleB);
@@ -470,8 +493,7 @@ void speakingAct()
     delay(500);
   }
 
-  else if (R == 4)
-  {
+  else if (R == 4) {
     Serial.println("speaking-action5");
     angleG = 70;
     servoG.write(angleG);
@@ -482,8 +504,7 @@ void speakingAct()
   }
 }
 
-void resetArm()
-{
+void resetArm() {
   Serial.println("Servos reseted");
   angleA = init_angleA;
   angleB = init_angleB;
@@ -500,48 +521,39 @@ void resetArm()
   servoF.write(angleF);
 }
 
-void handleSetAxisAngle(String message)
-{
+void handleSetAxisAngle(String message) {
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, message);
 
-  if (angleA != jsonDoc["A"])
-  {
+  if (angleA != jsonDoc["A"]) {
     angleA = jsonDoc["A"];
     servoA.write(angleA);
   }
-  if (angleB != jsonDoc["B"])
-  {
+  if (angleB != jsonDoc["B"]) {
     angleB = jsonDoc["B"];
     servoB.write(angleB);
   }
-  if (angleC != jsonDoc["C"])
-  {
+  if (angleC != jsonDoc["C"]) {
     angleC = jsonDoc["C"];
     servoC.write(angleC);
   }
-  if (angleD != jsonDoc["D"])
-  {
+  if (angleD != jsonDoc["D"]) {
     angleD = jsonDoc["D"];
     servoD.write(angleD);
   }
-  if (angleE != jsonDoc["E"])
-  {
+  if (angleE != jsonDoc["E"]) {
     angleE = jsonDoc["E"];
     servoE.write(angleE);
   }
-  if (angleF != jsonDoc["F"])
-  {
+  if (angleF != jsonDoc["F"]) {
     angleF = jsonDoc["F"];
     servoF.write(angleF);
   }
-  if (angleG != jsonDoc["G"])
-  {
+  if (angleG != jsonDoc["G"]) {
     angleG = jsonDoc["G"];
     servoG.write(angleG);
   }
-  if (angleH != jsonDoc["H"])
-  {
+  if (angleH != jsonDoc["H"]) {
     angleH = jsonDoc["H"];
     servoH.write(angleH);
   }
@@ -550,14 +562,12 @@ void handleSetAxisAngle(String message)
   Serial.println(angles);
 }
 
-void handleGetAngles()
-{
+void handleGetAngles() {
   String angles = "{\"A\": " + String(angleA) + ", \"B\": " + String(angleB) + ", \"C\": " + String(angleC) + ", \"D\": " + String(angleD) + ", \"E\": " + String(angleE) + ", \"F\": " + String(angleF) + ", \"G\": " + String(angleG) + ", \"H\": " + String(angleH) + "}";
   mqttClient.publish((baseTopic + "/angles").c_str(), angles.c_str());
 }
 
-void handleGetEsp32Status()
-{
+void handleGetEsp32Status() {
 
   DynamicJsonDocument doc(1024);
 
