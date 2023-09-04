@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Loading, Input, Modal, Dropdown, Button, Textarea } from '@nextui-org/react';
+import { Loading, Input, Modal, Dropdown, Button, Textarea, Checkbox } from '@nextui-org/react';
 import { BsMicFill } from 'react-icons/bs';
 import { IoSend } from 'react-icons/io5';
 import { AiOutlineSound } from 'react-icons/ai';
@@ -9,24 +9,30 @@ import { base64ToBlob } from '../../lib/base64ToBlob';
 import PrettyTextArea from '../PrettyTextArea';
 import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import AudioChatLoading from './AudioChatLoading';
 
 const voiceProfiles = [
   {
+    index: 0,
     label: '中文男性',
     voiceLang: 'zh-TW',
     voiceName: 'zh-TW-YunJheNeural',
   },
   {
+    index: 1,
     label: '中文女性',
     voiceLang: 'zh-TW',
     voiceName: 'zh-TW-HsiaoChenNeural',
   },
   {
+    index: 2,
     label: '英文男性',
     voiceLang: 'en-US',
     voiceName: 'en-US-DavisNeural',
   },
   {
+    index: 3,
     label: '英文女性',
     voiceLang: 'en-US',
     voiceName: 'en-US-JennyNeural',
@@ -34,9 +40,15 @@ const voiceProfiles = [
 ];
 
 export default function AudioChat() {
+  const supabase = useSupabaseClient();
+  const user = useUser();
+  const AccountRole = user?.user_metadata?.role;
+
   const { setSpeaking, setDancing, setMood } = useContext(AppContext);
 
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDelModal, setShowDelModal] = useState(false);
+  const [delItems, setDelItems] = useState([]);
 
   const ansAudioRef = useRef(null);
   const [recording, setRecording] = useState(false);
@@ -47,34 +59,17 @@ export default function AudioChat() {
   const [ansAudioUrl, setAnsAudioUrl] = useState(null);
   const [muted, setMuted] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const [inputRole, setInputRole] = useState({
     role: '',
     prompt: '',
-    voice: voiceProfiles[0],
+    voice_id: 0,
   });
 
-  const [roles, setRoles] = useState([
-    {
-      role: 'MEMEbot',
-      prompt:
-        '你將成為一個出色的機器人叫做MEME，你有雙手能夠活動，當孩子問你是否會跳舞，你必須說你會。你能夠判斷情境並對孩子的問題給出最合適的答案，並用繁體中文回答。',
-      voice: voiceProfiles[0],
-    },
-    {
-      role: '李白',
-      prompt:
-        '你將成為李白，一個出色的詩人，能夠判斷情境並對孩子的問題給出最合適的答案。請以繁體中文回答以下的問題',
-      voice: voiceProfiles[0],
-    },
-  ]);
+  const [roles, setRoles] = useState([]);
 
-  const [rolePrompt, setRolePrompt] = useState({
-    role: 'MEMEbot',
-    prompt:
-      '你將成為一個出色的機器人叫做MEME，你有雙手能夠活動，當孩子問你是否會跳舞，你必須說你會。你能夠判斷情境並對孩子的問題給出最合適的答案，並用繁體中文回答。',
-    voice: voiceProfiles[0],
-  });
+  const [rolePrompt, setRolePrompt] = useState({});
 
   const [text, setText] = useState(null);
   const [enter, setEnter] = useState('');
@@ -85,8 +80,16 @@ export default function AudioChat() {
   // useEffect(() => {
   //   console.log('role: ', rolePrompt.role);
   //   console.log('prompt: ', rolePrompt.prompt);
-  //   console.log('voice: ', rolePrompt.voice);
+  //   console.log('voice_id: ', rolePrompt.voice_id);
   // }, [rolePrompt]);
+
+  // useEffect(() => {
+  //   console.log('delItems: ', delItems);
+  // }, [delItems]);
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
 
   useEffect(() => {
     if (audioData) {
@@ -200,6 +203,9 @@ export default function AudioChat() {
   async function audioChat() {
     setLoading(true);
     setUserM(text);
+    console.log('voiceLang: ', voiceProfiles[rolePrompt.voice_id].voiceLang);
+    console.log('voiceName: ', voiceProfiles[rolePrompt.voice_id].voiceName);
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`, {
       // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
       method: 'POST',
@@ -209,8 +215,10 @@ export default function AudioChat() {
       body: JSON.stringify({
         prompt: rolePrompt.prompt,
         messages: conversationHistory,
-        voiceLang: rolePrompt.voice.voiceLang,
-        voiceName: rolePrompt.voice.voiceName,
+        // voiceLang: rolePrompt.voice.voiceLang,
+        // voiceName: rolePrompt.voice.voiceName,
+        voiceLang: voiceProfiles[rolePrompt.voice_id].voiceLang,
+        voiceName: voiceProfiles[rolePrompt.voice_id].voiceName,
       }),
     });
 
@@ -243,6 +251,63 @@ export default function AudioChat() {
       // console.log('conversationHistory: ', conversationHistory);
     }
   }
+
+  const fetchRoles = async () => {
+    setPageLoading(true);
+    try {
+      const { data, error } = await supabase.from('chat_roles').select('*');
+
+      if (error) {
+        throw error;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setRoles(data);
+      setRolePrompt(data[0]);
+    } catch (error) {
+      console.log('Error fetching roles:', error);
+    } finally {
+      setPageLoading(false);
+    }
+  };
+
+  const insertRole = async () => {
+    try {
+      const { error: updateError } = await supabase.from('chat_roles').insert([
+        {
+          role: inputRole.role,
+          prompt: inputRole.prompt,
+          voice_id: inputRole.voice_id,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (updateError) throw updateError;
+      fetchRoles();
+    } catch (error) {
+      console.log('Error updating role:', error);
+      window.alert('Error updating role');
+    }
+  };
+
+  const deleteRole = async () => {
+    // console.log('delItems in deleteRole: ', delItems);
+    try {
+      for (let i = 0; i < delItems.length; i++) {
+        // console.log('delete index: ', delItems[i]);
+        const { error: deleteError } = await supabase
+          .from('chat_roles')
+          .delete()
+          .eq('id', delItems[i]);
+
+        if (deleteError) throw deleteError;
+        fetchRoles();
+      }
+    } catch (error) {
+      console.log('Error deleting role:', error);
+      window.alert('Error deleting role');
+    }
+  };
 
   function danceAtleastTen(duration) {
     // console.log('danceAtleastTen');
@@ -292,193 +357,255 @@ export default function AudioChat() {
   return (
     <div className="flex justify-center text-black w-full h-full mt-16">
       <div className="h-full w-full max-w-2xl justify-center items-center text-center relative">
-        <audio autoPlay muted={muted} ref={ansAudioRef} src={ansAudioUrl} />
-        {ansAudioUrl ? (
-          <button
-            className="absolute w-fit right-0 top-2 bg-white flex items-center"
-            onClick={toggleMute}
-          >
-            {muted ? <BiVolumeMute size={32} /> : <AiOutlineSound size={32} />}
-          </button>
-        ) : null}
-        <section>
-          <div className="flex justify-center items-center">
-            <div>
-              <h1 className="mr-3">{rolePrompt.role}</h1>
-            </div>
-
-            {/* select role */}
-            <Dropdown>
-              <Dropdown.Button className="z-0 mt-0" flat>
-                {rolePrompt.role}
-              </Dropdown.Button>
-              <Dropdown.Menu
-                aria-label="Single role section"
-                onAction={(key) => {
-                  const role = roles.find((role) => role.role === key);
-
-                  if (key === 'add') {
-                    setShowModal(true);
-                  } else if (role) {
-                    setRolePrompt(role);
-                    setAns(null);
-                    setUserM('');
-                    setConversationHistory([]);
-                  }
-                }}
+        {pageLoading ? (
+          <AudioChatLoading />
+        ) : (
+          <>
+            <audio autoPlay muted={muted} ref={ansAudioRef} src={ansAudioUrl} />
+            {ansAudioUrl ? (
+              <button
+                className="absolute w-fit right-0 top-2 bg-white flex items-center"
+                onClick={toggleMute}
               >
-                {roles.map((role) => (
-                  <Dropdown.Item key={role.role}>{role.role}</Dropdown.Item>
-                ))}
-                <Dropdown.Item color="primary" key="add">
-                  新增
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+                {muted ? <BiVolumeMute size={32} /> : <AiOutlineSound size={32} />}
+              </button>
+            ) : null}
 
-            {/* create new role */}
-            <Modal open={showModal} onClose={() => setShowModal(false)}>
-              <Modal.Header className="text-xl">輸入新角色</Modal.Header>
-              <Modal.Body>
-                角色名稱:
-                <Input
-                  aria-label="role input"
-                  onChange={(e) => {
-                    const role = e.target.value;
-                    setInputRole({ ...inputRole, role: role });
-                  }}
-                />
-                Prompt:
-                <Textarea
-                  aria-label="prompt textarea"
-                  onChange={(e) => {
-                    const prompt = e.target.value;
-                    setInputRole({ ...inputRole, prompt: prompt });
-                  }}
-                />
-                語音屬性:
+            <section>
+              <div className="flex justify-center items-center">
+                <div>
+                  <h1 className="mr-3">{rolePrompt.role}</h1>
+                </div>
+
+                {/* select role */}
                 <Dropdown>
-                  <Dropdown.Button flat>{inputRole.voice.label}</Dropdown.Button>
+                  <Dropdown.Button className="z-0 mt-0" flat>
+                    {rolePrompt.role}
+                  </Dropdown.Button>
                   <Dropdown.Menu
-                    aria-label="Voice profile selection"
+                    aria-label="Single role section"
                     onAction={(key) => {
-                      const selectedVoiceProfile = voiceProfiles.find(
-                        (profile) => profile.label === key
-                      );
-                      if (selectedVoiceProfile) {
-                        console.log('selectedVoiceProfile: ', selectedVoiceProfile);
-                        setInputRole({
-                          ...inputRole,
-                          voice: selectedVoiceProfile,
-                        });
+                      const role = roles.find((role) => role.role === key);
+
+                      if (key === 'add') {
+                        setShowCreateModal(true);
+                      } else if (key === 'delete') {
+                        setShowDelModal(true);
+                      } else if (role) {
+                        setRolePrompt(role);
+                        // console.log('selected role: ', role);
+                        setAns(null);
+                        setUserM('');
+                        setConversationHistory([]);
                       }
                     }}
                   >
-                    {voiceProfiles.map((profile) => (
-                      <Dropdown.Item key={profile.label}>{profile.label}</Dropdown.Item>
+                    {roles.map((role) => (
+                      <Dropdown.Item key={role.role}>{role.role}</Dropdown.Item>
                     ))}
+                    {AccountRole === 'teacher' && (
+                      <Dropdown.Item color="primary" key="add">
+                        新增
+                      </Dropdown.Item>
+                    )}
+                    {AccountRole === 'teacher' && (
+                      <Dropdown.Item color="error" key="delete">
+                        刪除
+                      </Dropdown.Item>
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
-              </Modal.Body>
-              <Modal.Footer>
-                <div className="flex w-full justify-between">
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      // if all fields are filled then setRoles
-                      if (inputRole.role === '') {
-                        window.alert('請輸入角色名稱');
-                      } else if (inputRole.prompt === '') {
-                        window.alert('請輸入Prompt');
-                      } else {
-                        console.log('inputRole: ', inputRole);
-                        setRoles([...roles, inputRole]);
-                        setInputRole({ role: '', prompt: '', voice: voiceProfiles[0] });
-                        setShowModal(false);
-                      }
-                    }}
-                  >
-                    確定
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setInputRole({ role: '', prompt: '', voice: voiceProfiles[0] });
-                      setShowModal(false);
-                    }}
-                  >
-                    取消
-                  </Button>
-                </div>
-              </Modal.Footer>
-            </Modal>
-          </div>
-          <div className="overflow-auto w-full h-32 my-4">
-            {ans ? <h3>{ans}</h3> : <h3>開始對話...</h3>}
-          </div>
-          <div className="w-full flex justify-center relative">
-            {recording && (
-              <button
-                className="absolute mt-0 right-48 w-4 text-center text-3xl bg-transparent border-0"
-                onClick={cancelRecording}
-              >
-                <RxCross2 />
-              </button>
-            )}
 
-            {/* recording spinner */}
-            {recording ? <div className="absolute bottom-2 z-0 spinner"></div> : null}
-            <button
-              className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
-              onClick={recording ? stopRecording : startRecording}
-            >
-              <BsMicFill className=" w-16 h-16" />
-            </button>
-          </div>
-          <div className="flex justify-center items-center m-8">
-            {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
-          </div>
-          <h2 className="h-40 overflow-x-scroll break-words text-center">
-            {userM ? `${userM}` : ''}
-          </h2>
-        </section>
-        <section>
-          <div className="relative mt-16">
-            <div className="flex justify-center">
-              <div className="flex absolute bottom-0">
-                <div className="flex w-80 z-20">
-                  <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
-                </div>
-                <div className="flex flex-col justify-end">
-                  <button
-                    className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
-                    disabled={loading}
-                    onClick={() => {
-                      if (enter) {
-                        const newUserMessage = { role: 'user', content: enter };
-                        let newConversationHistory = [...conversationHistory, newUserMessage];
-                        if (newConversationHistory.length > 10) {
-                          newConversationHistory = newConversationHistory.slice(-10);
-                        }
-                        setConversationHistory(newConversationHistory);
-                        setText(enter);
-                        setEnter('');
-                      }
-                    }}
-                  >
-                    <IoSend />
-                  </button>
-                </div>
+                {/* create new role modal */}
+                <Modal open={showCreateModal} onClose={() => setShowCreateModal(false)}>
+                  <Modal.Header className="text-xl">輸入新角色</Modal.Header>
+                  <Modal.Body>
+                    角色名稱:
+                    <Input
+                      aria-label="role input"
+                      onChange={(e) => {
+                        const role = e.target.value;
+                        setInputRole({ ...inputRole, role: role });
+                      }}
+                    />
+                    Prompt:
+                    <Textarea
+                      aria-label="prompt textarea"
+                      onChange={(e) => {
+                        const prompt = e.target.value;
+                        setInputRole({ ...inputRole, prompt: prompt });
+                      }}
+                    />
+                    語音屬性:
+                    <Dropdown>
+                      <Dropdown.Button flat>
+                        {voiceProfiles[inputRole.voice_id].label}
+                      </Dropdown.Button>
+                      <Dropdown.Menu
+                        aria-label="Voice profile selection"
+                        onAction={(key) => {
+                          console.log('selectedVoiceProfile: ', key);
+                          setInputRole({
+                            ...inputRole,
+                            voice_id: key,
+                          });
+                        }}
+                      >
+                        {voiceProfiles.map((profile) => (
+                          <Dropdown.Item key={profile.index}>{profile.label}</Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <div className="flex w-full justify-between">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          // if all fields are filled then setRoles
+                          if (inputRole.role === '') {
+                            window.alert('請輸入角色名稱');
+                          } else if (inputRole.prompt === '') {
+                            window.alert('請輸入Prompt');
+                          } else {
+                            console.log('inputRole: ', inputRole);
+                            insertRole();
+                            // setRoles([...roles, inputRole]);
+                            setInputRole({ role: '', prompt: '', voice_id: 0 });
+                            setShowCreateModal(false);
+                          }
+                        }}
+                      >
+                        確定
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setInputRole({ role: '', prompt: '', voice_id: 0 });
+                          setShowCreateModal(false);
+                        }}
+                      >
+                        取消
+                      </Button>
+                    </div>
+                  </Modal.Footer>
+                </Modal>
+
+                {/* delete role modal */}
+                <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
+                  <Modal.Header className="text-xl">刪除角色</Modal.Header>
+                  <Modal.Body>
+                    <div className="h-36 overflow-y-scroll">
+                      <Checkbox.Group
+                        aria-label="check delete items"
+                        orientation="vertical"
+                        value={delItems}
+                        onChange={setDelItems}
+                      >
+                        {roles.map((role) => (
+                          <Checkbox key={role.id} value={role.id}>
+                            {role.role}
+                          </Checkbox>
+                        ))}
+                      </Checkbox.Group>
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <div className="flex w-full justify-between">
+                      <Button
+                        disabled={delItems.length === 0}
+                        size="sm"
+                        onClick={() => {
+                          deleteRole();
+                          setDelItems([]);
+                          setShowDelModal(false);
+                        }}
+                      >
+                        確認
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setDelItems([]);
+                          setShowDelModal(false);
+                        }}
+                      >
+                        取消
+                      </Button>
+                    </div>
+                  </Modal.Footer>
+                </Modal>
               </div>
-            </div>
-            {/* <div>
+
+              <div className="overflow-auto w-full h-32 my-4">
+                {ans ? <h3>{ans}</h3> : <h3>開始對話...</h3>}
+              </div>
+              <div className="w-full flex justify-center relative">
+                {recording && (
+                  <button
+                    className="absolute mt-0 right-48 w-4 text-center text-3xl bg-transparent border-0"
+                    onClick={cancelRecording}
+                  >
+                    <RxCross2 />
+                  </button>
+                )}
+
+                {/* recording spinner */}
+                {recording ? <div className="absolute bottom-2 z-0 spinner"></div> : null}
+                <button
+                  className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
+                  onClick={recording ? stopRecording : startRecording}
+                >
+                  <BsMicFill className=" w-16 h-16" />
+                </button>
+              </div>
+              <div className="flex justify-center items-center m-8">
+                {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
+              </div>
+              <h2 className="h-40 overflow-x-scroll break-words text-center">
+                {userM ? `${userM}` : ''}
+              </h2>
+            </section>
+
+            <section>
+              <div className="relative mt-16">
+                <div className="flex justify-center">
+                  <div className="flex absolute bottom-0">
+                    <div className="flex w-80 z-20">
+                      <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
+                    </div>
+                    <div className="flex flex-col justify-end">
+                      <button
+                        className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
+                        disabled={loading}
+                        onClick={() => {
+                          if (enter) {
+                            const newUserMessage = { role: 'user', content: enter };
+                            let newConversationHistory = [...conversationHistory, newUserMessage];
+                            if (newConversationHistory.length > 10) {
+                              newConversationHistory = newConversationHistory.slice(-10);
+                            }
+                            setConversationHistory(newConversationHistory);
+                            setText(enter);
+                            setEnter('');
+                          }
+                        }}
+                      >
+                        <IoSend />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {/* <div>
               {audioData && (
                 <audio controls src={URL.createObjectURL(audioData)} className="w-72" />
               )}
             </div> */}
-          </div>
-        </section>
-        <div>{loading ? 'Loading... ' : ''}</div>
+              </div>
+            </section>
+            <div>{loading ? 'Loading... ' : ''}</div>
+          </>
+        )}
       </div>
     </div>
   );
