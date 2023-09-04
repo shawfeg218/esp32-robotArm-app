@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TextbookLoading() {
   return (
-    <section className="w-full h-96 mt-8 bg-slate-200">
+    <section className="w-full h-96 mt-8 bg-slate-200 animate-pulse">
       <div className="w-full h-full overflow-y-scroll p-4 rounded-md bg-slate-200">
         <div className="flex justify-between items-center">
           <div className="w-1/2 h-10 bg-slate-300"></div>

@@ -143,7 +143,7 @@ export default function Account() {
                   style={{ height: 150, width: 150 }}
                 />
               ) : (
-                <div className="avatar no-image" style={{ height: 150, width: 150 }}>
+                <div className="avatar no-image animate-pulse" style={{ height: 150, width: 150 }}>
                   <div className="h-full flex justify-center items-center">
                     <BsFillPersonFill className="text-slate-400" size={150} />
                   </div>
