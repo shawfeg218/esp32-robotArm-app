@@ -16,6 +16,7 @@ export default function HistoryLoading() {
         height: 'auto',
         width: '100%',
       }}
+      className="animate-pulse"
     >
       <Table.Header>
         <Table.Column css={{ fontWeight: 'bold', fontSize: '$sm' }} align="center">

@@ -44,6 +44,7 @@ export default function Home() {
         })
       );
 
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setRecentHistory(Data_with_subject_name);
       setLoading(false);
     }
@@ -83,7 +84,10 @@ export default function Home() {
 
           <div className="w-96 flex justify-center ">
             {loading ? (
-              <Card aria-label="Loading" className="w-full max-w-sm flex-col items-center">
+              <Card
+                aria-label="Loading"
+                className="w-full max-w-sm flex-col items-center animate-pulse"
+              >
                 <div className="w-full px-8">
                   <h1 className="text-gray-900 text-center">HISTORY</h1>
                   <div className="w-full h-52 bg-slate-200"></div>
