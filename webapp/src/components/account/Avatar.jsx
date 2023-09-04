@@ -33,8 +33,10 @@ export default function Avatar({ size }) {
         throw error;
       }
 
-      if (data) {
+      if (data.avatar_url !== null) {
         setAvatarUrl(data.avatar_url);
+      } else {
+        setLoading(false);
       }
     } catch (error) {
       console.log('Error loading user data:', error);
@@ -69,7 +71,7 @@ export default function Avatar({ size }) {
           style={{ height: size, width: size }}
         />
       ) : (
-        <div className="avatar no-image animate-pulse" style={{ height: size, width: size }}>
+        <div className="avatar no-image" style={{ height: size, width: size }}>
           <div className="h-full flex justify-center items-center">
             <BsFillPersonFill className="text-slate-400" size={size} />
           </div>

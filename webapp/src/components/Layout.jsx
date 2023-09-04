@@ -41,6 +41,8 @@ export default function Layout({ children }) {
     showFace,
     setShowFace,
     faceMode,
+    setDancing,
+    setSpeaking,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -80,6 +82,8 @@ export default function Layout({ children }) {
     if (role !== 'teacher') {
       socketIO.on('lock_page_student', (path) => {
         // console.log('locked: ', path);
+        setSpeaking(false);
+        setDancing(false);
         setTeacherPath(path);
         router.push(path);
       });
@@ -91,6 +95,8 @@ export default function Layout({ children }) {
 
       socketIO.on('set_controlMode_student', (mode) => {
         console.log('mode: ', mode);
+        setSpeaking(false);
+        setDancing(false);
         setControlMode(mode);
       });
     }

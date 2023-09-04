@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
 
 export default function Navbar() {
-  const { displaySidebar, setDisplaySidebar } = useContext(AppContext);
+  const { displaySidebar, setDisplaySidebar, teacherPath } = useContext(AppContext);
 
   const showSidebar = () => {
     setDisplaySidebar(!displaySidebar);
@@ -25,11 +25,21 @@ export default function Navbar() {
         </div>
       </Link>
 
-      <Link href="/account" passHref>
-        <div className={styles.avatarContainer}>
-          <Avatar size={60} />
-        </div>
-      </Link>
+      <div className="flex">
+        {teacherPath && (
+          <div className="mr-4 flex justify-center items-center p-2 px-3 rounded-lg border border-solid border-slate-300 ">
+            <div className="relative mr-1 rounded-full bg-sky-500 h-3 w-3 inline-flex">
+              <span className="absolute rounded-full bg-sky-400 opacity-75 h-3 w-3 inline-flex animate-ping"></span>
+            </div>
+            <div>教師鎖定中</div>
+          </div>
+        )}
+        <Link href="/account" passHref>
+          <div className={styles.avatarContainer}>
+            <Avatar size={60} />
+          </div>
+        </Link>
+      </div>
     </nav>
   );
 }

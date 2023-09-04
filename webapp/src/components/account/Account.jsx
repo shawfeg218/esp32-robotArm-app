@@ -143,13 +143,19 @@ export default function Account() {
                   style={{ height: 150, width: 150 }}
                 />
               ) : (
-                <div className="avatar no-image animate-pulse" style={{ height: 150, width: 150 }}>
+                <div className="avatar no-image" style={{ height: 150, width: 150 }}>
                   <div className="h-full flex justify-center items-center">
                     <BsFillPersonFill className="text-slate-400" size={150} />
                   </div>
                 </div>
               )}
-              <Button disabled className="m-1 absolute text-blue-600 bg-blue-200" flat size="sm">
+              <Spacer y={0.5} />
+              <Button
+                disabled
+                className="m-1 absolute text-blue-600 bg-blue-200 rounded-2xl"
+                flat
+                size="sm"
+              >
                 {loading ? (
                   <>
                     <Loading type="points-opacity" color="currentColor" size="sm" />
@@ -167,6 +173,7 @@ export default function Account() {
                 accept="image/*"
                 onChange={uploadAvatar}
                 disabled={loading}
+                className="hover:cursor-pointer"
               />
             </div>
             <div className="w-36">{/* <div>user name: {username}</div> */}</div>
