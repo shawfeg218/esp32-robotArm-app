@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Loading, Input, Modal, Dropdown, Button, Textarea } from '@nextui-org/react';
+import { Loading, Input, Modal, Dropdown, Button, Textarea, Checkbox } from '@nextui-org/react';
 import { BsMicFill } from 'react-icons/bs';
 import { IoSend } from 'react-icons/io5';
 import { AiOutlineSound } from 'react-icons/ai';
@@ -46,7 +46,9 @@ export default function AudioChat() {
 
   const { setSpeaking, setDancing, setMood } = useContext(AppContext);
 
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDelModal, setShowDelModal] = useState(false);
+  const [delItems, setDelItems] = useState([]);
 
   const ansAudioRef = useRef(null);
   const [recording, setRecording] = useState(false);
@@ -75,11 +77,15 @@ export default function AudioChat() {
   const [ans, setAns] = useState(null);
   const [conversationHistory, setConversationHistory] = useState([]);
 
-  useEffect(() => {
-    console.log('role: ', rolePrompt.role);
-    console.log('prompt: ', rolePrompt.prompt);
-    console.log('voice_id: ', rolePrompt.voice_id);
-  }, [rolePrompt]);
+  // useEffect(() => {
+  //   console.log('role: ', rolePrompt.role);
+  //   console.log('prompt: ', rolePrompt.prompt);
+  //   console.log('voice_id: ', rolePrompt.voice_id);
+  // }, [rolePrompt]);
+
+  // useEffect(() => {
+  //   console.log('delItems: ', delItems);
+  // }, [delItems]);
 
   useEffect(() => {
     fetchRoles();
@@ -255,7 +261,6 @@ export default function AudioChat() {
         throw error;
       }
 
-      // console.log('data:', data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setRoles(data);
       setRolePrompt(data[0]);
@@ -266,7 +271,7 @@ export default function AudioChat() {
     }
   };
 
-  const updateRole = async () => {
+  const insertRole = async () => {
     try {
       const { error: updateError } = await supabase.from('chat_roles').insert([
         {
@@ -282,6 +287,25 @@ export default function AudioChat() {
     } catch (error) {
       console.log('Error updating role:', error);
       window.alert('Error updating role');
+    }
+  };
+
+  const deleteRole = async () => {
+    // console.log('delItems in deleteRole: ', delItems);
+    try {
+      for (let i = 0; i < delItems.length; i++) {
+        // console.log('delete index: ', delItems[i]);
+        const { error: deleteError } = await supabase
+          .from('chat_roles')
+          .delete()
+          .eq('id', delItems[i]);
+
+        if (deleteError) throw deleteError;
+        fetchRoles();
+      }
+    } catch (error) {
+      console.log('Error deleting role:', error);
+      window.alert('Error deleting role');
     }
   };
 
@@ -364,10 +388,12 @@ export default function AudioChat() {
                       const role = roles.find((role) => role.role === key);
 
                       if (key === 'add') {
-                        setShowModal(true);
+                        setShowCreateModal(true);
+                      } else if (key === 'delete') {
+                        setShowDelModal(true);
                       } else if (role) {
                         setRolePrompt(role);
-                        console.log('selected role: ', role);
+                        // console.log('selected role: ', role);
                         setAns(null);
                         setUserM('');
                         setConversationHistory([]);
@@ -382,11 +408,16 @@ export default function AudioChat() {
                         新增
                       </Dropdown.Item>
                     )}
+                    {AccountRole === 'teacher' && (
+                      <Dropdown.Item color="error" key="delete">
+                        刪除
+                      </Dropdown.Item>
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
 
-                {/* create new role */}
-                <Modal open={showModal} onClose={() => setShowModal(false)}>
+                {/* create new role modal */}
+                <Modal open={showCreateModal} onClose={() => setShowCreateModal(false)}>
                   <Modal.Header className="text-xl">輸入新角色</Modal.Header>
                   <Modal.Body>
                     角色名稱:
@@ -438,10 +469,10 @@ export default function AudioChat() {
                             window.alert('請輸入Prompt');
                           } else {
                             console.log('inputRole: ', inputRole);
-                            updateRole();
+                            insertRole();
                             // setRoles([...roles, inputRole]);
                             setInputRole({ role: '', prompt: '', voice_id: 0 });
-                            setShowModal(false);
+                            setShowCreateModal(false);
                           }
                         }}
                       >
@@ -451,7 +482,52 @@ export default function AudioChat() {
                         size="sm"
                         onClick={() => {
                           setInputRole({ role: '', prompt: '', voice_id: 0 });
-                          setShowModal(false);
+                          setShowCreateModal(false);
+                        }}
+                      >
+                        取消
+                      </Button>
+                    </div>
+                  </Modal.Footer>
+                </Modal>
+
+                {/* delete role modal */}
+                <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
+                  <Modal.Header className="text-xl">刪除角色</Modal.Header>
+                  <Modal.Body>
+                    <div className="h-36 overflow-y-scroll">
+                      <Checkbox.Group
+                        aria-label="check delete items"
+                        orientation="vertical"
+                        value={delItems}
+                        onChange={setDelItems}
+                      >
+                        {roles.map((role) => (
+                          <Checkbox key={role.id} value={role.id}>
+                            {role.role}
+                          </Checkbox>
+                        ))}
+                      </Checkbox.Group>
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <div className="flex w-full justify-between">
+                      <Button
+                        disabled={delItems.length === 0}
+                        size="sm"
+                        onClick={() => {
+                          deleteRole();
+                          setDelItems([]);
+                          setShowDelModal(false);
+                        }}
+                      >
+                        確認
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setDelItems([]);
+                          setShowDelModal(false);
                         }}
                       >
                         取消
