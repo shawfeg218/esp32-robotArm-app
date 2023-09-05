@@ -29,6 +29,7 @@
 .controlPanel {
   position: relative;
   width: 21.875rem;
+  height: 40.625rem;
   border: 0.125rem solid #ccc;
   box-shadow: 0 0 0.625rem #ccc;
   padding: 0 1.25rem 1.25rem 1.25rem;
@@ -46,9 +47,10 @@
 
 .servoState {
   width: 21.875rem;
+  height: 26.625rem;
   border: 0.125rem solid #ccc;
   box-shadow: 0 0 0.625rem #ccc;
-  padding: 0 0.625rem 0.625rem 1.25rem;
+  padding: 0 0.8rem 0.625rem 0.8rem;
   border-radius: 0.3125rem;
 }
 

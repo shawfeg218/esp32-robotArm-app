@@ -128,35 +128,35 @@ export default function ArmControlView(props) {
         <div className={styles.columnContainer}>
           <div className={styles.servoState}>
             <h2>Servo</h2>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">A軸-當前角度：{currentAngles.A}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.A}°</h5>
             </div>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">B軸-當前角度：{currentAngles.B}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.B}°</h5>
             </div>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">C軸-當前角度：{currentAngles.C}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.C}°</h5>
             </div>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">D軸-當前角度：{currentAngles.D}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.D}°</h5>
             </div>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">E軸-當前角度：{currentAngles.E}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.E}°</h5>
             </div>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">F軸-當前角度：{currentAngles.F}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.F}°</h5>
             </div>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">G軸-當前角度：{currentAngles.G}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.G}°</h5>
             </div>
-            <div className="flex">
+            <div className="w-full flex">
               <h5 className="w-1/2">H軸-當前角度：{currentAngles.H}°</h5>
               <h5 className="w-1/2 ml-6">目標角度：{targetAngles.H}°</h5>
             </div>
