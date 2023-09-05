@@ -16,6 +16,7 @@ WiFiManager wifiManager;
 
 unsigned long prevMillisWifiFail = 0;
 unsigned long prevMillisMqttReconnect = 0;
+unsigned long buttonPressTimestamp = 0;
 int onWifiFailedServoStep = 0;
 int onMqttFailedServoStep = 0;
 
@@ -98,16 +99,29 @@ void loop() {
     wifiManager.process();
     onWifiFail();
   }
+
+  delay(10);
 }
 
-void handleCheckButton() {
-  // 检查按鈕状态
-  int currentBtnState = digitalRead(buttonPin);
-  if (currentBtnState == LOW && prevBtnState == HIGH) {
-    handleResetWifi();
-  }
 
-  prevBtnState = currentBtnState;
+void handleCheckButton() {
+    int currentBtnState = digitalRead(buttonPin);
+    
+    if (currentBtnState == LOW && prevBtnState == HIGH) {
+        // 当按键按下时, 记录时间戳
+        buttonPressTimestamp = millis();
+    } 
+    else if (currentBtnState == LOW && (millis() - buttonPressTimestamp) >= 2000) {
+        // 如果按键持续按下并且达到了预设的时长，触发事件并重置时间戳
+        handleResetWifi();
+        buttonPressTimestamp = millis();  // 重置时间戳防止多次触发
+    } 
+    else if (currentBtnState == HIGH) {
+        // 如果按键被释放，重置时间戳
+        buttonPressTimestamp = 0;
+    }
+    
+    prevBtnState = currentBtnState;
 }
 
 void handleRoot() {
@@ -409,17 +423,20 @@ void wrongAct() {
 void grabAct() {
   Serial.println("grab-action");
 
-  angleG = 110;
+  angleG = 50;
   servoG.write(angleG);
 
-  angleF = 150;
+  angleF = 30;
   servoF.write(angleF);
   delay(500);
+
   for (int i = 0; i < 3; i++) {
     angleE = random(50, 120);
     servoE.write(angleE);
+    delay(300);
   }
   delay(1000);
+
   initializedAngles();
 }
 
