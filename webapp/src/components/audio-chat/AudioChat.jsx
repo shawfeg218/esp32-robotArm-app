@@ -174,12 +174,10 @@ export default function AudioChat() {
     setLoading(true);
     const formData = new FormData();
     formData.append('file', audioData);
-
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/transcript-audio`, {
       method: 'POST',
       body: formData,
     });
-
     if (!response.ok) {
       const errorResponse = await response.json();
       console.log('Error transcribing audio:');
@@ -543,7 +541,7 @@ export default function AudioChat() {
               <div className="w-full flex justify-center relative">
                 {recording && (
                   <button
-                    className="absolute mt-0 right-48 w-4 text-center text-3xl bg-transparent border-0"
+                    className="absolute mt-0 right-40 w-fit text-center text-3xl bg-transparent border-0"
                     onClick={cancelRecording}
                   >
                     <RxCross2 />
