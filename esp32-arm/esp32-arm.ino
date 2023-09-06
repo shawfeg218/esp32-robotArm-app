@@ -100,7 +100,7 @@ void loop() {
     onWifiFail();
   }
 
-  delay(10);
+  // delay(10);
 }
 
 
