@@ -104,6 +104,20 @@ export default function Esp32Status() {
                 </Button>
               </>
             ) : null}
+
+            {router.asPath !== '/arm-control' ? (
+              <>
+                <Spacer y={0.25} />
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    router.push('/arm-control');
+                  }}
+                >
+                  控制頁面
+                </Button>
+              </>
+            ) : null}
           </>
         )}
       </div>

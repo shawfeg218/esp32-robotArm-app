@@ -339,7 +339,7 @@ export default function Esp32Devices() {
             value={addMacAddress}
             onChange={(e) => setAddMacAddress(e.target.value)}
           />
-          <Spacer y={0.5} />
+          <Spacer y={1.325} />
 
           <div>
             <Button className="w-full" onClick={addDevice} disabled={loading}>
