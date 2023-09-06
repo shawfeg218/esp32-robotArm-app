@@ -55,7 +55,7 @@ export default function Esp32Status() {
       <h2>ESP32 Status</h2>
       <div>
         {connectedMacAddress !== '' ? (
-          <>
+          <div className="h-1/3">
             <div>Connecting device: {connectedDeviceName}</div>
             <div>macAddress: {esp32Status.macAddress}</div>
             <div>SSID: {esp32Status.ssid}</div>
@@ -68,7 +68,7 @@ export default function Esp32Status() {
             <div>Free Heap: {esp32Status.freeHeap} bytes</div>
             <div>Flash Size: {esp32Status.flashSize} bytes</div>
             <div>Hall Effect: {esp32Status.hallEffect}</div>
-          </>
+          </div>
         ) : (
           <Link href="/device" passHref>
             <h3 className="hover:cursor-pointer text-blue-600">choose a device to get status 🔗</h3>
