@@ -44,13 +44,16 @@ export default function AudioChat() {
   const user = useUser();
   const AccountRole = user?.user_metadata?.role;
 
-  const { setSpeaking, setDancing, setMood } = useContext(AppContext);
+  const { setSpeaking, setDancing, setMood, handleReset, targetAngles, setTargetAngles } =
+    useContext(AppContext);
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDelModal, setShowDelModal] = useState(false);
   const [delItems, setDelItems] = useState([]);
 
   const ansAudioRef = useRef(null);
+  const textRef = useRef();
+
   const [recording, setRecording] = useState(false);
   const cancelRecordRef = useRef(false);
   const [audioData, setAudioData] = useState(null);
@@ -100,6 +103,8 @@ export default function AudioChat() {
   useEffect(() => {
     if (text) {
       audioChat();
+      textRef.current = text;
+      // console.log(text);
     }
   }, [text]);
 
@@ -112,8 +117,8 @@ export default function AudioChat() {
         // check how long is the audio
         const duration = ansAudioRef.current.duration;
         // console.log('duration: ', duration);
-
-        handleAction(text, duration);
+        console.log('text in audio playing : ', textRef.current);
+        handleAction(textRef.current, duration);
       };
       ansAudioRef.current.onerror = (e) => {
         console.error('Error playing audio:', e);
@@ -336,16 +341,72 @@ export default function AudioChat() {
     }, duration * 1000);
   }
 
+  function raiseHand(action) {
+    // console.log('raiseHand: ', action);
+    if (action === '舉手' || action === 'raise hand' || action === 'Raise hand') {
+      const newAngles = { ...targetAngles, ['F']: 130 };
+      setTargetAngles(newAngles);
+    } else if (
+      action === '舉雙手' ||
+      action === 'raise two hands' ||
+      action === 'Raise two hands'
+    ) {
+      const newAngles = { ...targetAngles, ['B']: 30, ['F']: 130 };
+      setTargetAngles(newAngles);
+    }
+  }
+
   function handleAction(text, duration) {
-    // console.log('handleAction: ', duration);
-    const actionWords = ['跳舞'];
+    console.log('handleAction text: ', text);
+    console.log('handleAction duration: ', duration);
+    const actionWords = [
+      '跳舞',
+      '舞',
+      '音樂',
+      'music',
+      'Music',
+      'dance',
+      'Dance',
+      '舉手',
+      'raise hand',
+      'Raise hand',
+      '舉雙手',
+      'raise two hands',
+      'Raise two hands',
+      '重置',
+      'reset',
+      'Reset',
+    ];
     // check if text has some action words
     const action = actionWords.find((word) => text.includes(word));
+    console.log('action: ', action);
 
     switch (action) {
       case '跳舞':
+      case '舞':
+      case 'dance':
+      case 'Dance':
+      case '音樂':
+      case 'music':
+      case 'Music':
         danceAtleastTen(duration);
         break;
+
+      case '舉手':
+      case '舉雙手':
+      case 'raise hand':
+      case 'raise two hands':
+      case 'Raise hand':
+      case 'Raise two hands':
+        raiseHand(action);
+        break;
+
+      case '重置':
+      case 'reset':
+      case 'Reset':
+        handleReset();
+        break;
+
       default:
         speakInDuration(duration);
         break;
