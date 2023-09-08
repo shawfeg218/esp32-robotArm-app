@@ -206,8 +206,8 @@ export default function AudioChat() {
   async function audioChat() {
     setLoading(true);
     setUserM(text);
-    console.log('voiceLang: ', voiceProfiles[rolePrompt.voice_id].voiceLang);
-    console.log('voiceName: ', voiceProfiles[rolePrompt.voice_id].voiceName);
+    // console.log('voiceLang: ', voiceProfiles[rolePrompt.voice_id].voiceLang);
+    // console.log('voiceName: ', voiceProfiles[rolePrompt.voice_id].voiceName);
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`, {
       // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
@@ -258,7 +258,7 @@ export default function AudioChat() {
   const fetchRoles = async () => {
     setPageLoading(true);
     try {
-      const { data, error } = await supabase.from('chat_roles').select('*');
+      const { data, error } = await supabase.from('chat_roles').select('*').order('id');
 
       if (error) {
         throw error;
