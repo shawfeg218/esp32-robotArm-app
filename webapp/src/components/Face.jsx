@@ -21,12 +21,11 @@ export default function Face() {
   return (
     <div className="w-full mt-20 flex justify-center relative">
       <img src={gifSrc} alt="temp" className="h-full" onClick={() => setShowFace(false)} />
-      {role === 'teacher' ||
-        (controlMode === 'single' && (
-          <Collapse title="Audio Chat" bordered className="absolute top-0 w-1/2 bg-white">
-            <AudioChat />
-          </Collapse>
-        ))}
+      {(role === 'teacher' || controlMode === 'single') && (
+        <Collapse title="Audio Chat" bordered className="absolute top-0 w-1/2 bg-white">
+          <AudioChat />
+        </Collapse>
+      )}
     </div>
   );
 }
