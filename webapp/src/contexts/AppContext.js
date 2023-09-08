@@ -103,6 +103,11 @@ export const AppContextProvider = ({ children }) => {
     }
   }, [speaking]);
 
+  useEffect(() => {
+    console.log('mood: ', mood);
+    handleTeacherMood();
+  }, [mood]);
+
   const handleChange = (axis, angle) => {
     const newAngles = { ...targetAngles, [axis]: angle };
     setTargetAngles(newAngles);
@@ -256,6 +261,13 @@ export const AppContextProvider = ({ children }) => {
       axios.post('/api/reset-wifi', {
         connectedMacAddress,
       });
+    }
+  };
+
+  const handleTeacherMood = () => {
+    if (controlMode === 'multi-singleRoute' && role !== 'student') {
+      socket?.emit('teacher_mood', mood);
+      console.log('emit mood: ', mood);
     }
   };
 

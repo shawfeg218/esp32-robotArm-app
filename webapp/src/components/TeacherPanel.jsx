@@ -1,3 +1,4 @@
+// webapp/src/components/TeacherPanel.jsx
 import { useUser } from '@supabase/auth-helpers-react';
 import { Button, Collapse, Spacer, Radio } from '@nextui-org/react';
 import { useRouter } from 'next/router';
@@ -48,6 +49,7 @@ export default function TeacherPanel() {
     setShowToast(true);
     if (mode === 'single') {
       setToastMessage('單一控制');
+      socket?.emit('teacher_mood', 'default');
     } else if (mode === 'multi-singleRoute') {
       setToastMessage('教師控制');
     }

@@ -41,6 +41,7 @@ export default function Layout({ children }) {
     showFace,
     setShowFace,
     faceMode,
+    setMood,
     setDancing,
     setSpeaking,
   } = useContext(AppContext);
@@ -98,6 +99,11 @@ export default function Layout({ children }) {
         setSpeaking(false);
         setDancing(false);
         setControlMode(mode);
+      });
+
+      socketIO.on('set_mood_student', (mood) => {
+        console.log('Teacher mode: ', mood);
+        setMood(mood);
       });
     }
   };
