@@ -343,11 +343,17 @@ export default function AudioChat() {
 
   function raiseHand(action) {
     // console.log('raiseHand: ', action);
-    if (action === '舉手' || action === 'raise hand' || action === 'Raise hand') {
+    if (
+      action === '舉手' ||
+      action === '举手' ||
+      action === 'raise hand' ||
+      action === 'Raise hand'
+    ) {
       const newAngles = { ...targetAngles, ['F']: 130 };
       setTargetAngles(newAngles);
     } else if (
       action === '舉雙手' ||
+      action === '举双手' ||
       action === 'raise two hands' ||
       action === 'Raise two hands'
     ) {
@@ -363,14 +369,17 @@ export default function AudioChat() {
       '跳舞',
       '舞',
       '音樂',
+      '音乐',
       'music',
       'Music',
       'dance',
       'Dance',
       '舉手',
+      '举手',
       'raise hand',
       'Raise hand',
       '舉雙手',
+      '举双手',
       'raise two hands',
       'Raise two hands',
       '重置',
@@ -387,13 +396,16 @@ export default function AudioChat() {
       case 'dance':
       case 'Dance':
       case '音樂':
+      case '音乐':
       case 'music':
       case 'Music':
         danceAtleastTen(duration);
         break;
 
       case '舉手':
+      case '举手':
       case '舉雙手':
+      case '举双手':
       case 'raise hand':
       case 'raise two hands':
       case 'Raise hand':
