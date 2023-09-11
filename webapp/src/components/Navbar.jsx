@@ -21,7 +21,10 @@ export default function Navbar() {
       </div>
       <Link href="/" passHref>
         <div className="hover:cursor-pointer hidden sm:block">
-          <h1 className="text-center">MEMEbot</h1>
+          <div className="flex items-center">
+            <img src="/memeIcon-bgrm.png" alt="MemeBot" className="w-10 h-10 mt-1" />
+            <h1 className="text-center">MEMEbot</h1>
+          </div>
         </div>
       </Link>
 
