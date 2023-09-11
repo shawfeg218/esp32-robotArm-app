@@ -15,6 +15,8 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>{CssBaseline.flush()}</Head>
+        <title>MemeBot</title>
+        <link rel="icon" href="/memeIcon-bgrm.png" />
         <body>
           <Main />
           <NextScript />

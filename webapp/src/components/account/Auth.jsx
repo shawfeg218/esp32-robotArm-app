@@ -247,6 +247,7 @@ export default function Auth() {
               </>
             ) : (
               <>
+                <img src="img/bgImg.png" alt="bg-img" />
                 <Input
                   aria-label="Email input"
                   fullWidth
