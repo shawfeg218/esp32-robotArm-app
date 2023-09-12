@@ -85,13 +85,14 @@ function Quiz() {
                           isHoverable
                           isPressable
                           // key={subject.id}
-                          className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50"
+                          className="relative w-96 h-52 bg-white p-4 pr-9 hover:bg-yellow-50"
                           onClick={() => handleSelectSubject(subject.id)}
                         >
+                          {/* Teacher delete icon */}
                           {role === 'teacher' && (
                             <AiOutlineDelete
                               size="1.5rem"
-                              className="absolute top-4 right-4 hover:text-slate-400"
+                              className="absolute top-4 right-3 hover:text-slate-400"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setShowDelModal(true);
@@ -100,21 +101,29 @@ function Quiz() {
                               }}
                             />
                           )}
-                          <p className="font-bold">{subject.name.toUpperCase()}</p>
-                          <p className="font-bold">Subject id: {subject.id}</p>
-                          <p className="font-bold">Total questions: {subject.total_questions}</p>
-                          {/* <p className="font-bold">
-                      Inserted time:
-                      {new Date(subject.inserted_at).toLocaleDateString(undefined, {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                      })}
-                    </p> */}
-                          <p className="font-bold">題目介紹:</p>
-                          <p className="font-bold">
-                            {subject.describe ? subject.describe : '無說明'}
-                          </p>
+
+                          <div className="h-full flex items-center">
+                            <div className="flex">
+                              <div className="h-full w-1/2 mr-2">
+                                <img
+                                  src="/img/learning-desk.png"
+                                  className="w-full h-auto opacity-90"
+                                  alt="lesson card"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-bold">{subject.name.toUpperCase()}</p>
+                                <p className="font-bold">Subject id: {subject.id}</p>
+                                <p className="font-bold">
+                                  Total questions: {subject.total_questions}
+                                </p>
+                                <p className="font-bold">題目介紹:</p>
+                                <p className="font-bold">
+                                  {subject.describe ? subject.describe : '無說明'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </Card>
                         <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
                           <Modal.Header className="text-2xl font-bold">

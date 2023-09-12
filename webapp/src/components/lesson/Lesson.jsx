@@ -85,13 +85,14 @@ function Lesson() {
                           isHoverable
                           isPressable
                           // key={lesson.id}
-                          className="relative w-96 h-52 bg-white p-4 hover:bg-yellow-50"
+                          className="relative w-96 h-52 bg-white p-4 pr-9 hover:bg-yellow-50"
                           onClick={() => handleSelectLesson(lesson.id)}
                         >
+                          {/* Teacher delete icon */}
                           {role === 'teacher' && (
                             <AiOutlineDelete
                               size="1.5rem"
-                              className="absolute top-4 right-4 hover:text-slate-400"
+                              className="absolute top-4 right-3 hover:text-slate-400"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setShowDelModal(true);
@@ -100,18 +101,26 @@ function Lesson() {
                               }}
                             />
                           )}
-                          <p className="font-bold">{lesson.title.toUpperCase()}</p>
-                          <p className="font-bold">課文 id: {lesson.id}</p>
-                          <p className="font-bold">課文大綱: {lesson.description}</p>
-                          {/* <p className="font-bold">
-                      Inserted time:
-                      {new Date(lesson.inserted_at).toLocaleDateString(undefined, {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                      })}
-                    </p> */}
+                          <div className="h-full flex items-center">
+                            <div className="flex">
+                              <div className="h-full w-1/2 mr-2">
+                                <img
+                                  src="/img/learning-desk.png"
+                                  className="w-full h-auto opacity-90"
+                                  alt="lesson card"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-bold">{lesson.title.toUpperCase()}</p>
+                                <p className="font-bold">課文 id: {lesson.id}</p>
+                                <p className="font-bold">課文大綱:</p>
+                                <p className="font-bold">{lesson.description}</p>
+                              </div>
+                            </div>
+                          </div>
                         </Card>
+
+                        {/* Show delete modal */}
                         <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
                           <Modal.Header className="text-2xl font-bold">
                             確定刪除{' '}
