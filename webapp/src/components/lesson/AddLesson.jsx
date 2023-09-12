@@ -1,6 +1,6 @@
 // webapp\src\components\lessons\AddLesson.jsx
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { GrDocumentUpload } from 'react-icons/gr';
 import PrettyTextArea from '../PrettyTextArea';
@@ -14,7 +14,7 @@ export default function AddLesson() {
   const [updating, setUpdating] = useState(false);
 
   const [uploadingPPT, setUploadingPPT] = useState(false);
-  const [downloadingPPT, setDownloadingPPT] = useState(false);
+  const [loadingWithBucket, setLoadingWithBucket] = useState(false);
 
   const [lessonTitle, setLessonTitle] = useState('');
   const [lessonDescription, setLessonDescription] = useState('');
@@ -22,8 +22,20 @@ export default function AddLesson() {
 
   const [pptUrls, setPptUrls] = useState([]);
 
-  // for previewing ppt
+  // for previewing ppt on webpage
   const [pptFilesUrl, setPptFilesUrl] = useState([]);
+
+  // After user uploads a file to supabase storage buckets, the pptUrls state will be updated.
+  // For previewing the ppt file on webpage, this useEffect will download the ppt file from the storage bucket by the filePath that just updated in the pptUrls array and store it in pptFilesUrl state.
+  useEffect(() => {
+    if (pptUrls.length > 0) {
+      for (let i = 0; i < pptUrls.length; i++) {
+        if (pptUrls[i] !== '' && pptFilesUrl[i] === '') {
+          downloadPPT(pptUrls[i]);
+        }
+      }
+    }
+  }, [pptUrls]);
 
   const handleParagraphChange = (e, paragraphIndex) => {
     const newParagraphs = [...paragraphs];
@@ -33,10 +45,19 @@ export default function AddLesson() {
 
   const addParagraph = () => {
     setParagraphs([...paragraphs, '']);
+    setPptUrls([...pptUrls, '']);
+    setPptFilesUrl([...pptFilesUrl, '']);
   };
 
   const removeParagraph = (paragraphIndex) => {
     setParagraphs(paragraphs.filter((_, index) => index !== paragraphIndex));
+    setPptUrls(pptUrls.filter((_, index) => index !== paragraphIndex));
+    setPptFilesUrl(pptFilesUrl.filter((_, index) => index !== paragraphIndex));
+
+    // If the paragraph had uploaded a ppt, delete the ppt file from supabase storage bucket
+    if (pptUrls[paragraphIndex] !== '') {
+      deletePPT(pptUrls[paragraphIndex]);
+    }
   };
 
   const updateToDatabase = async () => {
@@ -79,8 +100,8 @@ export default function AddLesson() {
   };
 
   const uploadPPT = async (event, pArrayId) => {
-    console.log('uploadPPT');
-    console.log('paragraph id:', pArrayId);
+    // console.log('uploadPPT');
+    // console.log('paragraph id:', pArrayId);
     setUploadingPPT(true);
     try {
       if (!event.target.files || event.target.files.length === 0) {
@@ -111,8 +132,23 @@ export default function AddLesson() {
     }
   };
 
-  const downloadPPT = async (pptUrl, pArrayId) => {
-    setDownloadingPPT(true);
+  const deletePPT = async (pptUrl) => {
+    setLoadingWithBucket(true);
+    try {
+      const { error } = await supabase.storage.from('ppts').remove([pptUrl]);
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      alert(error.message);
+      console.log(error);
+    } finally {
+      setLoadingWithBucket(false);
+    }
+  };
+
+  const downloadPPT = async (pptUrl) => {
+    setLoadingWithBucket(true);
     try {
       const { data, error } = await supabase.storage.from('ppts').download(pptUrl);
       if (error) {
@@ -120,14 +156,15 @@ export default function AddLesson() {
       }
       const url = URL.createObjectURL(data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
       const newPptFilesUrl = [...pptFilesUrl];
-      newPptFilesUrl[pArrayId] = url;
+      newPptFilesUrl[pptUrls.indexOf(pptUrl)] = url;
       setPptFilesUrl(newPptFilesUrl);
     } catch (error) {
       alert(error.message);
       console.log(error);
     } finally {
-      setDownloadingPPT(false);
+      setLoadingWithBucket(false);
     }
   };
 
@@ -239,7 +276,7 @@ export default function AddLesson() {
                         id="upload"
                         accept="image/*"
                         onChange={uploadPPT}
-                        disabled={uploadingPPT}
+                        disabled={uploadingPPT || loadingWithBucket}
                         className="hover:cursor-pointer w-20"
                       />
                     </div>
