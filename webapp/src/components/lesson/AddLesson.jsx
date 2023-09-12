@@ -13,11 +13,17 @@ export default function AddLesson() {
   const [successMessage, setSuccessMessage] = useState();
   const [updating, setUpdating] = useState(false);
 
-  const [uploadppt, setUploadppt] = useState(false);
+  const [uploadingPPT, setUploadingPPT] = useState(false);
+  const [downloadingPPT, setDownloadingPPT] = useState(false);
 
   const [lessonTitle, setLessonTitle] = useState('');
   const [lessonDescription, setLessonDescription] = useState('');
   const [paragraphs, setParagraphs] = useState(['']);
+
+  const [pptUrls, setPptUrls] = useState([]);
+
+  // for previewing ppt
+  const [pptFilesUrl, setPptFilesUrl] = useState([]);
 
   const handleParagraphChange = (e, paragraphIndex) => {
     const newParagraphs = [...paragraphs];
@@ -56,6 +62,7 @@ export default function AddLesson() {
             content: paragraphs[i],
             order_of_lesson: i + 1,
             inserted_at: new Date().toISOString(),
+            ppt_url: pptUrls[i],
           },
         ]);
 
@@ -74,31 +81,54 @@ export default function AddLesson() {
   const uploadPPT = async (event, pArrayId) => {
     console.log('uploadPPT');
     console.log('paragraph id:', pArrayId);
-    // try {
-    //   setUploadppt(true);
+    setUploadingPPT(true);
+    try {
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('您必須選擇一個圖片進行上傳。');
+      }
 
-    //   if (!event.target.files || event.target.files.length === 0) {
-    //     throw new Error('You must select an image to upload.');
-    //   }
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${lessonTitle}_paragraphs_${pArrayId}.${fileExt}`;
+      const filePath = `${fileName}`;
 
-    //   const file = event.target.files[0];
-    //   const fileExt = file.name.split('.').pop();
-    //   const fileName = `${lessonTitle}-${pArrayId}.${fileExt}`;
-    //   const filePath = `${fileName}`;
+      let { error: uploadError } = await supabase.storage
+        .from('ppts')
+        .upload(filePath, file, { upsert: true });
 
-    //   let { error: uploadError } = await supabase.storage
-    //     .from('ppts')
-    //     .upload(filePath, file, { upsert: true });
+      if (uploadError) {
+        throw uploadError;
+      }
 
-    //   if (uploadError) {
-    //     throw uploadError;
-    //   }
-    // } catch (error) {
-    //   alert('Error uploading ppt!');
-    //   console.log(error);
-    // } finally {
-    //   setUploadppt(false);
-    // }
+      const newPptUrls = [...pptUrls];
+      newPptUrls[pArrayId] = filePath;
+      setPptUrls(newPptUrls);
+    } catch (error) {
+      alert(error.message);
+      console.log(error);
+    } finally {
+      setUploadingPPT(false);
+    }
+  };
+
+  const downloadPPT = async (pptUrl, pArrayId) => {
+    setDownloadingPPT(true);
+    try {
+      const { data, error } = await supabase.storage.from('ppts').download(pptUrl);
+      if (error) {
+        throw error;
+      }
+      const url = URL.createObjectURL(data);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const newPptFilesUrl = [...pptFilesUrl];
+      newPptFilesUrl[pArrayId] = url;
+      setPptFilesUrl(newPptFilesUrl);
+    } catch (error) {
+      alert(error.message);
+      console.log(error);
+    } finally {
+      setDownloadingPPT(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -146,8 +176,11 @@ export default function AddLesson() {
           <h2>內容</h2>
           <div className="border-solid border-2 border-slate-300 rounded-md px-4 pt-2 pb-8">
             {paragraphs.map((paragraph, paragraphIndex) => (
-              <div className="my-6" key={paragraphIndex}>
-                <div className="flex justify-between items-center">
+              <div
+                className="mb-6 pb-8 border-2 border-solid border-x-0 border-t-0 border-slate-300"
+                key={paragraphIndex}
+              >
+                <div className="w-full flex justify-between items-center">
                   <h3>頁數{paragraphIndex + 1}</h3>
 
                   {/* Delete icons */}
@@ -160,21 +193,56 @@ export default function AddLesson() {
                     </div>
                   )}
                 </div>
-                <div className="w-full flex justify-between">
-                  <div className="flex items-end w-5/6">
-                    <PrettyTextArea
-                      value={paragraph}
-                      onChange={(e) => handleParagraphChange(e, paragraphIndex)}
-                      required
-                    />
+
+                <div className="w-full flex justify-between items-end">
+                  <div className="w-5/6">
+                    {/* Preview img div*/}
+                    <div className="w-full flex justify-center">
+                      {pptFilesUrl[paragraphIndex] ? (
+                        <img
+                          src={pptFilesUrl[paragraphIndex]}
+                          alt="paragraph ppt"
+                          className="max-h-96"
+                        />
+                      ) : (
+                        <div className="h-80 p-4 overflow-y-scroll rounded-md bg-yellow-50 w-full ">
+                          {/* <img src="/img/Lesson.png" alt="paragraph ppt" className="max-h-96" /> */}
+                          <h2>{lessonTitle}</h2>
+                          {paragraph ? (
+                            <p>{paragraph}</p>
+                          ) : (
+                            <p className="text-lg text-slate-500">Enter...</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* paragraph input */}
+                    <div className="flex items-end w-full mt-4">
+                      <PrettyTextArea
+                        value={paragraph}
+                        onChange={(e) => handleParagraphChange(e, paragraphIndex)}
+                        required
+                      />
+                    </div>
                   </div>
-                  <div
-                    className="h-16 w-24 flex justify-center items-center border-2  border-dashed hover:bg-yellow-50 hover:cursor-pointer"
-                    onClick={(e) => {
-                      uploadPPT(e, paragraphIndex);
-                    }}
-                  >
-                    <GrDocumentUpload size={24} />
+
+                  <div className="w-1/6 flex justify-center">
+                    {/* Upload icons */}
+                    <div className="relative h-16 w-fit  flex justify-center items-center border-2 rounded-xl  border-dashed hover:bg-yellow-50 hover:cursor-pointer">
+                      <GrDocumentUpload className="absolute" size={24} />
+                      <input
+                        style={{
+                          opacity: 0,
+                        }}
+                        type="file"
+                        id="upload"
+                        accept="image/*"
+                        onChange={uploadPPT}
+                        disabled={uploadingPPT}
+                        className="hover:cursor-pointer w-20"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
