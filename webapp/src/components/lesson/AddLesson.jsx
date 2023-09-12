@@ -2,6 +2,7 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { GrDocumentUpload } from 'react-icons/gr';
 import PrettyTextArea from '../PrettyTextArea';
 import { Button, Loading, Spacer } from '@nextui-org/react';
 
@@ -11,6 +12,8 @@ export default function AddLesson() {
   const [message, setMessage] = useState();
   const [successMessage, setSuccessMessage] = useState();
   const [updating, setUpdating] = useState(false);
+
+  const [uploadppt, setUploadppt] = useState(false);
 
   const [lessonTitle, setLessonTitle] = useState('');
   const [lessonDescription, setLessonDescription] = useState('');
@@ -68,6 +71,36 @@ export default function AddLesson() {
     }
   };
 
+  const uploadPPT = async (event, pArrayId) => {
+    console.log('uploadPPT');
+    console.log('paragraph id:', pArrayId);
+    // try {
+    //   setUploadppt(true);
+
+    //   if (!event.target.files || event.target.files.length === 0) {
+    //     throw new Error('You must select an image to upload.');
+    //   }
+
+    //   const file = event.target.files[0];
+    //   const fileExt = file.name.split('.').pop();
+    //   const fileName = `${lessonTitle}-${pArrayId}.${fileExt}`;
+    //   const filePath = `${fileName}`;
+
+    //   let { error: uploadError } = await supabase.storage
+    //     .from('ppts')
+    //     .upload(filePath, file, { upsert: true });
+
+    //   if (uploadError) {
+    //     throw uploadError;
+    //   }
+    // } catch (error) {
+    //   alert('Error uploading ppt!');
+    //   console.log(error);
+    // } finally {
+    //   setUploadppt(false);
+    // }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -116,6 +149,8 @@ export default function AddLesson() {
               <div className="my-6" key={paragraphIndex}>
                 <div className="flex justify-between items-center">
                   <h3>頁數{paragraphIndex + 1}</h3>
+
+                  {/* Delete icons */}
                   {paragraphs.length > 1 && (
                     <div
                       className="flex justify-center hover:text-slate-300 hover:cursor-pointer"
@@ -125,13 +160,23 @@ export default function AddLesson() {
                     </div>
                   )}
                 </div>
-                <label>
-                  <PrettyTextArea
-                    value={paragraph}
-                    onChange={(e) => handleParagraphChange(e, paragraphIndex)}
-                    required
-                  />
-                </label>
+                <div className="w-full flex justify-between">
+                  <div className="flex items-end w-5/6">
+                    <PrettyTextArea
+                      value={paragraph}
+                      onChange={(e) => handleParagraphChange(e, paragraphIndex)}
+                      required
+                    />
+                  </div>
+                  <div
+                    className="h-16 w-24 flex justify-center items-center border-2  border-dashed hover:bg-yellow-50 hover:cursor-pointer"
+                    onClick={(e) => {
+                      uploadPPT(e, paragraphIndex);
+                    }}
+                  >
+                    <GrDocumentUpload size={24} />
+                  </div>
+                </div>
               </div>
             ))}
             <Button className="w-full my-4" onClick={addParagraph}>
