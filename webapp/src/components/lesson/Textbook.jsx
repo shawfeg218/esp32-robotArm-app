@@ -14,7 +14,7 @@ export default function Textbook() {
   const [loadingPPT, setLoadingPPT] = useState(true);
 
   const { selectedLesson, setSelectedLesson } = useContext(AppContext);
-  const [data, setData] = useState([]);
+  const [dataArray, setDataArray] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -25,7 +25,7 @@ export default function Textbook() {
   const handleLeave = () => {
     setContentAudioUrl(null);
     setPptUrls([]);
-    setData([]);
+    setDataArray([]);
     setCurrentPage(0);
     setSelectedLesson(null);
   };
@@ -36,20 +36,21 @@ export default function Textbook() {
 
   useEffect(() => {
     downloadppt();
-  }, [data]);
+    console.log('data:', dataArray);
+  }, [dataArray]);
+
+  // useEffect(() => {
+  //   console.log('pptUrls:', PptUrls);
+  // }, [PptUrls]);
 
   useEffect(() => {
-    console.log('pptUrls:', PptUrls);
-  }, [PptUrls]);
-
-  useEffect(() => {
-    if (data[currentPage]?.paragraph_audio) {
-      const audioBase64 = data[currentPage].paragraph_audio;
+    if (dataArray[currentPage]?.paragraph_audio) {
+      const audioBase64 = dataArray[currentPage].paragraph_audio;
       const audioBlob = base64ToBlob(audioBase64, 'audio/mp3');
       const audioUrl = URL.createObjectURL(audioBlob);
       setContentAudioUrl(audioUrl);
     }
-  }, [data, currentPage]);
+  }, [dataArray, currentPage]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -68,7 +69,7 @@ export default function Textbook() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (data) {
-        setData(data);
+        setDataArray(data);
         console.log('data:', data);
       }
     } catch (error) {
@@ -81,7 +82,7 @@ export default function Textbook() {
   const generateAudio = async () => {
     setGenerating(true);
     try {
-      const text = data[currentPage]?.paragraph_content;
+      const text = dataArray[currentPage]?.paragraph_content;
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tts`, {
         method: 'POST',
         headers: {
@@ -114,7 +115,7 @@ export default function Textbook() {
   const updateAudio = async (audioBase64) => {
     setLoading(true);
     try {
-      const id = data[currentPage].paragraph_id;
+      const id = dataArray[currentPage].paragraph_id;
       // console.log('id:', id);
 
       const { data, error } = await supabase
@@ -128,7 +129,7 @@ export default function Textbook() {
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setContentAudioUrl(null);
-      setData([]);
+      setDataArray([]);
       setPptUrls([]);
       fetchData();
       // console.log('updateAudio:', data);
@@ -141,12 +142,12 @@ export default function Textbook() {
   const downloadppt = async () => {
     // after data is fetched, download ppt from supabase storage ppts bucket and setPptUrls with the urls
     setLoadingPPT(true);
-    if (data.length === 0) return;
+    if (dataArray.length === 0) return;
 
     setPptUrls([]);
     try {
-      for (let i = 0; i < data.length; i++) {
-        let pptPath = data[i].paragraph_ppturl;
+      for (let i = 0; i < dataArray.length; i++) {
+        let pptPath = dataArray[i].paragraph_ppturl;
         console.log('download pptPath:', pptPath);
         if (pptPath !== '' && pptPath !== null) {
           const { data, error } = await supabase.storage.from('ppts').download(pptPath);
@@ -167,7 +168,7 @@ export default function Textbook() {
   };
 
   return (
-    <div className="w-full max-w-2xl min-h-screen">
+    <div className="w-full max-w-3xl min-h-screen">
       <div className="h-full">
         {/* Leave icon */}
         <div className="w-fit flex items-center hover:cursor-pointer" onClick={handleLeave}>
@@ -178,11 +179,11 @@ export default function Textbook() {
         {loading || loadingPPT ? (
           <TextbookLoading />
         ) : (
-          <section className="w-full h-1/2 mt-8">
-            <div className="w-full h-full pl-4 pb-4 overflow-y-scroll border border-solid border-slate-300 rounded-md bg-yellow-50">
+          <section className="w-full mt-8">
+            <div className="w-full p-4 pb-8 border border-solid border-slate-300 rounded-md bg-yellow-50">
               {/* Title & audio */}
               <div className="w-full flex justify-between items-center">
-                <h2>{data[currentPage]?.lesson_title}</h2>
+                <h2>{dataArray[currentPage]?.lesson_title}</h2>
 
                 {/* audio */}
                 {contentAudioUrl === null ? (
@@ -199,11 +200,19 @@ export default function Textbook() {
               </div>
 
               {/* Content */}
-              <div className="w-full flex justify-center">
+              <div className="mt-4">
                 {PptUrls[currentPage] ? (
-                  <img src={PptUrls[currentPage]} alt="ppt" className="h-full" />
+                  <div className="w-full">
+                    <div className="w-full h-96 flex justify-center">
+                      <img src={PptUrls[currentPage]} alt="ppt" className="h-full" />
+                    </div>
+                  </div>
                 ) : (
-                  <p className="mt-6">{data[currentPage]?.paragraph_content}</p>
+                  <div className="w-full h-96">
+                    <p className="h-full overflow-y-scroll">
+                      {dataArray[currentPage]?.paragraph_content}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -211,7 +220,7 @@ export default function Textbook() {
             {/* Pagination */}
             <div className="w-full flex justify-center mt-4">
               <Pagination
-                total={data.length}
+                total={dataArray.length}
                 initialPage={1}
                 onChange={(page) => {
                   setContentAudioUrl(null);
