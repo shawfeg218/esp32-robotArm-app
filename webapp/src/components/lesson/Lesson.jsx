@@ -53,10 +53,32 @@ function Lesson() {
     const id = delLesson.id;
     console.log('delLesson:', id);
     try {
-      const { data, error } = await supabase.from('lessons').delete().eq('id', id);
+      // select all paragraph_ppturl from lesson_view where lesson_id = id
+      const { data: pptUrls, delPPTError } = await supabase
+        .from('lesson_view')
+        .select('paragraph_ppturl')
+        .eq('lesson_id', id);
 
-      if (error) {
-        throw error;
+      if (delPPTError) {
+        throw delPPTError;
+      }
+      // console.log('pptUrls:', pptUrls);
+
+      // put all items into an array
+      const pptUrlsArray = pptUrls.map((item) => item.paragraph_ppturl);
+      // console.log('pptUrlsArray:', pptUrlsArray);
+
+      // delete all ppt files from storage
+      const { delPPTDataError } = await supabase.storage.from('ppts').remove(pptUrlsArray);
+
+      if (delPPTDataError) {
+        throw delPPTDataError;
+      }
+
+      const { delLessonError } = await supabase.from('lessons').delete().eq('id', id);
+
+      if (delLessonError) {
+        throw delLessonError;
       }
 
       // console.log('data:', data);
