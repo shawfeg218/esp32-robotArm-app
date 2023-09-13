@@ -1,5 +1,5 @@
 // webapp\src\components\lessons\AddLesson.jsx
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { GrDocumentUpload } from 'react-icons/gr';
@@ -8,6 +8,7 @@ import { Button, Loading, Spacer } from '@nextui-org/react';
 
 export default function AddLesson() {
   const supabase = useSupabaseClient();
+  const user = useUser();
 
   const [message, setMessage] = useState();
   const [successMessage, setSuccessMessage] = useState();
@@ -20,15 +21,15 @@ export default function AddLesson() {
   const [lessonDescription, setLessonDescription] = useState('');
   const [paragraphs, setParagraphs] = useState(['']);
 
-  const [pptUrls, setPptUrls] = useState([]);
+  const [pptUrls, setPptUrls] = useState(['']);
 
   // for previewing ppt on webpage
-  const [pptFilesUrl, setPptFilesUrl] = useState([]);
+  const [pptFilesUrl, setPptFilesUrl] = useState(['']);
 
   // After user uploads a file to supabase storage buckets, the pptUrls state will be updated.
   // For previewing the ppt file on webpage, this useEffect will download the ppt file from the storage bucket by the filePath that just updated in the pptUrls array and store it in pptFilesUrl state.
   useEffect(() => {
-    if (pptUrls.length > 0) {
+    if (pptUrls.length >= 1) {
       for (let i = 0; i < pptUrls.length; i++) {
         if (pptUrls[i] !== '' && pptFilesUrl[i] === '') {
           downloadPPT(pptUrls[i]);
@@ -36,6 +37,14 @@ export default function AddLesson() {
       }
     }
   }, [pptUrls]);
+
+  useEffect(() => {
+    console.log('pptUrls: ', pptUrls);
+  }, [pptUrls]); // for debugging
+
+  useEffect(() => {
+    console.log('pptFilesUrl: ', pptFilesUrl);
+  }, [pptFilesUrl]); // for debugging
 
   const handleParagraphChange = (e, paragraphIndex) => {
     const newParagraphs = [...paragraphs];
@@ -50,14 +59,34 @@ export default function AddLesson() {
   };
 
   const removeParagraph = (paragraphIndex) => {
-    setParagraphs(paragraphs.filter((_, index) => index !== paragraphIndex));
-    setPptUrls(pptUrls.filter((_, index) => index !== paragraphIndex));
-    setPptFilesUrl(pptFilesUrl.filter((_, index) => index !== paragraphIndex));
-
     // If the paragraph had uploaded a ppt, delete the ppt file from supabase storage bucket
     if (pptUrls[paragraphIndex] !== '') {
       deletePPT(pptUrls[paragraphIndex]);
     }
+
+    setParagraphs(paragraphs.filter((_, index) => index !== paragraphIndex));
+
+    setPptUrls((prevPptUrls) => {
+      const newPptUrls = [...prevPptUrls];
+      newPptUrls.splice(paragraphIndex, 1);
+      return newPptUrls.map((url, index) => {
+        if (index >= paragraphIndex) {
+          return url !== '' ? url : prevPptUrls[index + 1];
+        }
+        return url;
+      });
+    });
+
+    setPptFilesUrl((prevPptFilesUrl) => {
+      const newPptFilesUrl = [...prevPptFilesUrl];
+      newPptFilesUrl.splice(paragraphIndex, 1);
+      return newPptFilesUrl.map((url, index) => {
+        if (index >= paragraphIndex) {
+          return url !== '' ? url : prevPptFilesUrl[index + 1];
+        }
+        return url;
+      });
+    });
   };
 
   const updateToDatabase = async () => {
@@ -99,10 +128,15 @@ export default function AddLesson() {
     }
   };
 
-  const uploadPPT = async (event, pArrayId) => {
-    // console.log('uploadPPT');
-    // console.log('paragraph id:', pArrayId);
+  const uploadPPT = async (event, paragraphIndex) => {
+    console.log('uploadPPT');
+    console.log('paragraph index:', paragraphIndex);
+
+    // generate uniquId from user id and current time
+    const uniquId = `${user.id}_${new Date().getTime()}`;
+
     setUploadingPPT(true);
+
     try {
       if (!event.target.files || event.target.files.length === 0) {
         throw new Error('您必須選擇一個圖片進行上傳。');
@@ -110,7 +144,7 @@ export default function AddLesson() {
 
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
-      const fileName = `${lessonTitle}_paragraphs_${pArrayId}.${fileExt}`;
+      const fileName = `${lessonTitle}_paragraphs_${uniquId}.${fileExt}`;
       const filePath = `${fileName}`;
 
       let { error: uploadError } = await supabase.storage
@@ -121,12 +155,14 @@ export default function AddLesson() {
         throw uploadError;
       }
 
-      const newPptUrls = [...pptUrls];
-      newPptUrls[pArrayId] = filePath;
-      setPptUrls(newPptUrls);
+      setPptUrls((prevPptUrls) => {
+        const newPptUrls = [...prevPptUrls];
+        newPptUrls[paragraphIndex] = filePath;
+        return newPptUrls;
+      });
     } catch (error) {
-      alert(error.message);
-      console.log(error);
+      console.error(error);
+      alert('There was an error uploading the PPT file!');
     } finally {
       setUploadingPPT(false);
     }
@@ -139,6 +175,7 @@ export default function AddLesson() {
       if (error) {
         throw error;
       }
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (error) {
       alert(error.message);
       console.log(error);
@@ -154,8 +191,10 @@ export default function AddLesson() {
       if (error) {
         throw error;
       }
-      const url = URL.createObjectURL(data);
+
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const url = URL.createObjectURL(data);
 
       const newPptFilesUrl = [...pptFilesUrl];
       newPptFilesUrl[pptUrls.indexOf(pptUrl)] = url;
@@ -221,7 +260,7 @@ export default function AddLesson() {
                   <h3>頁數{paragraphIndex + 1}</h3>
 
                   {/* Delete icons */}
-                  {paragraphs.length > 1 && (
+                  {paragraphs.length > 1 && loadingWithBucket === false && (
                     <div
                       className="flex justify-center hover:text-slate-300 hover:cursor-pointer"
                       onClick={() => removeParagraph(paragraphIndex)}
@@ -267,7 +306,11 @@ export default function AddLesson() {
                   <div className="w-1/6 flex justify-center">
                     {/* Upload icons */}
                     <div className="relative h-16 w-fit  flex justify-center items-center border-2 rounded-xl  border-dashed hover:bg-yellow-50 hover:cursor-pointer">
-                      <GrDocumentUpload className="absolute" size={24} />
+                      {uploadingPPT || loadingWithBucket ? (
+                        <Loading type="points-opacity" color="currentColor" className="absolute" />
+                      ) : (
+                        <GrDocumentUpload className="absolute" size={24} />
+                      )}
                       <input
                         style={{
                           opacity: 0,
@@ -275,7 +318,7 @@ export default function AddLesson() {
                         type="file"
                         id="upload"
                         accept="image/*"
-                        onChange={uploadPPT}
+                        onChange={(e) => uploadPPT(e, paragraphIndex)}
                         disabled={uploadingPPT || loadingWithBucket}
                         className="hover:cursor-pointer w-20"
                       />
@@ -284,7 +327,11 @@ export default function AddLesson() {
                 </div>
               </div>
             ))}
-            <Button className="w-full my-4" onClick={addParagraph}>
+            <Button
+              className="w-full my-4"
+              onClick={addParagraph}
+              disabled={updating || uploadingPPT || loadingWithBucket}
+            >
               增加頁數
             </Button>
           </div>
@@ -300,7 +347,12 @@ export default function AddLesson() {
           <p className="text-red-600">{message ? message : null}</p>
           <p className="text-green-600">{successMessage ? successMessage : null}</p>
         </div>
-        <Button ghost className="hover:bg-blue-600 w-full" type="submit">
+        <Button
+          ghost
+          className="hover:bg-blue-600 w-full"
+          type="submit"
+          disabled={uploadingPPT || loadingWithBucket}
+        >
           {updating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
         </Button>
       </form>
