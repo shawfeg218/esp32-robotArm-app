@@ -11,33 +11,36 @@ export default function Textbook() {
   const supabase = useSupabaseClient();
 
   const [loading, setLoading] = useState(true);
+  const [loadingPPT, setLoadingPPT] = useState(true);
 
   const { selectedLesson, setSelectedLesson } = useContext(AppContext);
-  const [texts, setTexts] = useState([]);
+  const [data, setData] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
 
   const [generating, setGenerating] = useState(false);
   const [contentAudioUrl, setContentAudioUrl] = useState(null);
+  const [PptUrls, setPptUrls] = useState([]);
 
   const handleLeave = () => {
     setSelectedLesson(null);
   };
 
   useEffect(() => {
-    fetchTexts();
+    fetchData();
+    downloadppt();
   }, []);
 
   useEffect(() => {
-    if (texts[currentPage]?.paragraph_audio) {
-      const audioBase64 = texts[currentPage].paragraph_audio;
+    if (data[currentPage]?.paragraph_audio) {
+      const audioBase64 = data[currentPage].paragraph_audio;
       const audioBlob = base64ToBlob(audioBase64, 'audio/mp3');
       const audioUrl = URL.createObjectURL(audioBlob);
       setContentAudioUrl(audioUrl);
     }
-  }, [texts, currentPage]);
+  }, [data, currentPage]);
 
-  const fetchTexts = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -52,7 +55,7 @@ export default function Textbook() {
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
       if (data) {
-        setTexts(data);
+        setData(data);
         console.log('data:', data);
       }
     } catch (error) {
@@ -65,7 +68,7 @@ export default function Textbook() {
   const generateAudio = async () => {
     setGenerating(true);
     try {
-      const text = texts[currentPage]?.paragraph_content;
+      const text = data[currentPage]?.paragraph_content;
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tts`, {
         method: 'POST',
         headers: {
@@ -97,7 +100,7 @@ export default function Textbook() {
 
   const updateAudio = async (audioBase64) => {
     try {
-      const id = texts[currentPage].paragraph_id;
+      const id = data[currentPage].paragraph_id;
       // console.log('id:', id);
 
       const { data, error } = await supabase
@@ -109,11 +112,39 @@ export default function Textbook() {
         throw error;
       }
 
-      fetchTexts();
+      fetchData();
       // console.log('updateAudio:', data);
     } catch (error) {
       console.log('Error updating audio:', error);
       throw error;
+    }
+  };
+
+  const downloadppt = async () => {
+    // download all ppts from supabase storage
+    setLoadingPPT(true);
+    try {
+      for (let i = 0; i < data.length; i++) {
+        const pptUrl = data[i].paragraph_ppturl;
+        console.log('pptUrl for download:', pptUrl);
+        if (pptUrl !== '') {
+          const { data, error } = await supabase.storage.from('ppts').download(pptUrl);
+          if (error) {
+            throw error;
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          const url = URL.createObjectURL(data);
+          // add url to PptUrls
+          setPptUrls((prev) => [...prev, url]);
+        } else {
+          setPptUrls((prev) => [...prev, null]);
+        }
+      }
+    } catch (error) {
+      console.log('Error downloading ppt:', error);
+    } finally {
+      setLoadingPPT(false);
     }
   };
 
@@ -125,13 +156,13 @@ export default function Textbook() {
           <span>leave</span>
         </div>
 
-        {loading ? (
+        {loading || loadingPPT ? (
           <TextbookLoading />
         ) : (
-          <section className="w-full h-96 mt-8 bg-slate-200">
+          <section className="w-full min-h-96 mt-8">
             <div className="w-full h-full overflow-y-scroll p-4 border border-solid border-slate-300 rounded-md bg-yellow-50">
               <div className="flex justify-between items-center">
-                <h2>{texts[currentPage]?.lesson_title}</h2>
+                <h2>{data[currentPage]?.lesson_title}</h2>
                 <>
                   {contentAudioUrl === null ? (
                     <Button size="sm" disabled={generating} onClick={generateAudio}>
@@ -146,11 +177,18 @@ export default function Textbook() {
                   )}
                 </>
               </div>
-              <p className="mt-6">{texts[currentPage]?.paragraph_content}</p>
+
+              {PptUrls[currentPage] ? (
+                <div className="w-full flex justify-center">
+                  <img src={PptUrls[currentPage]} alt="ppt" className="h-full" />
+                </div>
+              ) : (
+                <p className="mt-6">{data[currentPage]?.paragraph_content}</p>
+              )}
             </div>
             <div className="w-full flex justify-center mt-4">
               <Pagination
-                total={texts.length}
+                total={data.length}
                 initialPage={1}
                 onChange={(page) => {
                   setContentAudioUrl(null);
