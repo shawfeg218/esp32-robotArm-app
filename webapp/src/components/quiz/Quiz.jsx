@@ -8,6 +8,8 @@ import { Card, Modal, Button } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import QuizLoading from './QuizLoading';
 
+const cardImgs = ['/img/quiz-card-1.png', '/img/quiz-card-2.png', '/img/quiz-card-3.png'];
+
 function Quiz() {
   const router = useRouter();
   const user = useUser();
@@ -106,7 +108,7 @@ function Quiz() {
                             <div className="flex">
                               <div className="h-full w-1/2 mr-2">
                                 <img
-                                  src="/img/learning-desk.png"
+                                  src={cardImgs[index % 3]}
                                   className="w-full h-auto opacity-90"
                                   alt="lesson card"
                                 />

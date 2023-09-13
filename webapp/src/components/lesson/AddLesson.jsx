@@ -5,14 +5,17 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { GrDocumentUpload } from 'react-icons/gr';
 import PrettyTextArea from '../PrettyTextArea';
 import { Button, Loading, Spacer } from '@nextui-org/react';
+import { useRouter } from 'next/router';
 
 export default function AddLesson() {
+  const router = useRouter();
   const supabase = useSupabaseClient();
   const user = useUser();
 
   const [message, setMessage] = useState();
   const [successMessage, setSuccessMessage] = useState();
   const [updating, setUpdating] = useState(false);
+  const [finishDB, setFinishDB] = useState(false);
 
   const [uploadingPPT, setUploadingPPT] = useState(false);
   const [loadingWithBucket, setLoadingWithBucket] = useState(false);
@@ -119,7 +122,15 @@ export default function AddLesson() {
         if (paragraphError) throw paragraphError;
       }
 
+      setFinishDB(true);
       setSuccessMessage('Lesson successfully inserted into the database!');
+      setLessonTitle('');
+      setLessonDescription('');
+      setParagraphs(['']);
+      setPptUrls(['']);
+      setPptFilesUrl(['']);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      router.push('/lesson');
     } catch (error) {
       console.log('Error: ', error.message);
       setMessage('There was an error inserting the lesson into the database!');
@@ -347,14 +358,17 @@ export default function AddLesson() {
           <p className="text-red-600">{message ? message : null}</p>
           <p className="text-green-600">{successMessage ? successMessage : null}</p>
         </div>
-        <Button
-          ghost
-          className="hover:bg-blue-600 w-full"
-          type="submit"
-          disabled={uploadingPPT || loadingWithBucket}
-        >
-          {updating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
-        </Button>
+
+        {finishDB === false && (
+          <Button
+            ghost
+            className="hover:bg-blue-600 w-full"
+            type="submit"
+            disabled={uploadingPPT || loadingWithBucket}
+          >
+            {updating ? <Loading type="points-opacity" color="currentColor" size="sm" /> : 'submit'}
+          </Button>
+        )}
       </form>
     </div>
   );
