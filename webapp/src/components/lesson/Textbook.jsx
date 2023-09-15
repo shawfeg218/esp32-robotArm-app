@@ -2,8 +2,7 @@ import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState, useEffect, useContext } from 'react';
 import { GrFormPrevious } from 'react-icons/gr';
-import { Pagination } from '@nextui-org/react';
-import { Button, Loading } from '@nextui-org/react';
+import { Button, Loading, Pagination, Progress } from '@nextui-org/react';
 import { base64ToBlob } from '@/lib/base64ToBlob';
 import TextbookLoading from './TextbookLoading';
 import { voiceProfiles } from '../audio-chat/AudioChat';
@@ -24,8 +23,11 @@ export default function Textbook() {
   const [contentAudioUrl, setContentAudioUrl] = useState(null);
   const [PptUrls, setPptUrls] = useState([]);
 
+  const [progressValue, setProgressValue] = useState(0);
+
   const handleLeave = () => {
     setCurrentPage(0);
+    setProgressValue(0);
     setContentAudioUrl(null);
     setPptUrls([]);
     setDataArray([]);
@@ -42,8 +44,8 @@ export default function Textbook() {
   }, [dataArray]);
 
   // useEffect(() => {
-  //   console.log('pptUrls:', PptUrls);
-  // }, [PptUrls]);
+  //   console.log('progress:', progressValue);
+  // }, [progressValue]);
 
   useEffect(() => {
     if (dataArray[currentPage]?.paragraph_audio) {
@@ -81,7 +83,7 @@ export default function Textbook() {
 
       if (data) {
         setDataArray(data);
-        console.log('data:', data);
+        // console.log('data:', data);
       }
     } catch (error) {
       console.log('Error fetching texts:', error);
@@ -166,7 +168,7 @@ export default function Textbook() {
     try {
       for (let i = 0; i < dataArray.length; i++) {
         let pptPath = dataArray[i].paragraph_ppturl;
-        console.log('download pptPath:', pptPath);
+        // console.log('download pptPath:', pptPath);
         if (pptPath !== '' && pptPath !== null) {
           const { data, error } = await supabase.storage.from('ppts').download(pptPath);
           if (error) {
@@ -183,6 +185,8 @@ export default function Textbook() {
             return prev;
           });
         }
+
+        setProgressValue(i);
       }
     } catch (error) {
       console.log('Error fetching ppts:', error);
@@ -200,8 +204,11 @@ export default function Textbook() {
           <span>leave</span>
         </div>
 
-        {loading || loadingPPT ? (
-          <TextbookLoading />
+        {loading || loadingPPT || progressValue !== dataArray.length - 1 ? (
+          <div className="mt-4">
+            <Progress color="gradient" value={progressValue} max={dataArray.length - 1} />
+            <TextbookLoading />
+          </div>
         ) : (
           <section className="w-full mt-8">
             <div className="w-full p-4 pb-8 border border-solid border-slate-300 rounded-md">
