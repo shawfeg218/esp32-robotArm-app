@@ -12,7 +12,7 @@ import AppContext from '@/contexts/AppContext';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import AudioChatLoading from './AudioChatLoading';
 
-const voiceProfiles = [
+export const voiceProfiles = [
   {
     index: 0,
     label: '中文男性',

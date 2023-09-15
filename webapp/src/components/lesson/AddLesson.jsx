@@ -4,14 +4,16 @@ import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { GrDocumentUpload } from 'react-icons/gr';
 import PrettyTextArea from '../PrettyTextArea';
-import { Button, Loading, Spacer } from '@nextui-org/react';
+import { Button, Loading, Spacer, Dropdown } from '@nextui-org/react';
 import { useRouter } from 'next/router';
+import { voiceProfiles } from '../audio-chat/AudioChat';
 
 export default function AddLesson() {
   const router = useRouter();
   const supabase = useSupabaseClient();
   const user = useUser();
 
+  const [voiceId, setVoiceId] = useState(0);
   const [message, setMessage] = useState();
   const [successMessage, setSuccessMessage] = useState();
   const [updating, setUpdating] = useState(false);
@@ -41,13 +43,18 @@ export default function AddLesson() {
     }
   }, [pptUrls]);
 
-  useEffect(() => {
-    console.log('pptUrls: ', pptUrls);
-  }, [pptUrls]); // for debugging
+  // useEffect(() => {
+  //   console.log('pptUrls: ', pptUrls);
+  // }, [pptUrls]); // for debugging
+
+  // useEffect(() => {
+  //   console.log('pptFilesUrl: ', pptFilesUrl);
+  // }, [pptFilesUrl]); // for debugging
 
   useEffect(() => {
-    console.log('pptFilesUrl: ', pptFilesUrl);
-  }, [pptFilesUrl]); // for debugging
+    console.log('voiceId: ', voiceId);
+    console.log('chosen voice', voiceProfiles[voiceId].label);
+  }, [voiceId]);
 
   const handleParagraphChange = (e, paragraphIndex) => {
     const newParagraphs = [...paragraphs];
@@ -100,6 +107,7 @@ export default function AddLesson() {
           title: lessonTitle,
           description: lessonDescription,
           inserted_at: new Date().toISOString(),
+          voice_id: voiceId,
         },
       ]);
 
@@ -140,22 +148,28 @@ export default function AddLesson() {
   };
 
   const uploadPPT = async (event, paragraphIndex) => {
+    setUploadingPPT(true);
+
     console.log('uploadPPT');
     console.log('paragraph index:', paragraphIndex);
 
     // generate uniquId from user id and current time
     const uniquId = `${user.id}_${new Date().getTime()}`;
 
-    setUploadingPPT(true);
-
     try {
+      if (lessonTitle === '') {
+        // clear the input file
+        event.target.value = null;
+        throw new Error('必須先填寫課文名稱!');
+      }
+
       if (!event.target.files || event.target.files.length === 0) {
         throw new Error('您必須選擇一個圖片進行上傳。');
       }
 
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
-      const fileName = `${lessonTitle}_paragraphs_${uniquId}.${fileExt}`;
+      const fileName = `paragraphs_${uniquId}.${fileExt}`;
       const filePath = `${fileName}`;
 
       let { error: uploadError } = await supabase.storage
@@ -172,8 +186,8 @@ export default function AddLesson() {
         return newPptUrls;
       });
     } catch (error) {
-      console.error(error);
-      alert('There was an error uploading the PPT file!');
+      console.log(error.message);
+      alert(error.message || '上傳圖片時發生錯誤');
     } finally {
       setUploadingPPT(false);
     }
@@ -271,14 +285,16 @@ export default function AddLesson() {
                   <h3>頁數{paragraphIndex + 1}</h3>
 
                   {/* Delete icons */}
-                  {paragraphs.length > 1 && loadingWithBucket === false && (
-                    <div
-                      className="flex justify-center hover:text-slate-300 hover:cursor-pointer"
-                      onClick={() => removeParagraph(paragraphIndex)}
-                    >
-                      <AiOutlineDelete size="1.5rem" />
-                    </div>
-                  )}
+                  {paragraphs.length > 1 &&
+                    loadingWithBucket === false &&
+                    uploadingPPT === false && (
+                      <div
+                        className="flex justify-center hover:text-slate-300 hover:cursor-pointer"
+                        onClick={() => removeParagraph(paragraphIndex)}
+                      >
+                        <AiOutlineDelete size="1.5rem" />
+                      </div>
+                    )}
                 </div>
 
                 <div className="w-full flex justify-between items-end">
@@ -329,7 +345,10 @@ export default function AddLesson() {
                         type="file"
                         id="upload"
                         accept="image/*"
-                        onChange={(e) => uploadPPT(e, paragraphIndex)}
+                        onChange={(e) => {
+                          setUploadingPPT(true);
+                          uploadPPT(e, paragraphIndex);
+                        }}
                         disabled={uploadingPPT || loadingWithBucket}
                         className="hover:cursor-pointer w-20"
                       />
@@ -347,10 +366,30 @@ export default function AddLesson() {
             </Button>
           </div>
         </div>
-        <div className="">
+
+        {/* Final div */}
+        <div>
           <h2>
             課文名稱: <span>{lessonTitle}</span>
           </h2>
+          <div className="flex items-center">
+            <h2 className="mr-2">語音屬性:</h2>
+            <Dropdown>
+              <Dropdown.Button className="z-0 mt-0" flat>
+                {voiceProfiles[voiceId].label}
+              </Dropdown.Button>
+              <Dropdown.Menu
+                aria-label="Single role section"
+                onAction={(index) => {
+                  setVoiceId(index);
+                }}
+              >
+                {voiceProfiles.map((voice, index) => (
+                  <Dropdown.Item key={index}>{voice.label}</Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
           <h2>
             總共
             <span> {paragraphs.length} </span>頁
