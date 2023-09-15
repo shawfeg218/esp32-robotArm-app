@@ -3,9 +3,10 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState, useEffect, useContext } from 'react';
 import { GrFormPrevious } from 'react-icons/gr';
 import { Pagination } from '@nextui-org/react';
-import { Button, Loading } from '@nextui-org/react';
+import { Button, Loading, Modal } from '@nextui-org/react';
 import { base64ToBlob } from '@/lib/base64ToBlob';
 import TextbookLoading from './TextbookLoading';
+import { voiceProfiles } from '../audio-chat/AudioChat';
 
 export default function Textbook() {
   const supabase = useSupabaseClient();
@@ -19,14 +20,15 @@ export default function Textbook() {
   const [currentPage, setCurrentPage] = useState(0);
 
   const [generating, setGenerating] = useState(false);
+
   const [contentAudioUrl, setContentAudioUrl] = useState(null);
   const [PptUrls, setPptUrls] = useState([]);
 
   const handleLeave = () => {
+    setCurrentPage(0);
     setContentAudioUrl(null);
     setPptUrls([]);
     setDataArray([]);
-    setCurrentPage(0);
     setSelectedLesson(null);
   };
 
@@ -36,7 +38,7 @@ export default function Textbook() {
 
   useEffect(() => {
     downloadppt();
-    console.log('data:', dataArray);
+    // console.log('data:', dataArray);
   }, [dataArray]);
 
   // useEffect(() => {
@@ -80,6 +82,13 @@ export default function Textbook() {
   };
 
   const generateAudio = async () => {
+    const voiceId = dataArray[0].lesson_voice_id;
+    const voiceLang = voiceProfiles[voiceId].voiceLang;
+    const voiceName = voiceProfiles[voiceId].voiceName;
+
+    // console.log('voice id:', voiceId);
+    // console.log('voiceLang: ' + voiceLang + ' voiceName: ' + voiceName);
+
     setGenerating(true);
     try {
       const text = dataArray[currentPage]?.paragraph_content;
@@ -90,8 +99,8 @@ export default function Textbook() {
         },
         body: JSON.stringify({
           text: text,
-          voiceLang: 'zh-TW',
-          voiceName: 'zh-TW-YunJheNeural',
+          voiceLang: voiceLang,
+          voiceName: voiceName,
         }),
       });
 
@@ -155,9 +164,15 @@ export default function Textbook() {
             throw error;
           }
           const pptUrl = URL.createObjectURL(data);
-          setPptUrls((prev) => [...prev, pptUrl]);
+          setPptUrls((prev) => {
+            prev[i] = pptUrl;
+            return prev;
+          });
         } else {
-          setPptUrls((prev) => [...prev, null]);
+          setPptUrls((prev) => {
+            prev[i] = null;
+            return prev;
+          });
         }
       }
     } catch (error) {
@@ -180,7 +195,7 @@ export default function Textbook() {
           <TextbookLoading />
         ) : (
           <section className="w-full mt-8">
-            <div className="w-full p-4 pb-8 border border-solid border-slate-300 rounded-md bg-yellow-50">
+            <div className="w-full p-4 pb-8 border border-solid border-slate-300 rounded-md">
               {/* Title & audio */}
               <div className="w-full flex justify-between items-center">
                 <h2>{dataArray[currentPage]?.lesson_title}</h2>
@@ -221,7 +236,7 @@ export default function Textbook() {
             <div className="w-full flex justify-center mt-4">
               <Pagination
                 total={dataArray.length}
-                initialPage={1}
+                initialPage={currentPage + 1}
                 onChange={(page) => {
                   setContentAudioUrl(null);
                   setCurrentPage(page - 1);
