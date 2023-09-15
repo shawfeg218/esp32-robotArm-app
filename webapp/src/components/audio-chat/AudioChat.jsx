@@ -44,8 +44,15 @@ export default function AudioChat() {
   const user = useUser();
   const AccountRole = user?.user_metadata?.role;
 
-  const { setSpeaking, setDancing, setMood, handleReset, targetAngles, setTargetAngles } =
-    useContext(AppContext);
+  const {
+    setSpeaking,
+    setDancing,
+    setMood,
+    handleReset,
+    targetAngles,
+    setTargetAngles,
+    speakInDuration,
+  } = useContext(AppContext);
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDelModal, setShowDelModal] = useState(false);
@@ -329,16 +336,6 @@ export default function AudioChat() {
         setMood('default');
       }, duration * 1000);
     }
-  }
-
-  function speakInDuration(duration) {
-    // console.log('speakInDuration');
-    setSpeaking(true);
-    setMood('speak');
-    setTimeout(() => {
-      setSpeaking(false);
-      setMood('default');
-    }, duration * 1000);
   }
 
   function raiseHand(action) {
