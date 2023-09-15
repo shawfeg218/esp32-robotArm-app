@@ -206,7 +206,9 @@ export default function Textbook() {
 
         {loading || loadingPPT || progressValue !== dataArray.length - 1 ? (
           <div className="mt-4">
-            <Progress color="gradient" value={progressValue} max={dataArray.length - 1} />
+            {dataArray.length > 0 && (
+              <Progress color="gradient" value={progressValue} max={dataArray.length} />
+            )}
             <TextbookLoading />
           </div>
         ) : (

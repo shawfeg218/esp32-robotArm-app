@@ -43,18 +43,18 @@ export default function AddLesson() {
     }
   }, [pptUrls]);
 
-  useEffect(() => {
-    console.log('pptUrls: ', pptUrls);
-  }, [pptUrls]); // for debugging
+  // useEffect(() => {
+  //   console.log('pptUrls: ', pptUrls);
+  // }, [pptUrls]); // for debugging
 
-  useEffect(() => {
-    console.log('pptFilesUrl: ', pptFilesUrl);
-  }, [pptFilesUrl]); // for debugging
+  // useEffect(() => {
+  //   console.log('pptFilesUrl: ', pptFilesUrl);
+  // }, [pptFilesUrl]); // for debugging
 
-  useEffect(() => {
-    console.log('voiceId: ', voiceId);
-    console.log('chosen voice', voiceProfiles[voiceId].label);
-  }, [voiceId]);
+  // useEffect(() => {
+  //   console.log('voiceId: ', voiceId);
+  //   console.log('chosen voice', voiceProfiles[voiceId].label);
+  // }, [voiceId]);
 
   const handleParagraphChange = (e, paragraphIndex) => {
     const newParagraphs = [...paragraphs];
