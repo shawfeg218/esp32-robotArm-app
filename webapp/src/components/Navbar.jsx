@@ -5,6 +5,7 @@ import Avatar from './account/Avatar';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
+import Image from 'next/image';
 
 export default function Navbar() {
   const { displaySidebar, setDisplaySidebar, teacherPath } = useContext(AppContext);
@@ -22,8 +23,8 @@ export default function Navbar() {
       <Link href="/" passHref>
         <div className="hover:cursor-pointer hidden sm:block">
           <div className="flex items-center">
-            <img src="/memeIcon-bgrm.png" alt="MemeBot" className="w-10 h-10 mt-1" />
-            <h1 className="text-center">MEMEbot</h1>
+            <Image src="/memeIcon-bgrm.png" width={32} height={32} />
+            <h1 className="text-center ml-1">MEMEbot</h1>
           </div>
         </div>
       </Link>

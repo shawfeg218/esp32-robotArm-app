@@ -420,7 +420,6 @@ export default function AddLesson() {
                         />
                       ) : (
                         <div className="h-80 p-4 overflow-y-scroll rounded-md bg-yellow-50 w-full ">
-                          {/* <img src="/img/Lesson.png" alt="paragraph ppt" className="max-h-96" /> */}
                           <h2>{lessonTitle}</h2>
                           {paragraph ? (
                             <p>{paragraph}</p>

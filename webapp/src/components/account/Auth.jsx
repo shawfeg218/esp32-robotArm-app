@@ -1,5 +1,6 @@
 import { Button, Input, Spacer, Dropdown } from '@nextui-org/react';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { GrVmMaintenance } from 'react-icons/gr';
 
@@ -247,7 +248,7 @@ export default function Auth() {
               </>
             ) : (
               <>
-                <img src="img/bgImg.png" alt="bg-img" />
+                <Image src="/img/bgImg.jpg" width={1024} height={1024} />
                 <Input
                   aria-label="Email input"
                   fullWidth

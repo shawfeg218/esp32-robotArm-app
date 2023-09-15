@@ -55,13 +55,13 @@ export default function Home() {
       <div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 justify-center">
           <HomeCard
-            img="/img/control.png"
+            img="/img/control.jpg"
             title={'機器人控制'}
             description=""
             link="/arm-control"
           />
           <HomeCard
-            img="/img/device-linking.png"
+            img="/img/device-linking.jpg"
             title={'機器人連線設置'}
             description=""
             link="/device"
@@ -73,14 +73,14 @@ export default function Home() {
             link="/audio-chat"
           />
           <HomeCard
-            img="/img/VideoLearning.png"
+            img="/img/VideoLearning.jpg"
             title={'影片語言學習'}
             description=""
             link="/video-learning"
           />
-          <HomeCard img="/img/quiz-home.png" title={'小測驗'} description="" link="/quiz" />
+          <HomeCard img="/img/quiz-home.jpg" title={'小測驗'} description="" link="/quiz" />
 
-          <HomeCard img="/img/Lesson.png" title={'上課'} description="" link="/lesson" />
+          <HomeCard img="/img/Lesson.jpg" title={'上課'} description="" link="/lesson" />
 
           <div className="w-96 flex justify-center ">
             {loading ? (

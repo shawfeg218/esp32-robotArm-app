@@ -8,7 +8,7 @@ import { Card, Modal, Button } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import QuizLoading from './QuizLoading';
 
-const cardImgs = ['/img/quiz-card-1.png', '/img/quiz-card-2.png', '/img/quiz-card-3.png'];
+const cardImgs = ['/img/quiz-card-1.jpg', '/img/quiz-card-2.jpg', '/img/quiz-card-3.jpg'];
 
 function Quiz() {
   const router = useRouter();
