@@ -8,7 +8,7 @@ import Textbook from './Textbook';
 import { useRouter } from 'next/router';
 import QuizLoading from '../quiz/QuizLoading';
 
-const cardImgs = ['/img/lesson-card-3.png', '/img/lesson-card-2.png', '/img/lesson-card-1.png'];
+const cardImgs = ['/img/lesson-card-3.jpg', '/img/lesson-card-2.jpg', '/img/lesson-card-1.jpg'];
 
 function Lesson() {
   const router = useRouter();
