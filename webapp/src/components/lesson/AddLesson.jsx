@@ -1,7 +1,7 @@
 // webapp\src\components\lessons\AddLesson.jsx
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai';
 import { GrDocumentUpload } from 'react-icons/gr';
 import PrettyTextArea from '../PrettyTextArea';
 import { Button, Loading, Spacer, Dropdown } from '@nextui-org/react';
@@ -43,13 +43,13 @@ export default function AddLesson() {
     }
   }, [pptUrls]);
 
-  // useEffect(() => {
-  //   console.log('pptUrls: ', pptUrls);
-  // }, [pptUrls]); // for debugging
+  useEffect(() => {
+    console.log('pptUrls: ', pptUrls);
+  }, [pptUrls]); // for debugging
 
-  // useEffect(() => {
-  //   console.log('pptFilesUrl: ', pptFilesUrl);
-  // }, [pptFilesUrl]); // for debugging
+  useEffect(() => {
+    console.log('pptFilesUrl: ', pptFilesUrl);
+  }, [pptFilesUrl]); // for debugging
 
   useEffect(() => {
     console.log('voiceId: ', voiceId);
@@ -98,6 +98,58 @@ export default function AddLesson() {
       });
     });
   };
+
+  function moveParagraphUp(index) {
+    setParagraphs((prevParagraphs) => {
+      const newParagraphs = [...prevParagraphs];
+      const temp = newParagraphs[index - 1];
+      newParagraphs[index - 1] = newParagraphs[index];
+      newParagraphs[index] = temp;
+      return newParagraphs;
+    });
+
+    setPptUrls((prevPptUrls) => {
+      const newPptUrls = [...prevPptUrls];
+      const temp = newPptUrls[index - 1];
+      newPptUrls[index - 1] = newPptUrls[index];
+      newPptUrls[index] = temp;
+      return newPptUrls;
+    });
+
+    setPptFilesUrl((prevPptFilesUrl) => {
+      const newPptFilesUrl = [...prevPptFilesUrl];
+      const temp = newPptFilesUrl[index - 1];
+      newPptFilesUrl[index - 1] = newPptFilesUrl[index];
+      newPptFilesUrl[index] = temp;
+      return newPptFilesUrl;
+    });
+  }
+
+  function moveParagraphDown(index) {
+    setParagraphs((prevParagraphs) => {
+      const newParagraphs = [...prevParagraphs];
+      const temp = newParagraphs[index + 1];
+      newParagraphs[index + 1] = newParagraphs[index];
+      newParagraphs[index] = temp;
+      return newParagraphs;
+    });
+
+    setPptUrls((prevPptUrls) => {
+      const newPptUrls = [...prevPptUrls];
+      const temp = newPptUrls[index + 1];
+      newPptUrls[index + 1] = newPptUrls[index];
+      newPptUrls[index] = temp;
+      return newPptUrls;
+    });
+
+    setPptFilesUrl((prevPptFilesUrl) => {
+      const newPptFilesUrl = [...prevPptFilesUrl];
+      const temp = newPptFilesUrl[index + 1];
+      newPptFilesUrl[index + 1] = newPptFilesUrl[index];
+      newPptFilesUrl[index] = temp;
+      return newPptFilesUrl;
+    });
+  }
 
   const updateToDatabase = async () => {
     setUpdating(true);
@@ -189,6 +241,42 @@ export default function AddLesson() {
       console.log(error.message);
       alert(error.message || '上傳圖片時發生錯誤');
     } finally {
+      // clear the input file
+      event.target.value = null;
+      setUploadingPPT(false);
+    }
+  };
+
+  const changePPT = async (event, paragraphIndex) => {
+    setUploadingPPT(true);
+
+    console.log('changePPT');
+    console.log('changePPT paragraph index:', paragraphIndex);
+
+    try {
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('您必須選擇一個圖片進行上傳。');
+      }
+
+      const file = event.target.files[0];
+
+      let { error: changeError } = await supabase.storage
+        .from('ppts')
+        .update(pptUrls[paragraphIndex], file);
+
+      if (changeError) {
+        throw changeError;
+      }
+
+      // update the pptFilesUrl state
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      downloadPPT(pptUrls[paragraphIndex]);
+    } catch (error) {
+      console.log(error.message);
+      alert(error.message || '更新圖片時發生錯誤');
+    } finally {
+      // clear the input file
+      event.target.value = null;
       setUploadingPPT(false);
     }
   };
@@ -284,17 +372,40 @@ export default function AddLesson() {
                 <div className="w-full flex justify-between items-center">
                   <h3>頁數{paragraphIndex + 1}</h3>
 
-                  {/* Delete icons */}
-                  {paragraphs.length > 1 &&
-                    loadingWithBucket === false &&
-                    uploadingPPT === false && (
-                      <div
-                        className="flex justify-center hover:text-slate-300 hover:cursor-pointer"
-                        onClick={() => removeParagraph(paragraphIndex)}
+                  {/* icons */}
+                  {updating === false && loadingWithBucket === false && uploadingPPT === false && (
+                    <div className="w-1/3 flex justify-between">
+                      <button
+                        className="flex justify-center border-0 w-fit bg-transparent hover:text-slate-300 hover:cursor-pointer disabled:text-transparent disabled:cursor-default"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          moveParagraphUp(paragraphIndex);
+                        }}
+                        disabled={paragraphIndex === 0}
+                      >
+                        <AiOutlineArrowUp size="1.5rem" />
+                      </button>
+                      <button
+                        className="flex justify-center border-0 w-fit bg-transparent hover:text-slate-300 hover:cursor-pointer disabled:text-transparent disabled:cursor-default"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          moveParagraphDown(paragraphIndex);
+                        }}
+                        disabled={paragraphIndex === paragraphs.length - 1}
+                      >
+                        <AiOutlineArrowDown size="1.5rem" />
+                      </button>
+                      <button
+                        className="flex justify-center border-0 w-fit bg-transparent hover:text-slate-300 hover:cursor-pointer disabled:text-transparent disabled:cursor-default"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeParagraph(paragraphIndex);
+                        }}
                       >
                         <AiOutlineDelete size="1.5rem" />
-                      </div>
-                    )}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="w-full flex justify-between items-end">
@@ -347,7 +458,11 @@ export default function AddLesson() {
                         accept="image/*"
                         onChange={(e) => {
                           setUploadingPPT(true);
-                          uploadPPT(e, paragraphIndex);
+                          if (pptUrls[paragraphIndex] === '') {
+                            uploadPPT(e, paragraphIndex);
+                          } else {
+                            changePPT(e, paragraphIndex);
+                          }
                         }}
                         disabled={uploadingPPT || loadingWithBucket}
                         className="hover:cursor-pointer w-20"
