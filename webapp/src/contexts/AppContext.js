@@ -271,6 +271,16 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  function speakInDuration(duration) {
+    // console.log('speakInDuration');
+    setSpeaking(true);
+    setMood('speak');
+    setTimeout(() => {
+      setSpeaking(false);
+      setMood('default');
+    }, duration * 1000);
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -324,6 +334,7 @@ export const AppContextProvider = ({ children }) => {
         handleGrabAction,
         handleSpeakAction,
         handleResetWifi,
+        speakInDuration,
       }}
     >
       {children}
