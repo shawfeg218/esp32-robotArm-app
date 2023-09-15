@@ -3,7 +3,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useState, useEffect, useContext } from 'react';
 import { GrFormPrevious } from 'react-icons/gr';
 import { Pagination } from '@nextui-org/react';
-import { Button, Loading, Modal } from '@nextui-org/react';
+import { Button, Loading } from '@nextui-org/react';
 import { base64ToBlob } from '@/lib/base64ToBlob';
 import TextbookLoading from './TextbookLoading';
 import { voiceProfiles } from '../audio-chat/AudioChat';
@@ -14,7 +14,7 @@ export default function Textbook() {
   const [loading, setLoading] = useState(true);
   const [loadingPPT, setLoadingPPT] = useState(true);
 
-  const { selectedLesson, setSelectedLesson } = useContext(AppContext);
+  const { selectedLesson, setSelectedLesson, speakInDuration } = useContext(AppContext);
   const [dataArray, setDataArray] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -53,6 +53,15 @@ export default function Textbook() {
       setContentAudioUrl(audioUrl);
     }
   }, [dataArray, currentPage]);
+
+  useEffect(() => {
+    const audioElement = document.querySelector('audio');
+    if (audioElement) {
+      audioElement.addEventListener('play', () => {
+        speakInDuration(audioElement.duration);
+      });
+    }
+  }, [contentAudioUrl, speakInDuration]);
 
   const fetchData = async () => {
     setLoading(true);
