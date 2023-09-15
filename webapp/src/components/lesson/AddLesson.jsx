@@ -241,6 +241,42 @@ export default function AddLesson() {
       console.log(error.message);
       alert(error.message || '上傳圖片時發生錯誤');
     } finally {
+      // clear the input file
+      event.target.value = null;
+      setUploadingPPT(false);
+    }
+  };
+
+  const changePPT = async (event, paragraphIndex) => {
+    setUploadingPPT(true);
+
+    console.log('changePPT');
+    console.log('changePPT paragraph index:', paragraphIndex);
+
+    try {
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('您必須選擇一個圖片進行上傳。');
+      }
+
+      const file = event.target.files[0];
+
+      let { error: changeError } = await supabase.storage
+        .from('ppts')
+        .update(pptUrls[paragraphIndex], file);
+
+      if (changeError) {
+        throw changeError;
+      }
+
+      // update the pptFilesUrl state
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      downloadPPT(pptUrls[paragraphIndex]);
+    } catch (error) {
+      console.log(error.message);
+      alert(error.message || '更新圖片時發生錯誤');
+    } finally {
+      // clear the input file
+      event.target.value = null;
       setUploadingPPT(false);
     }
   };
@@ -422,7 +458,11 @@ export default function AddLesson() {
                         accept="image/*"
                         onChange={(e) => {
                           setUploadingPPT(true);
-                          uploadPPT(e, paragraphIndex);
+                          if (pptUrls[paragraphIndex] === '') {
+                            uploadPPT(e, paragraphIndex);
+                          } else {
+                            changePPT(e, paragraphIndex);
+                          }
                         }}
                         disabled={uploadingPPT || loadingWithBucket}
                         className="hover:cursor-pointer w-20"
