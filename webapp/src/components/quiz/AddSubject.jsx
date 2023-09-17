@@ -80,14 +80,19 @@ export default function AddSubject() {
   const updateToDatabase = async () => {
     setUpdating(true);
     let subjectId;
+    const insertTime = new Date().toISOString();
     try {
       let { error: subjectError } = await supabase
         .from('subjects')
-        .insert([{ name: subjectName, inserted_at: new Date().toISOString() }]);
+        .insert([{ name: subjectName, inserted_at: insertTime }]);
 
       if (subjectError) throw subjectError;
 
-      let { data, error } = await supabase.from('subjects').select('id').eq('name', subjectName);
+      let { data, error } = await supabase
+        .from('subjects')
+        .select('id')
+        .eq('name', subjectName)
+        .eq('inserted_at', insertTime);
       // console.log(data);
       subjectId = data[0].id;
 
@@ -96,9 +101,7 @@ export default function AddSubject() {
         // Insert question into the questions table
         let { error: questionError } = await supabase
           .from('questions')
-          .insert([
-            { subject_id: subjectId, text: question.text, inserted_at: new Date().toISOString() },
-          ]);
+          .insert([{ subject_id: subjectId, text: question.text, inserted_at: insertTime }]);
 
         if (questionError) throw questionError;
 
@@ -106,7 +109,9 @@ export default function AddSubject() {
         let { data, error } = await supabase
           .from('questions')
           .select('id')
-          .eq('text', question.text);
+          .eq('subject_id', subjectId)
+          .eq('text', question.text)
+          .eq('inserted_at', insertTime);
         // console.log(data);
         let questionId = data[0].id;
 
@@ -117,7 +122,7 @@ export default function AddSubject() {
               question_id: questionId,
               text: option.text,
               is_correct: option.is_correct,
-              inserted_at: new Date().toISOString(),
+              inserted_at: insertTime,
             },
           ]);
 

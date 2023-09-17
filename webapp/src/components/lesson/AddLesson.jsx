@@ -183,7 +183,7 @@ export default function AddLesson() {
             lesson_id: lessonId,
             content: paragraphs[i],
             order_of_lesson: i + 1,
-            inserted_at: new Date().toISOString(),
+            inserted_at: insertTime,
             ppt_url: pptUrls[i],
           },
         ]);
