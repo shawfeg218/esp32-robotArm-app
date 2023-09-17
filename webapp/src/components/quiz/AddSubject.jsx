@@ -6,9 +6,11 @@ import { IoIosRemove } from 'react-icons/io';
 import { AiOutlineDelete } from 'react-icons/ai';
 import PrettyTextArea from '../PrettyTextArea';
 import { Button, Loading, Spacer } from '@nextui-org/react';
+import { useRouter } from 'next/router';
 
 export default function AddSubject() {
   const supabase = useSupabaseClient();
+  const router = useRouter();
 
   const [message, setMessage] = useState();
   const [successMessage, setSuccessMessage] = useState();
@@ -131,6 +133,21 @@ export default function AddSubject() {
       }
 
       setSuccessMessage('Data successfully inserted into the database!');
+
+      setSubjectName('');
+      setSubjectDescribe('');
+      setQuestions([
+        {
+          text: '',
+          options: [
+            { text: '', is_correct: false },
+            { text: '', is_correct: false },
+          ],
+        },
+      ]);
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      router.push('/quiz');
     } catch (error) {
       console.log('Error: ', error.message);
       setMessage('There was an error inserting the data into the database!');
