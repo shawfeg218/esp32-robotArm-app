@@ -153,19 +153,28 @@ export default function AddLesson() {
 
   const updateToDatabase = async () => {
     setUpdating(true);
+
     try {
+      const insertTime = new Date().toISOString();
       let { error: lessonError } = await supabase.from('lessons').insert([
         {
           title: lessonTitle,
           description: lessonDescription,
-          inserted_at: new Date().toISOString(),
+          inserted_at: insertTime,
           voice_id: voiceId,
         },
       ]);
 
       if (lessonError) throw lessonError;
 
-      let { data, error } = await supabase.from('lessons').select('id').eq('title', lessonTitle);
+      let { data, error } = await supabase
+        .from('lessons')
+        .select('id')
+        .eq('title', lessonTitle)
+        .eq('description', lessonDescription)
+        .eq('inserted_at', insertTime)
+        .eq('voice_id', voiceId);
+
       let lessonId = data[0].id;
 
       for (let i = 0; i < paragraphs.length; i++) {
@@ -174,7 +183,7 @@ export default function AddLesson() {
             lesson_id: lessonId,
             content: paragraphs[i],
             order_of_lesson: i + 1,
-            inserted_at: new Date().toISOString(),
+            inserted_at: insertTime,
             ppt_url: pptUrls[i],
           },
         ]);
