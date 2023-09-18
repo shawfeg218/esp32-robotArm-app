@@ -10,6 +10,7 @@ export default function Account() {
   const supabase = useSupabaseClient();
   const user = useUser();
   const session = useSession();
+
   const [loading, setLoading] = useState(true);
   const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [username, setUsername] = useState(null);
@@ -70,6 +71,7 @@ export default function Account() {
 
       if (error) throw error;
       setMessage('Profile updated!');
+      getProfile();
     } catch (error) {
       setErrMessage('Error updating the data!');
       console.log(error);
@@ -99,12 +101,12 @@ export default function Account() {
         throw uploadError;
       }
 
-      setAvatarUrl(filePath);
-      updateProfile({ username, avatar_url: filePath });
+      updateProfile(username, fullname, filePath);
     } catch (error) {
       alert('Error uploading avatar!');
       console.log(error);
     } finally {
+      event.target.value = null;
       setLoading(false);
     }
   }
