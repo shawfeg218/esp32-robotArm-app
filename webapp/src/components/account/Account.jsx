@@ -10,6 +10,7 @@ export default function Account() {
   const supabase = useSupabaseClient();
   const user = useUser();
   const session = useSession();
+
   const [loading, setLoading] = useState(true);
   const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [username, setUsername] = useState(null);
@@ -100,7 +101,9 @@ export default function Account() {
       }
 
       setAvatarUrl(filePath);
-      updateProfile({ username, avatar_url: filePath });
+      updateProfile({ avatar_url: filePath });
+
+      router.push('/account');
     } catch (error) {
       alert('Error uploading avatar!');
       console.log(error);
