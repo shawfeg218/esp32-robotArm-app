@@ -71,6 +71,7 @@ export default function Account() {
 
       if (error) throw error;
       setMessage('Profile updated!');
+      getProfile();
     } catch (error) {
       setErrMessage('Error updating the data!');
       console.log(error);
@@ -100,14 +101,12 @@ export default function Account() {
         throw uploadError;
       }
 
-      setAvatarUrl(filePath);
       updateProfile(username, fullname, filePath);
-
-      router.push('/account');
     } catch (error) {
       alert('Error uploading avatar!');
       console.log(error);
     } finally {
+      event.target.value = null;
       setLoading(false);
     }
   }
