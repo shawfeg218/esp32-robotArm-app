@@ -101,7 +101,7 @@ export default function Account() {
       }
 
       setAvatarUrl(filePath);
-      updateProfile({ avatar_url: filePath });
+      updateProfile(username, fullname, filePath);
 
       router.push('/account');
     } catch (error) {
