@@ -7,7 +7,13 @@ import { Card, Modal, Button } from '@nextui-org/react';
 import Textbook from './Textbook';
 import { useRouter } from 'next/router';
 import QuizLoading from '../quiz/QuizLoading';
+import Image from 'next/image';
 
+// const cardImgs = [
+//   '/img/lesson-card-3-166.jpg',
+//   '/img/lesson-card-2-166.jpg',
+//   '/img/lesson-card-1-166.jpg',
+// ];
 const cardImgs = ['/img/lesson-card-3.jpg', '/img/lesson-card-2.jpg', '/img/lesson-card-1.jpg'];
 
 function Lesson() {
@@ -127,11 +133,14 @@ function Lesson() {
                           )}
                           <div className="h-full flex items-center">
                             <div className="flex">
-                              <div className="h-full w-1/2 mr-2">
-                                <img
+                              <div className="flex h-full w-1/2 mr-2">
+                                <Image
                                   src={cardImgs[index % 3]}
                                   className="w-full h-auto opacity-90"
                                   alt="lesson card"
+                                  width={200}
+                                  height={200}
+                                  priority={true}
                                 />
                               </div>
                               <div>
