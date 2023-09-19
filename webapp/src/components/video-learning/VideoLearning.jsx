@@ -7,6 +7,8 @@ import Toast from '../Toast';
 import { base64ToBlob } from '../../lib/base64ToBlob';
 import { useContext } from 'react';
 import AppContext from '@/contexts/AppContext';
+import { AiOutlineSound } from 'react-icons/ai';
+import { BiVolumeMute } from 'react-icons/bi';
 
 export default function VideoLearning() {
   const { setSpeaking, setMood } = useContext(AppContext);
@@ -16,6 +18,7 @@ export default function VideoLearning() {
   const ansAudioRef = useRef(null);
   const [ansAudioUrl, setAnsAudioUrl] = useState(null);
   const [learningLoading, setLearningLoading] = useState(false);
+  const [muted, setMuted] = useState(true);
 
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoId, setVideoId] = useState('');
@@ -87,24 +90,26 @@ export default function VideoLearning() {
     return () => clearInterval(interval);
   }, [player]);
 
-  // for answer audio
   useEffect(() => {
     if (ansAudioUrl) {
       ansAudioRef.current.load();
-    }
-  }, [ansAudioUrl]);
-
-  useEffect(() => {
-    if (ansAudioRef.current) {
       ansAudioRef.current.oncanplaythrough = () => {
         ansAudioRef.current.play();
+
         // check how long is the audio
         const duration = ansAudioRef.current.duration;
         console.log('duration: ', duration);
         speakInDuration(duration);
       };
     }
-  }, []);
+  }, [ansAudioUrl]);
+
+  const triggerMute = () => {
+    if (ansAudioRef.current) {
+      ansAudioRef.current.muted = !ansAudioRef.current.muted;
+      setMuted(!muted);
+    }
+  };
 
   async function transcribeAudioLink() {
     setLoading(true);
@@ -243,7 +248,7 @@ export default function VideoLearning() {
   return (
     <div className="w-full mt-4 flex justify-center overflow-x-scroll">
       {showToast && <Toast message={toastMessage} icon={toastType} onClose={onCloseToast} />}
-      <audio ref={ansAudioRef} src={ansAudioUrl} />
+      <audio autoPlay muted={muted} ref={ansAudioRef} src={ansAudioUrl} />
       <div>
         <section className="flex-col text-center ">
           <h1>影片語言學習</h1>
@@ -272,6 +277,7 @@ export default function VideoLearning() {
             </Button>
           </div>
 
+          {/* Error Modal */}
           <Modal open={showModal} onClose={onCloseModal}>
             <Modal.Header>
               <h1 className="text-3xl text-red-700">{modalHeader}</h1>
@@ -285,6 +291,7 @@ export default function VideoLearning() {
           </Modal>
         </section>
 
+        {/* Subtitle */}
         <section className="flex-col justify-center items-center w-full">
           {loading ? (
             <div className="flex justify-center mt-6">
@@ -321,6 +328,7 @@ export default function VideoLearning() {
               </div>
             </>
           )}
+
           <>
             {res && (
               <>
@@ -335,7 +343,16 @@ export default function VideoLearning() {
           </>
         </section>
 
-        <section className="flex-col justify-center items-center w-full">
+        {/* Learning content */}
+        <section className="relative flex-col justify-center items-center w-full pt-4 mt-6">
+          {ans && !loading && !learningLoading && (
+            <button
+              className="absolute flex justify-center items-center right-0 top-0 w-fit mt-0 p-3 border-0 bg-slate-100"
+              onClick={triggerMute}
+            >
+              {muted ? <BiVolumeMute size={28} /> : <AiOutlineSound size={28} />}
+            </button>
+          )}
           {learningLoading ? (
             <div className="flex justify-center mt-6">
               <Loading />
@@ -353,6 +370,7 @@ export default function VideoLearning() {
           )}
         </section>
 
+        {/* Video */}
         <div className="my-10 flex justify-center">
           <YouTube
             videoId={videoId === '' ? '' : videoId}
@@ -362,6 +380,7 @@ export default function VideoLearning() {
             onReady={(event) => setPlayer(event.target)}
           />
 
+          {/* Dynamic Subtitle */}
           {res === null ? null : (
             <div className="absolute bottom-48 h-fit w-fit">
               <div className="flex justify-center p-1 bg-black bg-opacity-60 text-white">
