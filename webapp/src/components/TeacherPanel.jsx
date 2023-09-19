@@ -63,7 +63,8 @@ export default function TeacherPanel() {
         <Collapse
           title="Teacher Panel"
           bordered
-          className="fixed right-1 px-4 mt-20 z-50 text-lg bg-white"
+          className="fixed right-1 px-4 mt-20 text-lg bg-white"
+          css={{ zIndex: 200 }}
         >
           <div className="py-4">
             <Button onClick={lockPage}>鎖定頁面</Button>
