@@ -7,6 +7,7 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { Card, Modal, Button } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import QuizLoading from './QuizLoading';
+import Image from 'next/image';
 
 const cardImgs = ['/img/quiz-card-1.jpg', '/img/quiz-card-2.jpg', '/img/quiz-card-3.jpg'];
 
@@ -106,11 +107,14 @@ function Quiz() {
 
                           <div className="h-full flex items-center">
                             <div className="flex">
-                              <div className="h-full w-1/2 mr-2">
-                                <img
+                              <div className="flex h-full w-1/2 mr-2">
+                                <Image
                                   src={cardImgs[index % 3]}
                                   className="w-full h-auto opacity-90"
                                   alt="lesson card"
+                                  width={200}
+                                  height={200}
+                                  priority={true}
                                 />
                               </div>
                               <div>
