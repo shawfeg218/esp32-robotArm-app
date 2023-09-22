@@ -372,7 +372,11 @@ export default function VideoLearning() {
               <div className="flex justify-center">
                 {ans ? (
                   <div className="bg-slate-100 my-10 overflow-scroll max-w-2xl p-2 max-h-80">
-                    <p className="text-black w-full">{ans}</p>
+                    <p className="text-black w-full">
+                      {ans.split('\n').map((line, index) => (
+                        <p key={index}>{line}</p>
+                      ))}
+                    </p>
                   </div>
                 ) : null}
               </div>
