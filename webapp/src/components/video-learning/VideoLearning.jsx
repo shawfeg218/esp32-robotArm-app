@@ -272,7 +272,12 @@ export default function VideoLearning() {
           </div>
           <Spacer y={0.5} />
           <div className="mt-3 flex justify-center">
-            <Button bordered size="md" disabled={loading} onPress={transcribeAudioLink}>
+            <Button
+              bordered
+              size="md"
+              disabled={loading || learningLoading}
+              onPress={transcribeAudioLink}
+            >
               翻譯影片
             </Button>
           </div>
@@ -330,11 +335,16 @@ export default function VideoLearning() {
           )}
 
           <>
-            {res && (
+            {videoTranscription.length !== 0 && (
               <>
                 <Spacer y={0.5} />
                 <div className="mt-3 flex justify-center">
-                  <Button bordered size="md" disabled={learningLoading} onClick={contentLearning}>
+                  <Button
+                    bordered
+                    size="md"
+                    disabled={learningLoading || loading}
+                    onClick={contentLearning}
+                  >
                     Learning
                   </Button>
                 </div>
