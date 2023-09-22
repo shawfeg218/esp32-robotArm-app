@@ -1,9 +1,9 @@
 .add_question_btn {
-  background-color: rgb(208, 244, 232);
+  background-color: rgba(132, 157, 202, 0.886);
   color: var(--custom-Text-color);
   font-weight: 500;
   border: 0;
-  box-shadow: 0 0 0.625rem rgb(174, 205, 194);
+  /* box-shadow: 0 0 0.625rem rgb(134, 184, 234); */
 }
 
 .add_option_btn {
@@ -11,7 +11,8 @@
   color: var(--custom-Text-color);
   font-weight: 500;
   border: 0;
-  box-shadow: 0 0 0.625rem rgb(207, 220, 220);
+  /* box-shadow: 0 0 0.625rem rgb(207, 220, 220);*/
+  background-color: rgba(241 245 249);
 }
 
 .container label {
@@ -49,7 +50,7 @@
   padding: 1rem;
   padding-bottom: 2rem;
   margin-bottom: 1rem;
-  background-color: rgb(208, 244, 232);
+  background-color: rgba(132, 157, 202, 0.886);
   border-radius: 0.5rem;
   /* border: var(--custom-border); */
 }
@@ -72,7 +73,8 @@
   padding: 1rem;
   /* background-color: aliceblue; */
   /* border-top: var(--custom-border); */
-  background-color: rgb(218, 255, 255);
+  /* background-color: rgba(132, 157, 202, 0.886);*/
+  background-color: rgba(241 245 249);
 }
 
 .option_bar {
@@ -91,7 +93,7 @@
   display: flex;
   align-items: center;
   width: fit-content;
-  background-color: azure;
+  background-color: rgba(211, 223, 247, 0.886);
 }
 
 .correctDiv input {
