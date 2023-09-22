@@ -1,41 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Loading, Input, Modal, Dropdown, Button, Textarea, Checkbox } from '@nextui-org/react';
-import { BsMicFill } from 'react-icons/bs';
-import { IoSend } from 'react-icons/io5';
-import { AiOutlineSound } from 'react-icons/ai';
-import { BiVolumeMute } from 'react-icons/bi';
-import { RxCross2 } from 'react-icons/rx';
-import { base64ToBlob } from '../../lib/base64ToBlob';
-import PrettyTextArea from '../PrettyTextArea';
-import { useContext } from 'react';
-import AppContext from '@/contexts/AppContext';
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import AudioChatLoading from './AudioChatLoading';
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Loading,
+  Input,
+  Modal,
+  Dropdown,
+  Button,
+  Textarea,
+  Checkbox,
+} from "@nextui-org/react";
+import { BsMicFill } from "react-icons/bs";
+import { IoSend } from "react-icons/io5";
+import { AiOutlineSound } from "react-icons/ai";
+import { BiVolumeMute } from "react-icons/bi";
+import { RxCross2 } from "react-icons/rx";
+import { base64ToBlob } from "../../lib/base64ToBlob";
+import PrettyTextArea from "../PrettyTextArea";
+import { useContext } from "react";
+import AppContext from "@/contexts/AppContext";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import AudioChatLoading from "./AudioChatLoading";
 
 export const voiceProfiles = [
   {
     index: 0,
-    label: '中文男性',
-    voiceLang: 'zh-TW',
-    voiceName: 'zh-TW-YunJheNeural',
+    label: "中文男性",
+    voiceLang: "zh-TW",
+    voiceName: "zh-TW-YunJheNeural",
   },
   {
     index: 1,
-    label: '中文女性',
-    voiceLang: 'zh-TW',
-    voiceName: 'zh-TW-HsiaoChenNeural',
+    label: "中文女性",
+    voiceLang: "zh-TW",
+    voiceName: "zh-TW-HsiaoChenNeural",
   },
   {
     index: 2,
-    label: '英文男性',
-    voiceLang: 'en-US',
-    voiceName: 'en-US-DavisNeural',
+    label: "英文男性",
+    voiceLang: "en-US",
+    voiceName: "en-US-DavisNeural",
   },
   {
     index: 3,
-    label: '英文女性',
-    voiceLang: 'en-US',
-    voiceName: 'en-US-JennyNeural',
+    label: "英文女性",
+    voiceLang: "en-US",
+    voiceName: "en-US-JennyNeural",
   },
 ];
 
@@ -72,8 +80,8 @@ export default function AudioChat() {
   const [pageLoading, setPageLoading] = useState(true);
 
   const [inputRole, setInputRole] = useState({
-    role: '',
-    prompt: '',
+    role: "",
+    prompt: "",
     voice_id: 0,
   });
 
@@ -82,8 +90,8 @@ export default function AudioChat() {
   const [rolePrompt, setRolePrompt] = useState({});
 
   const [text, setText] = useState(null);
-  const [enter, setEnter] = useState('');
-  const [userM, setUserM] = useState('');
+  const [enter, setEnter] = useState("");
+  const [userM, setUserM] = useState("");
   const [ans, setAns] = useState(null);
   const [conversationHistory, setConversationHistory] = useState([]);
 
@@ -124,11 +132,11 @@ export default function AudioChat() {
         // check how long is the audio
         const duration = ansAudioRef.current.duration;
         // console.log('duration: ', duration);
-        console.log('text in audio playing : ', textRef.current);
+        console.log("text in audio playing : ", textRef.current);
         handleAction(textRef.current, duration);
       };
       ansAudioRef.current.onerror = (e) => {
-        console.error('Error playing audio:', e);
+        console.error("Error playing audio:", e);
       };
     }
   }, [ansAudioUrl]);
@@ -151,7 +159,7 @@ export default function AudioChat() {
     };
 
     recorder.onstop = (e) => {
-      console.log('recorder.onstop: ', cancelRecordRef.current);
+      console.log("recorder.onstop: ", cancelRecordRef.current);
       if (cancelRecordRef.current === false) {
         const blob = new Blob(chunks);
         setAudioData(blob);
@@ -185,22 +193,25 @@ export default function AudioChat() {
   async function transcriptAudio() {
     setLoading(true);
     const formData = new FormData();
-    formData.append('file', audioData);
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/transcript-audio`, {
-      method: 'POST',
-      body: formData,
-    });
+    formData.append("file", audioData);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/transcript-audio`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
     if (!response.ok) {
       const errorResponse = await response.json();
-      console.log('Error transcribing audio:');
+      console.log("Error transcribing audio:");
       console.log(errorResponse);
-      window.alert('Error transcribing audio');
+      window.alert("Error transcribing audio");
       setLoading(false);
     } else {
       const responseJson = await response.json();
       const responseText = responseJson.text;
       // console.log(responseText);
-      const newUserMessage = { role: 'user', content: responseText };
+      const newUserMessage = { role: "user", content: responseText };
       let newConversationHistory = [...conversationHistory, newUserMessage];
       if (newConversationHistory.length > 10) {
         newConversationHistory = newConversationHistory.slice(-10);
@@ -216,35 +227,41 @@ export default function AudioChat() {
     // console.log('voiceLang: ', voiceProfiles[rolePrompt.voice_id].voiceLang);
     // console.log('voiceName: ', voiceProfiles[rolePrompt.voice_id].voiceName);
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`, {
-      // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: rolePrompt.prompt,
-        messages: conversationHistory,
-        // voiceLang: rolePrompt.voice.voiceLang,
-        // voiceName: rolePrompt.voice.voiceName,
-        voiceLang: voiceProfiles[rolePrompt.voice_id].voiceLang,
-        voiceName: voiceProfiles[rolePrompt.voice_id].voiceName,
-      }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`,
+      {
+        // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: rolePrompt.prompt,
+          messages: conversationHistory,
+          // voiceLang: rolePrompt.voice.voiceLang,
+          // voiceName: rolePrompt.voice.voiceName,
+          voiceLang: voiceProfiles[rolePrompt.voice_id].voiceLang,
+          voiceName: voiceProfiles[rolePrompt.voice_id].voiceName,
+        }),
+      }
+    );
 
     if (!response.ok) {
       const { error } = await response.json();
       console.log(error);
       window.alert(error);
       setLoading(false);
-      setText('');
+      setText("");
     } else {
       const responseJson = await response.json();
       // console.log('audioChat: ', responseJson);
 
       const { answer, answerAudio } = responseJson;
-      const newAssistantMessage = { role: 'assistant', content: answer };
-      let newConversationHistory = [...conversationHistory, newAssistantMessage];
+      const newAssistantMessage = { role: "assistant", content: answer };
+      let newConversationHistory = [
+        ...conversationHistory,
+        newAssistantMessage,
+      ];
       if (newConversationHistory.length > 10) {
         newConversationHistory = newConversationHistory.slice(-10);
       }
@@ -252,12 +269,12 @@ export default function AudioChat() {
       setAns(answer);
       // console.log(answer);
 
-      const audioBlob = base64ToBlob(answerAudio, 'audio/mp3');
+      const audioBlob = base64ToBlob(answerAudio, "audio/mp3");
       const audioUrl = URL.createObjectURL(audioBlob);
       setAnsAudioUrl(audioUrl);
 
       setLoading(false);
-      setText('');
+      setText("");
       // console.log('conversationHistory: ', conversationHistory);
     }
   }
@@ -265,7 +282,10 @@ export default function AudioChat() {
   const fetchRoles = async () => {
     setPageLoading(true);
     try {
-      const { data, error } = await supabase.from('chat_roles').select('*').order('id');
+      const { data, error } = await supabase
+        .from("chat_roles")
+        .select("*")
+        .order("id");
 
       if (error) {
         throw error;
@@ -275,7 +295,7 @@ export default function AudioChat() {
       setRoles(data);
       setRolePrompt(data[0]);
     } catch (error) {
-      console.log('Error fetching roles:', error);
+      console.log("Error fetching roles:", error);
     } finally {
       setPageLoading(false);
     }
@@ -283,7 +303,7 @@ export default function AudioChat() {
 
   const insertRole = async () => {
     try {
-      const { error: updateError } = await supabase.from('chat_roles').insert([
+      const { error: updateError } = await supabase.from("chat_roles").insert([
         {
           role: inputRole.role,
           prompt: inputRole.prompt,
@@ -295,8 +315,8 @@ export default function AudioChat() {
       if (updateError) throw updateError;
       fetchRoles();
     } catch (error) {
-      console.log('Error updating role:', error);
-      window.alert('Error updating role');
+      console.log("Error updating role:", error);
+      window.alert("Error updating role");
     }
   };
 
@@ -306,16 +326,16 @@ export default function AudioChat() {
       for (let i = 0; i < delItems.length; i++) {
         // console.log('delete index: ', delItems[i]);
         const { error: deleteError } = await supabase
-          .from('chat_roles')
+          .from("chat_roles")
           .delete()
-          .eq('id', delItems[i]);
+          .eq("id", delItems[i]);
 
         if (deleteError) throw deleteError;
         fetchRoles();
       }
     } catch (error) {
-      console.log('Error deleting role:', error);
-      window.alert('Error deleting role');
+      console.log("Error deleting role:", error);
+      window.alert("Error deleting role");
     }
   };
 
@@ -323,17 +343,17 @@ export default function AudioChat() {
     // console.log('danceAtleastTen');
     if (duration < 10) {
       setDancing(true);
-      setMood('happy');
+      setMood("happy");
       setTimeout(() => {
         setDancing(false);
-        setMood('default');
+        setMood("default");
       }, 10000);
     } else {
       setDancing(true);
-      setMood('happy');
+      setMood("happy");
       setTimeout(() => {
         setDancing(false);
-        setMood('default');
+        setMood("default");
       }, duration * 1000);
     }
   }
@@ -341,78 +361,78 @@ export default function AudioChat() {
   function raiseHand(action) {
     // console.log('raiseHand: ', action);
     if (
-      action === '舉手' ||
-      action === '举手' ||
-      action === 'raise hand' ||
-      action === 'Raise hand'
+      action === "舉手" ||
+      action === "举手" ||
+      action === "raise hand" ||
+      action === "Raise hand"
     ) {
-      const newAngles = { ...targetAngles, ['F']: 130 };
+      const newAngles = { ...targetAngles, ["F"]: 130 };
       setTargetAngles(newAngles);
     } else if (
-      action === '舉雙手' ||
-      action === '举双手' ||
-      action === 'raise two hands' ||
-      action === 'Raise two hands'
+      action === "舉雙手" ||
+      action === "举双手" ||
+      action === "raise two hands" ||
+      action === "Raise two hands"
     ) {
-      const newAngles = { ...targetAngles, ['B']: 30, ['F']: 130 };
+      const newAngles = { ...targetAngles, ["B"]: 30, ["F"]: 130 };
       setTargetAngles(newAngles);
     }
   }
 
   function handleAction(text, duration) {
-    console.log('handleAction text: ', text);
-    console.log('handleAction duration: ', duration);
+    console.log("handleAction text: ", text);
+    console.log("handleAction duration: ", duration);
     const actionWords = [
-      '跳舞',
-      '舞',
-      '音樂',
-      '音乐',
-      'music',
-      'Music',
-      'dance',
-      'Dance',
-      '舉手',
-      '举手',
-      'raise hand',
-      'Raise hand',
-      '舉雙手',
-      '举双手',
-      'raise two hands',
-      'Raise two hands',
-      '重置',
-      'reset',
-      'Reset',
+      "跳舞",
+      "舞",
+      "音樂",
+      "音乐",
+      "music",
+      "Music",
+      "dance",
+      "Dance",
+      "舉手",
+      "举手",
+      "raise hand",
+      "Raise hand",
+      "舉雙手",
+      "举双手",
+      "raise two hands",
+      "Raise two hands",
+      "重置",
+      "reset",
+      "Reset",
     ];
     // check if text has some action words
     const action = actionWords.find((word) => text.includes(word));
-    console.log('action: ', action);
+    console.log("action: ", action);
 
     switch (action) {
-      case '跳舞':
-      case '舞':
-      case 'dance':
-      case 'Dance':
-      case '音樂':
-      case '音乐':
-      case 'music':
-      case 'Music':
+      case "跳舞":
+      case "舞":
+      case "dance":
+      case "Dance":
+      case "音樂":
+      case "音乐":
+      case "music":
+      case "Music":
         danceAtleastTen(duration);
         break;
 
-      case '舉手':
-      case '举手':
-      case '舉雙手':
-      case '举双手':
-      case 'raise hand':
-      case 'raise two hands':
-      case 'Raise hand':
-      case 'Raise two hands':
+      case "舉手":
+      case "举手":
+      case "舉雙手":
+      case "举双手":
+      case "raise hand":
+      case "raise two hands":
+      case "Raise hand":
+      case "Raise two hands":
         raiseHand(action);
         break;
 
-      case '重置':
-      case 'reset':
-      case 'Reset':
+      case "重置":
+      case "reset":
+      case "Reset":
         handleReset();
         break;
 
@@ -435,7 +455,11 @@ export default function AudioChat() {
                 className="absolute w-fit right-0 top-2 bg-white flex items-center"
                 onClick={toggleMute}
               >
-                {muted ? <BiVolumeMute size={32} /> : <AiOutlineSound size={32} />}
+                {muted ? (
+                  <BiVolumeMute size={32} />
+                ) : (
+                  <AiOutlineSound size={32} />
+                )}
               </button>
             ) : null}
 
@@ -455,15 +479,15 @@ export default function AudioChat() {
                     onAction={(key) => {
                       const role = roles.find((role) => role.role === key);
 
-                      if (key === 'add') {
+                      if (key === "add") {
                         setShowCreateModal(true);
-                      } else if (key === 'delete') {
+                      } else if (key === "delete") {
                         setShowDelModal(true);
                       } else if (role) {
                         setRolePrompt(role);
                         // console.log('selected role: ', role);
                         setAns(null);
-                        setUserM('');
+                        setUserM("");
                         setConversationHistory([]);
                       }
                     }}
@@ -471,12 +495,12 @@ export default function AudioChat() {
                     {roles.map((role) => (
                       <Dropdown.Item key={role.role}>{role.role}</Dropdown.Item>
                     ))}
-                    {AccountRole === 'teacher' && (
+                    {AccountRole === "teacher" && (
                       <Dropdown.Item color="primary" key="add">
                         新增
                       </Dropdown.Item>
                     )}
-                    {AccountRole === 'teacher' && (
+                    {AccountRole === "teacher" && (
                       <Dropdown.Item color="error" key="delete">
                         刪除
                       </Dropdown.Item>
@@ -485,7 +509,10 @@ export default function AudioChat() {
                 </Dropdown>
 
                 {/* create new role modal */}
-                <Modal open={showCreateModal} onClose={() => setShowCreateModal(false)}>
+                <Modal
+                  open={showCreateModal}
+                  onClose={() => setShowCreateModal(false)}
+                >
                   <Modal.Header className="text-xl">輸入新角色</Modal.Header>
                   <Modal.Body>
                     角色名稱:
@@ -512,7 +539,7 @@ export default function AudioChat() {
                       <Dropdown.Menu
                         aria-label="Voice profile selection"
                         onAction={(key) => {
-                          console.log('selectedVoiceProfile: ', key);
+                          console.log("selectedVoiceProfile: ", key);
                           setInputRole({
                             ...inputRole,
                             voice_id: key,
@@ -520,7 +547,9 @@ export default function AudioChat() {
                         }}
                       >
                         {voiceProfiles.map((profile) => (
-                          <Dropdown.Item key={profile.index}>{profile.label}</Dropdown.Item>
+                          <Dropdown.Item key={profile.index}>
+                            {profile.label}
+                          </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
@@ -531,15 +560,15 @@ export default function AudioChat() {
                         size="sm"
                         onClick={() => {
                           // if all fields are filled then setRoles
-                          if (inputRole.role === '') {
-                            window.alert('請輸入角色名稱');
-                          } else if (inputRole.prompt === '') {
-                            window.alert('請輸入Prompt');
+                          if (inputRole.role === "") {
+                            window.alert("請輸入角色名稱");
+                          } else if (inputRole.prompt === "") {
+                            window.alert("請輸入Prompt");
                           } else {
-                            console.log('inputRole: ', inputRole);
+                            console.log("inputRole: ", inputRole);
                             insertRole();
                             // setRoles([...roles, inputRole]);
-                            setInputRole({ role: '', prompt: '', voice_id: 0 });
+                            setInputRole({ role: "", prompt: "", voice_id: 0 });
                             setShowCreateModal(false);
                           }
                         }}
@@ -549,7 +578,7 @@ export default function AudioChat() {
                       <Button
                         size="sm"
                         onClick={() => {
-                          setInputRole({ role: '', prompt: '', voice_id: 0 });
+                          setInputRole({ role: "", prompt: "", voice_id: 0 });
                           setShowCreateModal(false);
                         }}
                       >
@@ -560,7 +589,10 @@ export default function AudioChat() {
                 </Modal>
 
                 {/* delete role modal */}
-                <Modal open={showDelModal} onClose={() => setShowDelModal(false)}>
+                <Modal
+                  open={showDelModal}
+                  onClose={() => setShowDelModal(false)}
+                >
                   <Modal.Header className="text-xl">刪除角色</Modal.Header>
                   <Modal.Body>
                     <div className="h-36 overflow-y-scroll">
@@ -611,7 +643,7 @@ export default function AudioChat() {
               <div className="w-full flex justify-center relative">
                 {recording && (
                   <button
-                    className="absolute mt-0 right-40 w-fit text-center text-3xl bg-transparent border-0"
+                    className="absolute mt-0 sm:right-40 right-10 w-fit text-center text-3xl bg-transparent border-0"
                     onClick={cancelRecording}
                   >
                     <RxCross2 />
@@ -619,7 +651,9 @@ export default function AudioChat() {
                 )}
 
                 {/* recording spinner */}
-                {recording ? <div className="absolute bottom-2 z-0 spinner"></div> : null}
+                {recording ? (
+                  <div className="absolute bottom-2 z-0 spinner"></div>
+                ) : null}
                 <button
                   className="bg-transparent w-fit border-0 flex justify-center p-1 z-10"
                   onClick={recording ? stopRecording : startRecording}
@@ -628,10 +662,12 @@ export default function AudioChat() {
                 </button>
               </div>
               <div className="flex justify-center items-center m-8">
-                {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
+                {recording ? (
+                  <Loading color="currentColor" type="points-opacity" />
+                ) : null}
               </div>
               <h2 className="h-40 overflow-x-scroll break-words text-center">
-                {userM ? `${userM}` : ''}
+                {userM ? `${userM}` : ""}
               </h2>
             </section>
 
@@ -640,7 +676,10 @@ export default function AudioChat() {
                 <div className="flex justify-center">
                   <div className="flex absolute bottom-0">
                     <div className="flex w-80 z-20">
-                      <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
+                      <PrettyTextArea
+                        value={enter}
+                        onChange={(e) => setEnter(e.target.value)}
+                      />
                     </div>
                     <div className="flex flex-col justify-end">
                       <button
@@ -648,14 +687,21 @@ export default function AudioChat() {
                         disabled={loading}
                         onClick={() => {
                           if (enter) {
-                            const newUserMessage = { role: 'user', content: enter };
-                            let newConversationHistory = [...conversationHistory, newUserMessage];
+                            const newUserMessage = {
+                              role: "user",
+                              content: enter,
+                            };
+                            let newConversationHistory = [
+                              ...conversationHistory,
+                              newUserMessage,
+                            ];
                             if (newConversationHistory.length > 10) {
-                              newConversationHistory = newConversationHistory.slice(-10);
+                              newConversationHistory =
+                                newConversationHistory.slice(-10);
                             }
                             setConversationHistory(newConversationHistory);
                             setText(enter);
-                            setEnter('');
+                            setEnter("");
                           }
                         }}
                       >
@@ -671,7 +717,7 @@ export default function AudioChat() {
             </div> */}
               </div>
             </section>
-            <div>{loading ? 'Loading... ' : ''}</div>
+            <div>{loading ? "Loading... " : ""}</div>
           </>
         )}
       </div>
