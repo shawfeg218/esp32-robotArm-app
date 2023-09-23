@@ -305,7 +305,7 @@ export default function AudioChat() {
         throw error;
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setRoles(data);
       setRolePrompt(data[0]);
     } catch (error) {
@@ -464,14 +464,6 @@ export default function AudioChat() {
         ) : (
           <>
             <audio autoPlay muted={muted} ref={ansAudioRef} src={ansAudioUrl} />
-            {ansAudioUrl ? (
-              <button
-                className="absolute w-fit right-0 top-2 bg-white flex items-center"
-                onClick={toggleMute}
-              >
-                {muted ? <BiVolumeMute size={32} /> : <AiOutlineSound size={32} />}
-              </button>
-            ) : null}
 
             <section>
               <div className="flex justify-center items-center">
@@ -648,11 +640,31 @@ export default function AudioChat() {
               )}
 
               {/* ans div */}
-              <div className="overflow-auto w-full h-32 my-4">
-                {ans ? <h3>{ans}</h3> : <h3>開始對話...</h3>}
+              <div className="w-full flex justify-center h-32">
+                {ans ? (
+                  <div className="relative pt-6">
+                    {/* Muted btn */}
+                    {ansAudioUrl ? (
+                      <div className="absolute w-full flex justify-center top-0 right-1">
+                        <div className="w-full flex justify-end">
+                          <button
+                            className="w-fit bg-white flex justify-center items-center p-1 mt-0 border-0"
+                            onClick={toggleMute}
+                          >
+                            {muted ? <BiVolumeMute size={24} /> : <AiOutlineSound size={24} />}
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    <h3 className="overflow-auto h-28">{ans}</h3>
+                  </div>
+                ) : (
+                  <h3>開始對話...</h3>
+                )}
               </div>
 
-              <div className="w-full flex justify-center relative">
+              <div className="w-full flex justify-center mt-4 relative">
                 {recording && (
                   <button
                     className="absolute mt-0 sm:right-40 right-10 w-fit text-center text-3xl bg-transparent border-0"
@@ -671,21 +683,22 @@ export default function AudioChat() {
                   <BsMicFill className=" w-16 h-16" />
                 </button>
               </div>
+
               <div className="flex justify-center items-center m-8">
                 {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
               </div>
-              <h2 className="h-24 overflow-x-scroll break-words text-center">
-                {userM ? `${userM}` : ''}
-              </h2>
+              <div className="h-36 overflow-y-scroll p-4">
+                <h2 className="break-words text-center">{userM ? `${userM}` : ''}</h2>
+              </div>
             </section>
 
             <section>
-              <div className="relative mt-16">
+              <div className="relative mt-28">
                 <div className="flex justify-center">
-                  <div className="absolute bottom-0">
+                  <div className="absolute w-full bottom-0 p-8">
                     {/* Answer Option */}
-                    {ans && (
-                      <div className="w-full flex justify-end mb-4">
+                    {ans && !loading && (
+                      <div className="w-full flex justify-center mb-4">
                         {/* <button
                             className="w-fit bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
                             disabled={loading}
@@ -693,7 +706,7 @@ export default function AudioChat() {
                             重新發送
                           </button> */}
                         <button
-                          className="w-fit bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
+                          className="w-fit mt-0 bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
                           onClick={generateImage}
                           disabled={loading}
                         >
@@ -703,8 +716,8 @@ export default function AudioChat() {
                     )}
 
                     {/* Input */}
-                    <div className="flex">
-                      <div className="flex w-80 z-20">
+                    <div className="flex w-full px-4">
+                      <div className="flex w-full z-20">
                         <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
                       </div>
                       <div className="flex flex-col justify-end">
