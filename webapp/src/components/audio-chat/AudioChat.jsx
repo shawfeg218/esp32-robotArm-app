@@ -99,6 +99,10 @@ export default function AudioChat() {
   // }, [delItems]);
 
   useEffect(() => {
+    console.log('img: ', imgSrc);
+  }, [imgSrc]);
+
+  useEffect(() => {
     fetchRoles();
   }, []);
 
@@ -243,7 +247,7 @@ export default function AudioChat() {
       const responseJson = await response.json();
       // console.log('audioChat: ', responseJson);
 
-      const { answer, answerAudio, imgUrl } = responseJson;
+      const { answer, answerAudio } = responseJson;
 
       const newAssistantMessage = { role: 'assistant', content: answer };
       let newConversationHistory = [...conversationHistory, newAssistantMessage];
@@ -252,8 +256,6 @@ export default function AudioChat() {
       }
       setConversationHistory(newConversationHistory);
       setAns(answer);
-      setImgSrc(imgUrl);
-      // console.log('imgUrl: ', imgUrl);
       // console.log(answer);
 
       const audioBlob = base64ToBlob(answerAudio, 'audio/mp3');
@@ -265,6 +267,33 @@ export default function AudioChat() {
       // console.log('conversationHistory: ', conversationHistory);
     }
   }
+
+  const generateImage = async () => {
+    setLoading(true);
+    console.log('ans: ', ans);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tti`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: rolePrompt.prompt,
+      }),
+    });
+    if (!response.ok) {
+      const { error } = await response.json();
+      console.log(error);
+      window.alert(error);
+      setLoading(false);
+    } else {
+      const responseJson = await response.json();
+      console.log('generateImage: ', responseJson);
+      const { imgUrl } = responseJson;
+
+      setImgSrc(imgUrl);
+      setLoading(false);
+    }
+  };
 
   const fetchRoles = async () => {
     setPageLoading(true);
@@ -644,7 +673,7 @@ export default function AudioChat() {
               <div className="flex justify-center items-center m-8">
                 {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
               </div>
-              <h2 className="h-20 overflow-x-scroll break-words text-center">
+              <h2 className="h-24 overflow-x-scroll break-words text-center">
                 {userM ? `${userM}` : ''}
               </h2>
             </section>
@@ -652,32 +681,54 @@ export default function AudioChat() {
             <section>
               <div className="relative mt-16">
                 <div className="flex justify-center">
-                  <div className="flex absolute bottom-0">
-                    <div className="flex w-80 z-20">
-                      <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
-                    </div>
-                    <div className="flex flex-col justify-end">
-                      <button
-                        className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
-                        disabled={loading}
-                        onClick={() => {
-                          if (enter) {
-                            const newUserMessage = {
-                              role: 'user',
-                              content: enter,
-                            };
-                            let newConversationHistory = [...conversationHistory, newUserMessage];
-                            if (newConversationHistory.length > 10) {
-                              newConversationHistory = newConversationHistory.slice(-10);
+                  <div className="absolute bottom-0">
+                    {/* Answer Option */}
+                    {ans && (
+                      <div className="w-full flex justify-end mb-4">
+                        {/* <button
+                            className="w-fit bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
+                            disabled={loading}
+                          >
+                            重新發送
+                          </button> */}
+                        <button
+                          className="w-fit bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
+                          onClick={generateImage}
+                          disabled={loading}
+                        >
+                          生成圖片
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Input */}
+                    <div className="flex">
+                      <div className="flex w-80 z-20">
+                        <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
+                      </div>
+                      <div className="flex flex-col justify-end">
+                        <button
+                          className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
+                          disabled={loading}
+                          onClick={() => {
+                            if (enter) {
+                              const newUserMessage = {
+                                role: 'user',
+                                content: enter,
+                              };
+                              let newConversationHistory = [...conversationHistory, newUserMessage];
+                              if (newConversationHistory.length > 10) {
+                                newConversationHistory = newConversationHistory.slice(-10);
+                              }
+                              setConversationHistory(newConversationHistory);
+                              setText(enter);
+                              setEnter('');
                             }
-                            setConversationHistory(newConversationHistory);
-                            setText(enter);
-                            setEnter('');
-                          }
-                        }}
-                      >
-                        <IoSend />
-                      </button>
+                          }}
+                        >
+                          <IoSend />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
