@@ -271,6 +271,7 @@ export default function AudioChat() {
 
   const generateImage = async () => {
     setLoading(true);
+    setUserM('');
     // console.log('ans: ', ans);
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tti`, {
       method: 'POST',
@@ -457,15 +458,15 @@ export default function AudioChat() {
   }
 
   return (
-    <div className="flex justify-center text-black w-full h-full mt-16">
-      <div className="h-full w-full max-w-2xl justify-center items-center text-center relative">
+    <div className="flex justify-center text-black w-full min-h-full mt-8">
+      <div className="min-h-full w-full max-w-2xl justify-center items-center text-center relative">
         {pageLoading ? (
           <AudioChatLoading />
         ) : (
           <>
             <audio autoPlay muted={muted} ref={ansAudioRef} src={ansAudioUrl} />
 
-            <section>
+            <section className="h-fitbg-yellow-200">
               <div className="flex justify-center items-center">
                 <div>
                   <h1 className="mr-3">{rolePrompt.role}</h1>
@@ -651,7 +652,7 @@ export default function AudioChat() {
                             className="w-fit bg-white flex justify-center items-center p-1 mt-0 border-0"
                             onClick={toggleMute}
                           >
-                            {muted ? <BiVolumeMute size={24} /> : <AiOutlineSound size={24} />}
+                            {muted ? <BiVolumeMute size={30} /> : <AiOutlineSound size={30} />}
                           </button>
                         </div>
                       </div>
@@ -687,62 +688,56 @@ export default function AudioChat() {
               <div className="flex justify-center items-center m-8">
                 {recording ? <Loading color="currentColor" type="points-opacity" /> : null}
               </div>
-              <div className="h-36 overflow-y-scroll p-4">
-                <h2 className="break-words text-center">{userM ? `${userM}` : ''}</h2>
+              <div className="h-64 flex justify-center p-4">
+                <div className="h-24 overflow-y-scroll">
+                  <h3 className="text-center">{userM ? `${userM}` : ''}</h3>
+                </div>
               </div>
             </section>
 
-            <section>
-              <div className="relative mt-28">
-                <div className="flex justify-center">
-                  <div className="absolute w-full bottom-0 p-8">
-                    {/* Answer Option */}
-                    {ans && !loading && (
-                      <div className="w-full flex justify-center mb-4">
-                        {/* <button
-                            className="w-fit bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
-                            disabled={loading}
-                          >
-                            重新發送
-                          </button> */}
-                        <button
-                          className="w-fit mt-0 bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
-                          onClick={generateImage}
-                          disabled={loading}
-                        >
-                          生成圖片
-                        </button>
-                      </div>
-                    )}
+            <section className="absolute w-full bottom-0 p-8">
+              {/* Answer Option */}
+              {ans && !loading && (
+                <div className="w-full flex justify-center mb-4">
+                  <button
+                    className="w-fit mt-0 bg-transparent border-slate-500 text-slate-500 hover:bg-slate-200 disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed disabled:hover:bg-white"
+                    onClick={generateImage}
+                    disabled={loading}
+                  >
+                    生成圖片
+                  </button>
+                </div>
+              )}
 
-                    {/* Input */}
-                    <div className="flex w-full px-4">
-                      <div className="flex w-full z-20">
-                        <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
-                      </div>
-                      <div className="flex flex-col justify-end">
-                        <button
-                          className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
-                          disabled={loading}
-                          onClick={() => {
-                            if (enter) {
-                              const newUserMessage = {
-                                role: 'user',
-                                content: enter,
-                              };
-                              let newConversationHistory = [...conversationHistory, newUserMessage];
-                              if (newConversationHistory.length > 10) {
-                                newConversationHistory = newConversationHistory.slice(-10);
-                              }
-                              setConversationHistory(newConversationHistory);
-                              setText(enter);
-                              setEnter('');
+              <div className="flex justify-center">
+                <div className="w-full">
+                  {/* Input */}
+                  <div className="flex w-full px-4">
+                    <div className="flex w-full z-20">
+                      <PrettyTextArea value={enter} onChange={(e) => setEnter(e.target.value)} />
+                    </div>
+                    <div className="flex flex-col justify-end">
+                      <button
+                        className="mt-0 w-16 h-fit border-0 bg-black text-white flex items-center justify-center disabled:bg-slate-200 disabled:cursor-default"
+                        disabled={loading}
+                        onClick={() => {
+                          if (enter) {
+                            const newUserMessage = {
+                              role: 'user',
+                              content: enter,
+                            };
+                            let newConversationHistory = [...conversationHistory, newUserMessage];
+                            if (newConversationHistory.length > 10) {
+                              newConversationHistory = newConversationHistory.slice(-10);
                             }
-                          }}
-                        >
-                          <IoSend />
-                        </button>
-                      </div>
+                            setConversationHistory(newConversationHistory);
+                            setText(enter);
+                            setEnter('');
+                          }
+                        }}
+                      >
+                        <IoSend />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -752,8 +747,8 @@ export default function AudioChat() {
               )}
             </div> */}
               </div>
+              <div>{loading ? 'Loading... ' : ''}</div>
             </section>
-            <div>{loading ? 'Loading... ' : ''}</div>
           </>
         )}
       </div>
