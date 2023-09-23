@@ -13,8 +13,8 @@ export default function AudioChatLoading() {
         <div className="mt-14 h-6 w-20 bg-slate-200"></div>
       </div>
       <BsMicFill className="mt-32 text-slate-200 w-16 h-16" />
-      <div className="w-full mt-60 flex justify-center">
-        <div className="w-80 h-8 rounded-md bg-slate-200"></div>
+      <div className="w-full px-8 mt-60 flex justify-center">
+        <div className="w-full h-8 rounded-md bg-slate-200"></div>
         <div className="w-16 h-8 flex justify-center items-center rounded-md bg-slate-200">
           <IoSend className="text-white" />
         </div>
