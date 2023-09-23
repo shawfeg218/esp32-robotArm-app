@@ -98,9 +98,9 @@ export default function AudioChat() {
   //   console.log('delItems: ', delItems);
   // }, [delItems]);
 
-  useEffect(() => {
-    console.log('img: ', imgSrc);
-  }, [imgSrc]);
+  // useEffect(() => {
+  //   console.log('img: ', imgSrc);
+  // }, [imgSrc]);
 
   useEffect(() => {
     fetchRoles();
@@ -220,6 +220,7 @@ export default function AudioChat() {
     setUserM(text);
     // console.log('voiceLang: ', voiceProfiles[rolePrompt.voice_id].voiceLang);
     // console.log('voiceName: ', voiceProfiles[rolePrompt.voice_id].voiceName);
+    setImgSrc(null);
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`, {
       // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
@@ -270,7 +271,7 @@ export default function AudioChat() {
 
   const generateImage = async () => {
     setLoading(true);
-    console.log('ans: ', ans);
+    // console.log('ans: ', ans);
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tti`, {
       method: 'POST',
       headers: {
@@ -287,7 +288,7 @@ export default function AudioChat() {
       setLoading(false);
     } else {
       const responseJson = await response.json();
-      console.log('generateImage: ', responseJson);
+      // console.log('generateImage: ', responseJson);
       const { imgUrl } = responseJson;
 
       setImgSrc(imgUrl);
