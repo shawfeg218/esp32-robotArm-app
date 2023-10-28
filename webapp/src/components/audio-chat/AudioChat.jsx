@@ -290,7 +290,10 @@ export default function AudioChat() {
       const responseJson = await response.json();
       // console.log('generateImage: ', responseJson);
       const { imgString } = responseJson;
-      const imgUrl = base64ToBlob(imgString, 'image/png');
+      // console.log('imgString: ', imgString);
+      const imgBlob = base64ToBlob(imgString, 'image/png');
+      const imgUrl = URL.createObjectURL(imgBlob);
+      // console.log('imgUrl: ', imgUrl);
       setImgSrc(imgUrl);
       setLoading(false);
     }
