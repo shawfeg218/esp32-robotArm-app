@@ -272,7 +272,6 @@ export default function AudioChat() {
   const generateImage = async () => {
     setLoading(true);
     setUserM('');
-    // console.log('ans: ', ans);
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tti`, {
       method: 'POST',
       headers: {
@@ -290,8 +289,11 @@ export default function AudioChat() {
     } else {
       const responseJson = await response.json();
       // console.log('generateImage: ', responseJson);
-      const { imgUrl } = responseJson;
-
+      const { imgString } = responseJson;
+      // console.log('imgString: ', imgString);
+      const imgBlob = base64ToBlob(imgString, 'image/png');
+      const imgUrl = URL.createObjectURL(imgBlob);
+      // console.log('imgUrl: ', imgUrl);
       setImgSrc(imgUrl);
       setLoading(false);
     }
