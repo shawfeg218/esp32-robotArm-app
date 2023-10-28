@@ -15,13 +15,13 @@ const moodToGif = {
 export default function Face() {
   const user = useUser();
   const role = user.user_metadata?.role || 'student';
-  const { setShowFace, mood, controlMode } = useContext(AppContext);
+  const { setShowFace, mood, controlMode, teacherPath } = useContext(AppContext);
   let gifSrc = moodToGif[mood] || moodToGif.default;
 
   return (
     <div className="w-full mt-20 flex justify-center relative">
       <img src={gifSrc} alt="temp" className="h-full" onClick={() => setShowFace(false)} />
-      {(role === 'teacher' || controlMode === 'single') && (
+      {(role === 'teacher' || (controlMode !== 'multi-singleRoute' && !teacherPath)) && (
         <Collapse title="Audio Chat" bordered className="absolute top-0 w-1/2 bg-white">
           <AudioChat />
         </Collapse>
