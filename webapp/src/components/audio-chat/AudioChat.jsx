@@ -278,7 +278,7 @@ export default function AudioChat() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        prompt: rolePrompt.prompt,
+        prompt: ans,
       }),
     });
     if (!response.ok) {
