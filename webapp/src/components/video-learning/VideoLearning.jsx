@@ -1,14 +1,14 @@
-import { Input, Spacer, Button, Loading, Modal } from '@nextui-org/react';
-import React, { useEffect, useRef, useState } from 'react';
-import { parseTranscription, parseTranslation, generateContent } from '../../lib/parseSubtitles';
-import YouTube from 'react-youtube';
-import Toast from '../Toast';
+import { Input, Spacer, Button, Loading, Modal } from "@nextui-org/react";
+import React, { useEffect, useRef, useState } from "react";
+import { parseTranscription, parseTranslation, generateContent } from "../../lib/parseSubtitles";
+import YouTube from "react-youtube";
+import Toast from "../Toast";
 // import { example } from '../../lib/example';
-import { base64ToBlob } from '../../lib/base64ToBlob';
-import { useContext } from 'react';
-import AppContext from '@/contexts/AppContext';
-import { AiOutlineSound } from 'react-icons/ai';
-import { BiVolumeMute } from 'react-icons/bi';
+import { base64ToBlob } from "../../lib/base64ToBlob";
+import { useContext } from "react";
+import AppContext from "@/contexts/AppContext";
+import { AiOutlineSound } from "react-icons/ai";
+import { BiVolumeMute } from "react-icons/bi";
 
 export default function VideoLearning() {
   const { setSpeaking, setMood } = useContext(AppContext);
@@ -21,8 +21,8 @@ export default function VideoLearning() {
   const [muted, setMuted] = useState(true);
 
   const [videoUrl, setVideoUrl] = useState(null);
-  const [videoId, setVideoId] = useState('');
-  const [urlStatus, setUrlStatus] = useState('default');
+  const [videoId, setVideoId] = useState("");
+  const [urlStatus, setUrlStatus] = useState("default");
 
   const [videoTranscription, setVideoTranscription] = useState([]);
   const [videoTranslation, setVideoTranslation] = useState([]);
@@ -32,23 +32,23 @@ export default function VideoLearning() {
 
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [modalHeader, setModalHeader] = useState('');
-  const [modalMessage, setModalMessage] = useState('');
+  const [modalHeader, setModalHeader] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
 
   const [player, setPlayer] = useState(null);
 
   const onCloseToast = () => {
     setShowToast(false);
-    setToastMessage('');
-    setToastType('');
+    setToastMessage("");
+    setToastType("");
   };
 
   const onCloseModal = () => {
     setShowModal(false);
-    setModalMessage('');
+    setModalMessage("");
   };
 
   const updateTime = () => {
@@ -62,10 +62,10 @@ export default function VideoLearning() {
       return;
     }
     try {
-      let Id = new URL(videoUrl).searchParams.get('v');
+      let Id = new URL(videoUrl).searchParams.get("v");
       setVideoId(Id);
     } catch (error) {
-      setVideoId('');
+      setVideoId("");
     }
   };
 
@@ -98,7 +98,7 @@ export default function VideoLearning() {
 
         // check how long is the audio
         const duration = ansAudioRef.current.duration;
-        console.log('duration: ', duration);
+        console.log("duration: ", duration);
         speakInDuration(duration);
       };
     }
@@ -116,15 +116,15 @@ export default function VideoLearning() {
 
     if (!videoUrl) {
       setLoading(false);
-      setUrlStatus('error');
+      setUrlStatus("error");
       return;
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/video-translate`, {
-        method: 'POST',
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/video-translate`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           videoUrl: videoUrl,
@@ -156,18 +156,18 @@ export default function VideoLearning() {
         // check res of transcription and translation
         if (transcriptionSubtitles.length !== translationSubtitles.length) {
           throw {
-            name: 'Subtitle length mismatch',
+            name: "Subtitle length mismatch",
             message:
-              'Transcription length: ' +
+              "Transcription length: " +
               transcriptionSubtitles.length +
-              'Translation length: ' +
+              "Translation length: " +
               translationSubtitles.length,
           };
         }
 
         setLoading(false);
-        setToastMessage('successfully');
-        setToastType('check');
+        setToastMessage("successfully");
+        setToastType("check");
         setShowToast(true);
       }
     } catch (error) {
@@ -186,16 +186,19 @@ export default function VideoLearning() {
     setLearningLoading(true);
     try {
       const content = generateContent(videoTranscription);
-      // const response = await fetch(`http://localhost:5000/api/content-learning`, {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/content-learning`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: content,
-        }),
-      });
+      // const response = await fetch(`http://localhost:5000/api/v1/content-learning`, {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/content-learning`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: content,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorResponse = await response.json();
@@ -205,12 +208,12 @@ export default function VideoLearning() {
         };
       } else {
         const responseJson = await response.json();
-        console.log('audioChat: ', responseJson);
+        console.log("audioChat: ", responseJson);
 
         const { answer, answerAudio } = responseJson;
         setAns(answer);
 
-        const audioBlob = base64ToBlob(answerAudio, 'audio/mp3');
+        const audioBlob = base64ToBlob(answerAudio, "audio/mp3");
         const audioUrl = URL.createObjectURL(audioBlob);
         setAnsAudioUrl(audioUrl);
 
@@ -236,12 +239,12 @@ export default function VideoLearning() {
   };
 
   function speakInDuration(duration) {
-    console.log('speakInDuration');
+    console.log("speakInDuration");
     setSpeaking(true);
-    setMood('speak');
+    setMood("speak");
     setTimeout(() => {
       setSpeaking(false);
-      setMood('default');
+      setMood("default");
     }, duration * 1000);
   }
 
@@ -373,7 +376,7 @@ export default function VideoLearning() {
                 {ans ? (
                   <div className="bg-slate-100 my-10 overflow-scroll max-w-2xl p-2 max-h-80">
                     <p className="text-black w-full">
-                      {ans.split('\n').map((line, index) => (
+                      {ans.split("\n").map((line, index) => (
                         <p key={index}>{line}</p>
                       ))}
                     </p>
@@ -387,7 +390,7 @@ export default function VideoLearning() {
         {/* Video */}
         <div className="my-10 flex justify-center">
           <YouTube
-            videoId={videoId === '' ? '' : videoId}
+            videoId={videoId === "" ? "" : videoId}
             opts={{
               playerVars: { autoplay: 0 },
             }}

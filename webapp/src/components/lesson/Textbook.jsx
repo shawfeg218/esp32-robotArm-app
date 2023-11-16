@@ -1,11 +1,11 @@
-import AppContext from '@/contexts/AppContext';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useState, useEffect, useContext } from 'react';
-import { GrFormPrevious } from 'react-icons/gr';
-import { Button, Loading, Pagination, Progress } from '@nextui-org/react';
-import { base64ToBlob } from '@/lib/base64ToBlob';
-import TextbookLoading from './TextbookLoading';
-import { voiceProfiles } from '../audio-chat/AudioChat';
+import AppContext from "@/contexts/AppContext";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useState, useEffect, useContext } from "react";
+import { GrFormPrevious } from "react-icons/gr";
+import { Button, Loading, Pagination, Progress } from "@nextui-org/react";
+import { base64ToBlob } from "@/lib/base64ToBlob";
+import TextbookLoading from "./TextbookLoading";
+import { voiceProfiles } from "../audio-chat/AudioChat";
 
 export default function Textbook() {
   const supabase = useSupabaseClient();
@@ -50,16 +50,16 @@ export default function Textbook() {
   useEffect(() => {
     if (dataArray[currentPage]?.paragraph_audio) {
       const audioBase64 = dataArray[currentPage].paragraph_audio;
-      const audioBlob = base64ToBlob(audioBase64, 'audio/mp3');
+      const audioBlob = base64ToBlob(audioBase64, "audio/mp3");
       const audioUrl = URL.createObjectURL(audioBlob);
       setContentAudioUrl(audioUrl);
     }
   }, [dataArray, currentPage]);
 
   useEffect(() => {
-    const audioElement = document.querySelector('audio');
+    const audioElement = document.querySelector("audio");
     if (audioElement) {
-      audioElement.addEventListener('play', () => {
+      audioElement.addEventListener("play", () => {
         speakInDuration(audioElement.duration);
       });
     }
@@ -70,10 +70,10 @@ export default function Textbook() {
 
     try {
       const { data, error } = await supabase
-        .from('lesson_view')
-        .select('*')
-        .eq('lesson_id', selectedLesson)
-        .order('paragraph_order', { ascending: true });
+        .from("lesson_view")
+        .select("*")
+        .eq("lesson_id", selectedLesson)
+        .order("paragraph_order", { ascending: true });
 
       if (error) {
         throw error;
@@ -86,7 +86,7 @@ export default function Textbook() {
         // console.log('data:', data);
       }
     } catch (error) {
-      console.log('Error fetching texts:', error);
+      console.log("Error fetching texts:", error);
     } finally {
       setLoading(false);
     }
@@ -103,10 +103,10 @@ export default function Textbook() {
     setGenerating(true);
     try {
       const text = dataArray[currentPage]?.paragraph_content;
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tts`, {
-        method: 'POST',
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tts`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           text: text,
@@ -116,7 +116,7 @@ export default function Textbook() {
       });
 
       if (!response.ok) {
-        throw new Error('Error generating audio');
+        throw new Error("Error generating audio");
       }
 
       const responseJson = await response.json();
@@ -139,9 +139,9 @@ export default function Textbook() {
       // console.log('id:', id);
 
       const { data, error } = await supabase
-        .from('lesson_paragraphs')
+        .from("lesson_paragraphs")
         .update({ audio_string: audioBase64 })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) {
         throw error;
@@ -154,7 +154,7 @@ export default function Textbook() {
       fetchData();
       // console.log('updateAudio:', data);
     } catch (error) {
-      console.log('Error updating audio:', error);
+      console.log("Error updating audio:", error);
       throw error;
     }
   };
@@ -169,8 +169,8 @@ export default function Textbook() {
       for (let i = 0; i < dataArray.length; i++) {
         let pptPath = dataArray[i].paragraph_ppturl;
         // console.log('download pptPath:', pptPath);
-        if (pptPath !== '' && pptPath !== null) {
-          const { data, error } = await supabase.storage.from('ppts').download(pptPath);
+        if (pptPath !== "" && pptPath !== null) {
+          const { data, error } = await supabase.storage.from("ppts").download(pptPath);
           if (error) {
             throw error;
           }
@@ -189,7 +189,7 @@ export default function Textbook() {
         setProgressValue(i);
       }
     } catch (error) {
-      console.log('Error fetching ppts:', error);
+      console.log("Error fetching ppts:", error);
     } finally {
       setLoadingPPT(false);
     }
@@ -224,7 +224,7 @@ export default function Textbook() {
                     {generating ? (
                       <Loading type="spinner" color="currentColor" size="sm" />
                     ) : (
-                      '生成語音'
+                      "生成語音"
                     )}
                   </Button>
                 ) : (

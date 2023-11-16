@@ -191,7 +191,7 @@ export default function AudioChat() {
     setLoading(true);
     const formData = new FormData();
     formData.append('file', audioData);
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/transcript-audio`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/transcript-audio`, {
       method: 'POST',
       body: formData,
     });
@@ -222,8 +222,8 @@ export default function AudioChat() {
     // console.log('voiceName: ', voiceProfiles[rolePrompt.voice_id].voiceName);
     setImgSrc(null);
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/audio-chat`, {
-      // const response = await fetch(`http://localhost:5000/api/audio-chat`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/audio-chat`, {
+      // const response = await fetch(`http://localhost:5000/api/v1/audio-chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -272,7 +272,7 @@ export default function AudioChat() {
   const generateImage = async () => {
     setLoading(true);
     setUserM('');
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/tti`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tti`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
