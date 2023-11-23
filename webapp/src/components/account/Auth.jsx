@@ -1,28 +1,28 @@
-import { Button, Input, Spacer, Dropdown } from '@nextui-org/react';
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { GrVmMaintenance } from 'react-icons/gr';
+import { Button, Input, Spacer, Dropdown } from "@nextui-org/react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { GrVmMaintenance } from "react-icons/gr";
 
 export default function Auth() {
   const supabase = useSupabaseClient();
   const [signup, setSignup] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullname, setFullname] = useState('');
-  const [teacherToken, setTeacherToken] = useState('');
-  const [role, setRole] = useState('student');
-  const [checkPassword, setCheckPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [teacherToken, setTeacherToken] = useState("");
+  const [role, setRole] = useState("student");
+  const [checkPassword, setCheckPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [cantSubmit, setCantSubmit] = useState(false);
-  const [passwordStatus, setPasswordStatus] = useState('default');
-  const [checkStatus, setCheckStatus] = useState('default');
-  const [teacherTokenStatus, setTeacherTokenStatus] = useState('default');
-  const [passwordMessage, setPasswordMessage] = useState('');
-  const [checkMessage, setCheckMessage] = useState('');
+  const [passwordStatus, setPasswordStatus] = useState("default");
+  const [checkStatus, setCheckStatus] = useState("default");
+  const [teacherTokenStatus, setTeacherTokenStatus] = useState("default");
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [checkMessage, setCheckMessage] = useState("");
   const [message, setMessage] = useState(null);
 
   const code = process.env.NEXT_PUBLIC_TEACHER_CODE;
@@ -32,30 +32,30 @@ export default function Auth() {
 
     // check password length
     if (password.length < 6) {
-      setPasswordMessage('Password should be at least 6 characters!');
-      setPasswordStatus('error');
+      setPasswordMessage("Password should be at least 6 characters!");
+      setPasswordStatus("error");
       canSubmit = false;
     } else {
-      setPasswordMessage('');
-      setPasswordStatus('default');
+      setPasswordMessage("");
+      setPasswordStatus("default");
     }
 
     // check password match
     if (password !== checkPassword) {
-      setCheckMessage('Passwords do not match!');
-      setCheckStatus('error');
+      setCheckMessage("Passwords do not match!");
+      setCheckStatus("error");
       canSubmit = false;
     } else {
-      setCheckMessage('');
-      setCheckStatus('default');
+      setCheckMessage("");
+      setCheckStatus("default");
     }
 
     // check teacher token
     if (role === code && teacherToken !== code) {
-      setTeacherTokenStatus('error');
+      setTeacherTokenStatus("error");
       canSubmit = false;
     } else if (role === code && teacherToken === code) {
-      setTeacherTokenStatus('default');
+      setTeacherTokenStatus("default");
     }
 
     setCantSubmit(!canSubmit);
@@ -87,7 +87,7 @@ export default function Auth() {
         },
       });
       if (error) throw error;
-      setMessage('註冊成功，請至信箱收取驗證信件');
+      setMessage("註冊成功，請至信箱收取驗證信件");
     } catch (error) {
       setMessage(error.error_description || error.message);
     } finally {
@@ -100,7 +100,7 @@ export default function Auth() {
       setLoading(true);
       const { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) throw error;
-      setMessage('重設密碼信件已發送');
+      setMessage("重設密碼信件已發送");
     } catch (error) {
       setMessage(error.error_description || error.message);
     } finally {
@@ -152,7 +152,7 @@ export default function Auth() {
             {signup ? (
               <>
                 <div className="flex items-center justify-between">
-                  <h1>註冊{role === 'student' ? '學生' : '教師'}帳號</h1>
+                  <h1>註冊{role === "student" ? "學生" : "教師"}帳號</h1>
                   <Dropdown>
                     <Dropdown.Button flat>{role}</Dropdown.Button>
                     <Dropdown.Menu
@@ -208,7 +208,7 @@ export default function Auth() {
                   onChange={(e) => setCheckPassword(e.target.value)}
                 />
 
-                {role === 'teacher' ? (
+                {role === "teacher" ? (
                   <>
                     <Spacer y={2} />
                     <Input
@@ -248,7 +248,7 @@ export default function Auth() {
               </>
             ) : (
               <>
-                <Image src="/img/bgImg.jpg" width={1024} height={1024} />
+                <Image src="/img/tku.jpg" width={1024} height={1024} />
                 <Input
                   aria-label="Email input"
                   fullWidth
