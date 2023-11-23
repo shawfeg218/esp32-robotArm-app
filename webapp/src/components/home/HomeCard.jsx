@@ -1,16 +1,16 @@
-import { Card } from '@nextui-org/react';
-import Link from 'next/link';
-import React from 'react';
-import { BsArrowRightShort } from 'react-icons/bs';
+import { Card } from "@nextui-org/react";
+import Link from "next/link";
+import React from "react";
+import { BsArrowRightShort } from "react-icons/bs";
 
 export default function HomeCard(props) {
-  const { img, title, description, link } = props;
+  const { img, title, description, link, width } = props;
   return (
     <Card aria-label="Home card" isHoverable className="w-fit">
       <div className="w-96 bg-white border border-gray-200 rounded-lg shadow">
         <div className="overflow-hidden h-60 w-full flex justify-center items-center">
           <div>
-            <img className="rounded-t-lg" src={img} />
+            <img className="rounded-t-lg" src={img} style={{ width: width }} />
           </div>
         </div>
         <div className="p-5">

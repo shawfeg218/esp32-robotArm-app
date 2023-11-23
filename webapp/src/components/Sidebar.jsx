@@ -1,19 +1,17 @@
 //file: Sidebar.jsx
-import React, { useContext, useEffect } from 'react';
-import styles from '@/styles/Sidebar.module.css';
-import { FaChalkboardTeacher } from 'react-icons/fa';
-import { AiOutlineHome } from 'react-icons/ai';
-import { TfiPanel } from 'react-icons/tfi';
-import { GrConnect } from 'react-icons/gr';
-import { BsMicFill } from 'react-icons/bs';
-import { MdOutlineOndemandVideo } from 'react-icons/md';
-import { TfiWrite } from 'react-icons/tfi';
+import React, { useContext, useEffect } from "react";
+import styles from "@/styles/Sidebar.module.css";
+import { AiOutlineHome } from "react-icons/ai";
+import { TfiPanel } from "react-icons/tfi";
+import { GrConnect } from "react-icons/gr";
+import { BsMicFill } from "react-icons/bs";
 
-import Link from 'next/link';
-import AppContext from '@/contexts/AppContext';
-import Avatar from './account/Avatar';
+import Link from "next/link";
+import AppContext from "@/contexts/AppContext";
+import Avatar from "./account/Avatar";
 
-import { Switch } from '@nextui-org/react';
+import { Switch } from "@nextui-org/react";
+import Image from "next/image";
 
 export default function Sidebar() {
   const { displaySidebar, setDisplaySidebar, faceMode, setFaceMode, setMood } =
@@ -24,7 +22,7 @@ export default function Sidebar() {
   // }, [faceMode]);
 
   return (
-    <div className={`${styles.container} ${displaySidebar ? styles.show : ''}`}>
+    <div className={`${styles.container} ${displaySidebar ? styles.show : ""}`}>
       <div className="h-5/6 overflow-y-scroll">
         <div className={styles.itemDiv}>
           <Link href="/" passHref>
@@ -44,50 +42,12 @@ export default function Sidebar() {
             <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
               <div>
                 <div>
-                  <BsMicFill className="reactIcons" size="2rem" />
+                  {/* <BsMicFill className="reactIcons" size="2rem" /> */}
+                  <Image src="/img/tku.jpg" width="54" height="54" />
                 </div>
               </div>
               <div>
-                <p>語音聊天</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/video-learning" passHref>
-            <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
-              <div>
-                <div>
-                  <MdOutlineOndemandVideo className="reactIcons" size="2rem" />
-                </div>
-              </div>
-              <div>
-                <p>影片學習</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/lesson" passHref>
-            <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
-              <div>
-                <div>
-                  <FaChalkboardTeacher className="reactIcons" size="2rem" />
-                </div>
-              </div>
-              <div>
-                <p>上課</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/quiz" passHref>
-            <div className={styles.item} onClick={() => setDisplaySidebar(false)}>
-              <div>
-                <div>
-                  <TfiWrite className="reactIcons" size="2rem" />
-                </div>
-              </div>
-              <div>
-                <p>小測驗</p>
+                <p>語音助手</p>
               </div>
             </div>
           </Link>

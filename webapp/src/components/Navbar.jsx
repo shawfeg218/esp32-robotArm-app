@@ -1,11 +1,11 @@
 // file: Navbar.jsx
-import Link from 'next/link';
-import styles from '@/styles/Navbar.module.css';
-import Avatar from './account/Avatar';
-import { RxHamburgerMenu } from 'react-icons/rx';
-import { useContext } from 'react';
-import AppContext from '@/contexts/AppContext';
-import Image from 'next/image';
+import Link from "next/link";
+import styles from "@/styles/Navbar.module.css";
+import Avatar from "./account/Avatar";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { useContext } from "react";
+import AppContext from "@/contexts/AppContext";
+import Image from "next/image";
 
 export default function Navbar() {
   const { displaySidebar, setDisplaySidebar, teacherPath } = useContext(AppContext);
@@ -22,9 +22,9 @@ export default function Navbar() {
       </div>
       <Link href="/" passHref>
         <div className="hover:cursor-pointer hidden sm:block">
-          <div className="flex items-center">
-            <Image src="/memeIcon-bgrm.png" width={32} height={32} />
-            <h1 className="text-center ml-1">MEMEbot</h1>
+          <div className="flex items-center content-center">
+            <Image src="/img/tku.jpg" width={54} height={54} />
+            <h1 className="text-center ">TKUBot</h1>
           </div>
         </div>
       </Link>
