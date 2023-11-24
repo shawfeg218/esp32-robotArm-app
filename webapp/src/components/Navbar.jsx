@@ -24,7 +24,7 @@ export default function Navbar() {
         <div className="hover:cursor-pointer hidden sm:block">
           <div className="flex items-center content-center">
             <Image src="/img/tku.jpg" width={54} height={54} />
-            <h1 className="text-center ">TKUBot</h1>
+            <h1 className="text-center ">TKU InfoBot</h1>
           </div>
         </div>
       </Link>
